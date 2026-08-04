@@ -21,6 +21,8 @@
 <figure class="photo" style="--h:{height}px">
 	<img
 		src="{base}/images/species/{id}-{kind}.webp"
+		srcset="{base}/images/species/{id}-{kind}-480.webp 480w, {base}/images/species/{id}-{kind}.webp 900w"
+		sizes="(min-width: 700px) 440px, 100vw"
 		{alt}
 		width="900"
 		height="675"

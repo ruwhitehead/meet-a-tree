@@ -131,7 +131,12 @@ async function grab(hit, terms, latin, out, thumbOut) {
 	if (!hit) throw new Error(`no result for: ${latin}`);
 	const res = await fetch(hit.thumb, { headers: { 'User-Agent': UA } });
 	const buf = Buffer.from(await res.arrayBuffer());
-	await sharp(buf).resize(900, 675, { fit: 'cover', position: 'attention' }).webp({ quality: 72 }).toFile(out);
+	await sharp(buf).resize(900, 675, { fit: 'cover', position: 'attention' }).webp({ quality: 68 }).toFile(out);
+	// half-width variant for phones, served via srcset
+	await sharp(buf)
+		.resize(480, 360, { fit: 'cover', position: 'attention' })
+		.webp({ quality: 66 })
+		.toFile(out.replace('.webp', '-480.webp'));
 	if (thumbOut)
 		await sharp(buf).resize(240, 240, { fit: 'cover', position: 'attention' }).webp({ quality: 70 }).toFile(thumbOut);
 	return hit;

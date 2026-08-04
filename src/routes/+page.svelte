@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { grove } from '$lib/grove.svelte';
 
@@ -26,6 +27,8 @@
 		</div>
 		<span class="pill nums">🌿 {grove.streak.count === 1 ? 'day 1' : `${grove.streak.count}-day streak`}</span>
 	</div>
+
+	<InstallPrompt />
 
 	<div class="card tint">
 		<p class="label">Today's tree fact</p>

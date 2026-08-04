@@ -109,16 +109,13 @@
 {/if}
 
 <style>
+	/* Inline in the page flow — a floating bar would obscure list content
+	   underneath it (and did: it failed the touch-target audit on Learn). */
 	.installbar {
-		position: sticky;
-		bottom: 74px;
-		margin: 0 12px 8px;
 		background: var(--card);
 		border: 1.5px solid var(--green);
 		border-radius: 16px;
 		padding: 14px 15px;
-		box-shadow: 0 -6px 26px rgba(28, 59, 35, 0.16);
-		z-index: 25;
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
@@ -181,8 +178,6 @@
 	}
 	@media (min-width: 900px) {
 		.installbar {
-			position: static;
-			margin: 0 0 8px;
 			max-width: 480px;
 		}
 	}
