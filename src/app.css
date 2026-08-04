@@ -102,10 +102,15 @@ button {
 	border-radius: 6px;
 }
 
+/* App-shell layout: the page scrolls INSIDE main, so the bottom tab bar never
+   overlaps content. A sticky/fixed bar always covers whatever scrolls beneath
+   it, which is both an accessibility failure (obscured touch targets) and a
+   real annoyance when the covered thing is a link. */
 .frame {
 	max-width: 430px;
 	margin: 0 auto;
-	min-height: 100dvh;
+	height: 100dvh;
+	overflow: hidden;
 	background: var(--paper);
 	display: flex;
 	flex-direction: column;
@@ -114,10 +119,14 @@ button {
 }
 main.view {
 	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior-y: contain;
+	-webkit-overflow-scrolling: touch;
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-	padding: 16px 16px 96px;
+	padding: 16px 16px 28px;
 }
 
 /* ---------- desktop / tablet: side rail, wider canvas, multi-column ---------- */
@@ -130,13 +139,17 @@ main.view {
 		display: grid;
 		grid-template-columns: 232px minmax(0, 1fr);
 		align-items: start;
+		height: auto;
 		min-height: 100dvh;
+		overflow: visible;
 		box-shadow: 0 0 80px rgba(28, 59, 35, 0.16);
 	}
 	main.view {
 		padding: 40px 48px 64px;
 		gap: 16px;
 		max-width: 900px;
+		overflow-y: visible;
+		min-height: 0;
 	}
 	.vhead h1 {
 		font-size: 34px;

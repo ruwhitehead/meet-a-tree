@@ -91,8 +91,7 @@
 
 <style>
 	.tabbar {
-		position: sticky;
-		bottom: 0;
+		flex: none;
 		display: flex;
 		justify-content: space-around;
 		align-items: center;
