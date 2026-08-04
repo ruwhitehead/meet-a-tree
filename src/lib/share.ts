@@ -279,3 +279,26 @@ async function drawList(head: string, sub: string, lines: string[], link: string
 	ctx.fillText('in support of the International Tree Foundation · ' + link.replace(/^https?:\/\//, ''), 80, 1006);
 	return c;
 }
+
+/** A finished seasonal board. Shareable mid-game too — a part-filled board is
+ *  an invitation, which is the whole point of the missions. */
+export async function shareMission(title: string, found: number, target: number) {
+	const link = absolute('/missions/');
+	const done = found >= target;
+	const c = await drawCard(
+		done ? `${title}: finished.` : `${title}: ${found} of ${target}.`,
+		done
+			? `${found} species found this season. Your turn — how many can you name?`
+			: `${target - found} to go before the season closes. Care to join in?`,
+		'Seasonal hunt',
+		link
+	);
+	present(
+		c,
+		`${title} · Meet a Tree`,
+		done
+			? `I finished ${title} — ${found} species this season. Free field guide to British trees:`
+			: `I'm ${found} of ${target} through ${title}. Free field guide to British trees:`,
+		link
+	);
+}

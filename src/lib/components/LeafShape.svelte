@@ -37,6 +37,27 @@
 				<path d="M50 {y}L18 {y - 12}" /><path d="M50 {y}L82 {y - 12}" /><path d="M50 {y}L50 {y - 18}" />
 			{/each}
 			<circle cx="66" cy="66" r="8" />
+		{:else if shape === 'simple'}
+			<!-- step 1: one undivided blade, edge unbroken -->
+			<path d="M50 94V30" />
+			<path d="M50 8C24 26 16 50 22 66c6 14 18 22 28 24 10-2 22-10 28-24 6-16-2-40-28-58z" />
+			<path d="M50 46L32 40M50 62L32 58M50 46l18-6M50 62l18-4" />
+		{:else if shape === 'lobed'}
+			<!-- step 1: still one blade, but cut deeply into lobes -->
+			<path d="M50 94V50" />
+			<path
+				d="M50 6C42 10 39 18 42 26C36 21 28 23 26 29C23 36 28 42 34 44C26 47 20 53 22 61C25 70 35 73 43 68C41 77 45 85 50 90C55 85 59 77 57 68C65 73 75 70 78 61C80 53 74 47 66 44C72 42 77 36 74 29C72 23 64 21 58 26C61 18 58 10 50 6Z"
+			/>
+			<path d="M50 62L34 44M50 62l16-18" />
+		{:else if shape === 'compound'}
+			<!-- step 1: separate leaflets along one stalk -->
+			<path d="M50 94V22" />
+			<path d="M50 40L36 32M50 40l14-8M50 64L36 56M50 64l14-8" />
+			<ellipse cx="30" cy="28" rx="8" ry="15" transform="rotate(-38 30 28)" />
+			<ellipse cx="70" cy="28" rx="8" ry="15" transform="rotate(38 70 28)" />
+			<ellipse cx="30" cy="52" rx="8" ry="15" transform="rotate(-38 30 52)" />
+			<ellipse cx="70" cy="52" rx="8" ry="15" transform="rotate(38 70 52)" />
+			<ellipse cx="50" cy="18" rx="8" ry="15" />
 		{:else if shape === 'toothed'}
 			<!-- oval, clearly toothed (birch, hazel, cherry) -->
 			<path d="M50 94V30" />

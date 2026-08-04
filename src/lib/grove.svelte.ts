@@ -34,6 +34,7 @@ function load(): Persisted {
 }
 
 import { SPECIES } from './content/species';
+import { install } from './install.svelte';
 
 export const BADGES: { id: string; name: string; test: (speciesCount: number) => boolean }[] = [
 	{ id: 'first', name: 'First Find', test: (c) => c >= 1 },
@@ -112,6 +113,7 @@ class Grove {
 		}
 		this.save();
 		this.toast(`${sp.name} added to your Grove 🌿`);
+		install.celebrate();
 	}
 
 	removeFind(id: string) {

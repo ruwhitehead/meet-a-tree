@@ -3,6 +3,7 @@
 	import { onNavigate } from '$app/navigation';
 	import Nav from '$lib/components/Nav.svelte';
 	import TopBar from '$lib/components/TopBar.svelte';
+	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import Overlays from '$lib/components/Overlays.svelte';
 
@@ -23,6 +24,7 @@
 
 <div class="frame">
 	<TopBar />
+	<InstallPrompt />
 	{@render children()}
 	<Nav />
 </div>

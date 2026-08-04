@@ -8,6 +8,12 @@
 	import { EVENTS, putPhoto, trees, type EventId } from '$lib/trees.svelte';
 	import { grove } from '$lib/grove.svelte';
 	import { shareTreeYear } from '$lib/share';
+	import {
+		NATURES_CALENDAR_URL,
+		draftSubmission,
+		eventName,
+		isRecordable
+	} from '$lib/phenology';
 
 	const tree = $derived(trees.byId(page.params.id ?? ''));
 	const species = $derived(tree ? speciesById(tree.speciesId) : undefined);
@@ -21,6 +27,42 @@
 	let editName = $state('');
 	let editPlace = $state('');
 	let confirmDelete = $state(false);
+	let editPostcode = $state('');
+	let submitting: string | null = $state(null);
+	let copied = $state(false);
+
+	const submitObs = $derived(
+		submitting && tree ? tree.observations.find((o) => o.id === submitting) : undefined
+	);
+	const draft = $derived(
+		submitObs && species
+			? draftSubmission({
+					speciesName: species.name,
+					latin: species.latin,
+					event: submitObs.event,
+					date: submitObs.date,
+					place: tree?.place,
+					postcode: tree?.postcode
+				})
+			: undefined
+	);
+
+	async function copyDraft() {
+		if (!draft) return;
+		try {
+			await navigator.clipboard.writeText(draft.text);
+			copied = true;
+			setTimeout(() => (copied = false), 2200);
+		} catch {
+			grove.toast('Couldn’t copy — select the text and copy it by hand');
+		}
+	}
+	function confirmSubmitted() {
+		if (tree && submitting) trees.markSubmitted(tree.id, submitting);
+		submitting = null;
+		copied = false;
+		grove.toast('Marked as submitted 🌿');
+	}
 
 	const month = new Date().getMonth();
 	const inSeason = $derived(
@@ -84,11 +126,12 @@
 		if (!tree) return;
 		editName = tree.name;
 		editPlace = tree.place ?? '';
+		editPostcode = tree.postcode ?? '';
 		editing = true;
 	}
 	function saveEdit() {
 		if (!tree) return;
-		trees.rename(tree.id, editName, editPlace);
+		trees.rename(tree.id, editName, editPlace, editPostcode);
 		editing = false;
 	}
 	async function doDelete() {
@@ -129,7 +172,12 @@
 </svelte:head>
 
 <main class="view">
-	<a class="backlink" href="{base}/trees/">← My Trees</a>
+	<a class="backlink" href="{base}/trees/">
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M19 12H6" /><path d="M11.5 6.5L6 12l5.5 5.5" />
+		</svg>
+		My Trees
+	</a>
 
 	{#if !tree || !species}
 		<div class="card tint">
@@ -207,9 +255,18 @@
 						{#if o.note}
 							<p class="enote">{o.note}</p>
 						{/if}
-						<button class="removeobs" onclick={() => trees.removeObservation(tree.id, o.id)}>
-							Remove this entry
-						</button>
+						<div class="erow">
+							{#if o.submitted}
+								<span class="sent">✓ Sent to Nature’s Calendar</span>
+							{:else if isRecordable(species.id, o.event)}
+								<button class="sendobs" onclick={() => { submitting = o.id; copied = false; }}>
+									Send to Nature’s Calendar
+								</button>
+							{/if}
+							<button class="removeobs" onclick={() => trees.removeObservation(tree.id, o.id)}>
+								Remove
+							</button>
+						</div>
 					</li>
 				{/each}
 			</ol>
@@ -260,10 +317,52 @@
 		<span class="flabel">Where is it? (optional)</span>
 		<input type="text" bind:value={editPlace} />
 	</label>
+	<label class="field">
+		<span class="flabel">Postcode (only if you plan to submit records)</span>
+		<input type="text" bind:value={editPostcode} placeholder="OX1 2JD" autocomplete="postal-code" />
+	</label>
+	<p class="itf">
+		Nature’s Calendar needs a location for a record to be usable. Stored on this device only, and
+		only used when you choose to submit.
+	</p>
 	<div class="actions">
 		<button class="btn" onclick={saveEdit}>Save</button>
 		<button class="btn ghost" onclick={() => (editing = false)}>Cancel</button>
 	</div>
+</Modal>
+
+<Modal open={submitting !== null} onclose={() => (submitting = null)} labelledby="sub-title">
+	<h2 id="sub-title">Send to Nature’s Calendar</h2>
+	{#if draft && submitObs}
+		<p>
+			The Woodland Trust has collected first-leaf and first-flower dates since 1736. Your record is
+			the same measurement — here it is, ready to paste into their form.
+		</p>
+		<ul class="draft">
+			{#each draft.lines as line (line)}
+				<li>{line}</li>
+			{/each}
+		</ul>
+		{#if !tree?.postcode}
+			<p class="warn">
+				Add a postcode first (Rename → Postcode) or their form won’t accept the record.
+			</p>
+		{/if}
+		<p class="itf">
+			Nothing is uploaded from this app. You submit it yourself, on their site, and we just remember
+			that you did.
+		</p>
+		<div class="actions">
+			<button class="btn" onclick={copyDraft}>{copied ? '✓ Copied' : 'Copy the details'}</button>
+			<a class="btn ghost" href={NATURES_CALENDAR_URL} target="_blank" rel="noopener">
+				Open their form ↗
+			</a>
+		</div>
+		<div class="actions">
+			<button class="btn ghost small" onclick={confirmSubmitted}>I’ve submitted it</button>
+			<button class="btn ghost small" onclick={() => (submitting = null)}>Cancel</button>
+		</div>
+	{/if}
 </Modal>
 
 <Modal open={confirmDelete} onclose={() => (confirmDelete = false)} labelledby="del-title">
@@ -297,7 +396,15 @@
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
+		gap: 5px;
 		text-decoration: none;
+	}
+	/* an SVG arrow, not a "←" glyph: the character sits below the optical centre
+	   of the label, and flexbox can't correct it inside a single text node */
+	.backlink svg {
+		width: 15px;
+		height: 15px;
+		flex: none;
 	}
 	.pill.danger {
 		color: var(--soft);
@@ -393,8 +500,52 @@
 		font-size: 14px;
 		line-height: 1.55;
 	}
-	.removeobs {
+	.erow {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		flex-wrap: wrap;
 		margin-top: 8px;
+	}
+	.sendobs {
+		font-size: 12.5px;
+		font-weight: 700;
+		color: var(--deep);
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		text-decoration: underline;
+	}
+	.sent {
+		font-size: 12px;
+		font-weight: 700;
+		color: var(--deep);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 999px;
+		padding: 5px 11px;
+	}
+	.draft {
+		margin: 10px 0 0;
+		padding: 12px 14px;
+		list-style: none;
+		background: var(--stonewash);
+		border: 1px solid var(--line);
+		border-radius: 12px;
+		font-size: 13.5px;
+		display: grid;
+		gap: 5px;
+	}
+	.warn {
+		margin-top: 10px;
+		font-size: 13px;
+		color: var(--ink);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 10px;
+		padding: 9px 11px;
+	}
+	.removeobs {
 		font-size: 12px;
 		color: var(--soft);
 		text-decoration: underline;

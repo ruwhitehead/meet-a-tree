@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { base } from '$app/paths';
-	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { SPECIES, speciesById } from '$lib/content/species';
 	import { grove } from '$lib/grove.svelte';
 	import { trees } from '$lib/trees.svelte';
+	import { missionsFor } from '$lib/content/missions';
+	import { progressFor } from '$lib/missions.svelte';
 
 	const now = new Date();
 	const dateLine = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${SEASONS[now.getMonth()]}`;
@@ -23,6 +24,12 @@
 	);
 
 	const treePrompts = $derived(trees.prompts(now));
+	const liveMission = $derived(
+		(() => {
+			const { current } = missionsFor(now);
+			return current.length ? progressFor(current[0], now) : undefined;
+		})()
+	);
 
 	/** What's worth looking at this month, drawn from the species calendars. */
 	const seasonNow = $derived(
@@ -56,8 +63,6 @@
 		<span class="pill nums">🌿 {grove.streak.count === 1 ? 'day 1' : `${grove.streak.count}-day streak`}</span>
 	</div>
 
-	<InstallPrompt />
-
 	<div class="card tint">
 		<p class="label">Today's tree fact</p>
 		<p class="serif">{fact}</p>
@@ -85,6 +90,19 @@
 			<span class="ftell">{featured.tell}</span>
 		</span>
 	</a>
+
+	{#if liveMission}
+		<a class="card linkcard mission" href="{base}/missions/">
+			<p class="label forest">In season now</p>
+			<p class="serif small">
+				<strong>{liveMission.mission.title}</strong> — {liveMission.done.length} of {liveMission.mission
+					.target} found. Looking for {liveMission.mission.looking}. →
+			</p>
+			<span class="meter" aria-hidden="true">
+				<span class="fill" style="width:{Math.round(liveMission.fraction * 100)}%"></span>
+			</span>
+		</a>
+	{/if}
 
 	<div class="row two">
 		<a class="card linkcard" href="{base}/identify/">
@@ -260,6 +278,20 @@
 		color: var(--deep);
 		font-weight: 700;
 		text-decoration: none;
+	}
+	.mission .meter {
+		display: block;
+		height: 7px;
+		border-radius: 999px;
+		background: var(--stonewash);
+		overflow: hidden;
+		margin-top: 10px;
+	}
+	.mission .fill {
+		display: block;
+		height: 100%;
+		background: var(--green);
+		border-radius: 999px;
 	}
 	@media (min-width: 900px) {
 		.row.two {

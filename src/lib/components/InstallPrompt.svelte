@@ -1,155 +1,149 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { install } from '$lib/install.svelte';
+	import { grove } from '$lib/grove.svelte';
+	import { trees } from '$lib/trees.svelte';
+
+	/** Sits in the page flow directly under the top bar, on every screen — a
+	 *  floating bar would cover content and fail the touch-target audit. */
+	let steps = $state(false);
+
+	const p = install.platform;
+
+	// Copy earns its keep by naming what the user already has to lose.
+	const reason = $derived(
+		trees.count > 0
+			? `You're following ${trees.count === 1 ? 'a tree' : `${trees.count} trees`}. Keep ${trees.count === 1 ? 'it' : 'them'} one tap away.`
+			: grove.speciesCount > 0
+				? `Your grove holds ${grove.speciesCount} ${grove.speciesCount === 1 ? 'species' : 'species'}. Keep it in your pocket.`
+				: 'All 40 trees, pictures included, work with no signal once it’s on your home screen.'
+	);
+
+	async function act() {
+		if (install.prompt) {
+			await install.prompt.prompt();
+			const choice = await install.prompt.userChoice.catch(() => null);
+			install.prompt = null;
+			if (choice?.outcome === 'accepted') install.markInstalled();
+			else install.snooze();
+			return;
+		}
+		steps = true;
+	}
 
 	interface BeforeInstallPromptEvent extends Event {
 		prompt: () => Promise<void>;
-		userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+		userChoice: Promise<{ outcome: string }>;
 	}
-
-	const KEY = 'mat-install-dismissed';
-
-	let deferred: BeforeInstallPromptEvent | null = $state(null);
-	let dismissed = $state(browser ? localStorage.getItem(KEY) === '1' : true);
-	let showHow = $state(false);
-
-	// Already installed? Never nag.
-	const standalone =
-		browser &&
-		(window.matchMedia('(display-mode: standalone)').matches ||
-			(navigator as { standalone?: boolean }).standalone === true);
-
-	const ua = browser ? navigator.userAgent : '';
-	const isIos =
-		/iphone|ipad|ipod/i.test(ua) || (/Macintosh/.test(ua) && browser && navigator.maxTouchPoints > 1);
-	const isAndroid = /android/i.test(ua);
-	const isMobile = isIos || isAndroid;
-	// On iOS only Safari can install; Chrome/Firefox/Edge for iOS cannot.
-	const iosOtherBrowser = isIos && /crios|fxios|edgios|opt\//i.test(ua);
-
-	// Shown from the first visit on mobile — installing early is the point.
-	// Chromium fires beforeinstallprompt; iOS never does, so we teach the gesture.
-	const show = $derived(!standalone && !dismissed && (isMobile || deferred !== null));
 
 	function onBeforeInstall(e: Event) {
 		e.preventDefault();
-		deferred = e as BeforeInstallPromptEvent;
+		const evt = e as BeforeInstallPromptEvent;
+		install.prompt = { prompt: () => evt.prompt(), userChoice: evt.userChoice };
 	}
 
-	async function install() {
-		if (deferred) {
-			await deferred.prompt();
-			const choice = await deferred.userChoice.catch(() => null);
-			deferred = null;
-			if (choice?.outcome === 'accepted') dismiss();
-			return;
-		}
-		showHow = true; // iOS, or Android before/without the event
-	}
-
-	function dismiss() {
-		dismissed = true;
-		if (browser) localStorage.setItem(KEY, '1');
-	}
-
-	// appinstalled isn't in Svelte's window attribute types, so bind it directly.
 	$effect(() => {
-		const onInstalled = () => dismiss();
-		window.addEventListener('appinstalled', onInstalled);
-		return () => window.removeEventListener('appinstalled', onInstalled);
+		const installed = () => install.markInstalled();
+		window.addEventListener('appinstalled', installed);
+		return () => window.removeEventListener('appinstalled', installed);
 	});
 </script>
 
 <svelte:window onbeforeinstallprompt={onBeforeInstall} />
 
-{#if show}
-	<aside class="installbar" aria-labelledby="install-title">
-		<div class="row top">
-			<span class="badge" aria-hidden="true">
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 21c0-9 3-15 12-17-1 9-4 14-12 17z" /><path d="M6 21c2-5 5-9 9-12" /></svg>
+{#if install.shouldAsk}
+	<aside class="bar" aria-labelledby="install-title">
+		<div class="head">
+			<span class="icon" aria-hidden="true">
+				<span class="mark"></span>
 			</span>
-			<div>
-				<p class="it" id="install-title">Keep this in your pocket</p>
-				<p class="ib">
-					Add Meet a Tree to your home screen and the whole guide — all 40 trees, pictures included —
-					works with no signal, deep in a wood. It takes two taps and no app store.
-				</p>
+			<div class="copy">
+				<p class="t" id="install-title">Add Meet a Tree to your home screen</p>
+				<p class="b">{reason}</p>
 			</div>
 		</div>
 
-		{#if showHow && isIos}
-			<ol class="steps">
-				{#if iosOtherBrowser}
+		{#if steps}
+			{#if p.ios}
+				<ol class="steps">
+					{#if p.iosOtherBrowser}
+						<li>Open this page in <strong>Safari</strong> — on iPhone only Safari can do this.</li>
+					{/if}
 					<li>
-						First open this page in <strong>Safari</strong> — on iPhone only Safari can add to the
-						home screen.
+						Tap
+						<span class="glyph" aria-hidden="true">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 16V4" /><path d="M8 8l4-4 4 4" /><rect x="4" y="12" width="16" height="9" rx="2" /></svg>
+						</span>
+						<strong>Share</strong>, in the bar at the bottom of Safari.
 					</li>
-				{/if}
-				<li>
-					Tap the <strong>Share</strong> button
-					<span class="glyph" aria-hidden="true">
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 16V4" /><path d="M8 8l4-4 4 4" /><rect x="4" y="12" width="16" height="9" rx="2" /></svg>
-					</span>
-					in Safari's bottom bar.
-				</li>
-				<li>Scroll down the list and tap <strong>Add to Home Screen</strong>.</li>
-				<li>Tap <strong>Add</strong> — the leaf icon appears on your home screen.</li>
-			</ol>
-			<div class="row"><button class="btn small" onclick={dismiss}>Done</button></div>
-		{:else if showHow}
-			<ol class="steps">
-				<li>Tap the <strong>⋮</strong> menu at the top-right of Chrome.</li>
-				<li>Tap <strong>Add to Home screen</strong>, or <strong>Install app</strong> if you see it.</li>
-				<li>Confirm <strong>Install</strong> — the leaf icon appears with your apps.</li>
-			</ol>
-			<div class="row"><button class="btn small" onclick={dismiss}>Done</button></div>
+					<li>Scroll the list and tap <strong>Add to Home Screen</strong>.</li>
+					<li>Tap <strong>Add</strong>. Look for the green leaf.</li>
+				</ol>
+			{:else}
+				<ol class="steps">
+					<li>Tap the <strong>⋮</strong> menu, top right of Chrome.</li>
+					<li>Tap <strong>Add to Home screen</strong> (or <strong>Install app</strong>).</li>
+					<li>Confirm <strong>Install</strong>. Look for the green leaf.</li>
+				</ol>
+			{/if}
+			<div class="row">
+				<button class="btn small" onclick={() => install.markInstalled()}>Done — it's added</button>
+				<button class="btn ghost small" onclick={() => install.snooze()}>Close</button>
+			</div>
 		{:else}
 			<div class="row">
-				<button class="btn small" onclick={install}>{deferred ? 'Install' : 'Show me how'}</button>
-				<button class="btn ghost small" onclick={dismiss}>Not now</button>
+				<button class="btn small" onclick={act}>
+					{install.prompt ? 'Install' : p.ios ? 'How to add it' : 'Add it'}
+				</button>
+				<button class="btn ghost small" onclick={() => install.snooze()}>Not now</button>
 			</div>
 		{/if}
 	</aside>
 {/if}
 
 <style>
-	/* Inline in the page flow — a floating bar would obscure list content
-	   underneath it (and did: it failed the touch-target audit on Learn). */
-	.installbar {
+	.bar {
+		margin: 0 16px;
 		background: var(--card);
 		border: 1.5px solid var(--green);
 		border-radius: 16px;
-		padding: 14px 15px;
+		padding: 13px 14px;
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+		flex: none;
 	}
-	.top {
+	.head {
+		display: flex;
 		align-items: flex-start;
 		gap: 12px;
 	}
-	.badge {
-		width: 38px;
-		height: 38px;
+	.icon {
+		width: 40px;
+		height: 40px;
 		border-radius: 11px;
-		background: var(--wash);
-		color: var(--deep);
+		background: var(--green);
 		display: grid;
 		place-items: center;
 		flex: none;
 	}
-	.badge svg {
+	.icon .mark {
 		width: 22px;
 		height: 22px;
+		border-radius: 0 55% 0 55%;
+		background: var(--card);
+		transform: rotate(-8deg);
 	}
-	.it {
+	.copy {
+		min-width: 0;
+	}
+	.t {
 		margin: 0;
 		font-weight: 700;
 		font-size: 14.5px;
-		color: var(--ink);
 		line-height: 1.3;
 	}
-	.ib {
-		margin: 2px 0 0;
+	.b {
+		margin: 3px 0 0;
 		font-size: 12.5px;
 		color: var(--soft);
 	}
@@ -180,8 +174,9 @@
 		height: 14px;
 	}
 	@media (min-width: 900px) {
-		.installbar {
-			max-width: 480px;
+		.bar {
+			margin: 0 48px;
+			max-width: 520px;
 		}
 	}
 </style>

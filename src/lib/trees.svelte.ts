@@ -1,6 +1,7 @@
 import { browser } from '$app/environment';
 import { dateStr } from './streak';
 import { speciesById } from './content/species';
+import { install } from './install.svelte';
 import type { Species } from './content/types';
 
 /** A phenology event worth recording. These are the standard first-event dates
@@ -23,6 +24,8 @@ export interface Observation {
 	note?: string;
 	/** object URL is not persisted; photos live in IndexedDB by key */
 	photoKey?: string;
+	/** the user told us they sent this to Nature's Calendar */
+	submitted?: boolean;
 }
 
 export interface MyTree {
@@ -32,6 +35,8 @@ export interface MyTree {
 	name: string;
 	/** coarse place label, typed by the user — never coordinates */
 	place?: string;
+	/** optional, only for phenology submissions the user chooses to make */
+	postcode?: string;
 	planted: string;
 	observations: Observation[];
 }
@@ -158,12 +163,33 @@ class Trees {
 		};
 		this.items = [...this.items, tree];
 		this.save();
+		install.celebrate();
 		return tree;
 	}
 
-	rename(id: string, name: string, place?: string) {
+	rename(id: string, name: string, place?: string, postcode?: string) {
 		this.items = this.items.map((t) =>
-			t.id === id ? { ...t, name: name.trim() || t.name, place: place?.trim() || undefined } : t
+			t.id === id
+				? {
+						...t,
+						name: name.trim() || t.name,
+						place: place?.trim() || undefined,
+						postcode: postcode?.trim().toUpperCase() || t.postcode
+					}
+				: t
+		);
+		this.save();
+	}
+
+	/** Records that the user submitted this observation onwards themselves. */
+	markSubmitted(treeId: string, obsId: string) {
+		this.items = this.items.map((t) =>
+			t.id === treeId
+				? {
+						...t,
+						observations: t.observations.map((o) => (o.id === obsId ? { ...o, submitted: true } : o))
+					}
+				: t
 		);
 		this.save();
 	}

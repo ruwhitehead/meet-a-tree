@@ -193,7 +193,12 @@
 			</button>
 		{/each}
 	{:else if !step2}
-		<button class="backlink" onclick={() => (step1 = null)}>← Start again</button>
+		<button class="backlink" onclick={() => (step1 = null)}>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M19 12H6" /><path d="M11.5 6.5L6 12l5.5 5.5" />
+			</svg>
+			Start again
+		</button>
 		<p class="label">Step 2 of 3 · Look a little closer</p>
 		{#each step2Options as k (k.id)}
 			<button class="opt" onclick={() => (step2 = k.id)}>
@@ -202,7 +207,12 @@
 			</button>
 		{/each}
 	{:else}
-		<button class="backlink" onclick={() => (step2 = null)}>← Back</button>
+		<button class="backlink" onclick={() => (step2 = null)}>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M19 12H6" /><path d="M11.5 6.5L6 12l5.5 5.5" />
+			</svg>
+			Back
+		</button>
 		<p class="label">
 			Step 3 of 3 · {candidates.length}
 			{candidates.length === 1 ? 'candidate' : 'candidates'} — compare with your leaf
@@ -495,6 +505,12 @@
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
+		gap: 5px;
+	}
+	.backlink svg {
+		width: 15px;
+		height: 15px;
+		flex: none;
 	}
 	.photocard {
 		position: relative;

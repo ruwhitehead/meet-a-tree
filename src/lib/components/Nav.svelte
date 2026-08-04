@@ -10,7 +10,12 @@
 		{ href: '/grove', label: 'My Grove', icon: 'leaf' },
 		{ href: '/learn', label: 'Learn', icon: 'book' }
 	];
-	const railItems = [...items, { href: '/identify', label: 'Identify', icon: 'camera' }, ...items2];
+	const railItems = [
+		...items,
+		{ href: '/identify', label: 'Identify', icon: 'camera' },
+		...items2,
+		{ href: '/missions', label: 'Seasons', icon: 'season' }
+	];
 
 	const isActive = (href: string) =>
 		href === '/'
@@ -25,6 +30,8 @@
 		<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-5.5-7-11a7 7 0 0 1 14 0c0 5.5-7 11-7 11z" /><circle cx="12" cy="10" r="2.6" /></svg>
 	{:else if name === 'leaf'}
 		<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 21c0-9 3-15 12-17-1 9-4 14-12 17z" /><path d="M6 21c2-5 5-9 9-12" /></svg>
+	{:else if name === 'season'}
+		<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 3v9l6 3" /></svg>
 	{:else if name === 'camera'}
 		<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.4" /></svg>
 	{:else}

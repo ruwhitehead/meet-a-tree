@@ -31,3 +31,107 @@ describe('phenology events', () => {
 		for (const s of SPECIES) expect(s.id).toMatch(/^[a-z][a-z-]*[a-z]$/);
 	});
 });
+
+describe('seasonal missions', () => {
+	it('windows cover every month of the year between them', async () => {
+		const { MISSIONS, inWindow } = await import('./content/missions');
+		for (let m = 0; m < 12; m++) {
+			const mid = new Date(2026, m, 15);
+			const live = MISSIONS.filter((mi) => inWindow(mi, mid));
+			expect(live.length, `month ${m}`).toBeGreaterThan(0);
+		}
+	});
+
+	it('handles a window that wraps the new year', async () => {
+		const { MISSIONS, inWindow } = await import('./content/missions');
+		const winter = MISSIONS.find((m) => m.id === 'evergreens')!;
+		expect(inWindow(winter, new Date(2026, 11, 20))).toBe(true); // December
+		expect(inWindow(winter, new Date(2026, 0, 10))).toBe(true); // January
+		expect(inWindow(winter, new Date(2026, 5, 10))).toBe(false); // June
+	});
+
+	it('every mission is winnable from the species it lists', async () => {
+		const { MISSIONS } = await import('./content/missions');
+		const { speciesById } = await import('./content/species');
+		for (const m of MISSIONS) {
+			const real = m.ids.filter((id) => speciesById(id));
+			expect(real.length, `${m.id} has unknown species ids`).toBe(m.ids.length);
+			expect(real.length, `${m.id} target unreachable`).toBeGreaterThanOrEqual(m.target);
+		}
+	});
+});
+
+describe("Nature's Calendar mapping", () => {
+	it('maps our events to their vocabulary, and refuses notes', async () => {
+		const { eventName, isRecordable } = await import('./phenology');
+		expect(eventName('budburst')).toBe('First leaf');
+		expect(eventName('tint')).toBe('Full autumn tint');
+		expect(eventName('note')).toBeNull();
+		expect(isRecordable('oak', 'budburst')).toBe(true);
+		expect(isRecordable('oak', 'note')).toBe(false);
+		// box is not on their recording list
+		expect(isRecordable('box', 'budburst')).toBe(false);
+	});
+
+	it('drafts a submission with species, event, date and location', async () => {
+		const { draftSubmission } = await import('./phenology');
+		const d = draftSubmission({
+			speciesName: 'English oak',
+			latin: 'Quercus robur',
+			event: 'budburst',
+			date: '2026-04-14',
+			place: 'Park gates',
+			postcode: 'OX1 2JD'
+		});
+		expect(d.text).toContain('English oak');
+		expect(d.text).toContain('First leaf');
+		expect(d.text).toContain('14 April 2026');
+		expect(d.text).toContain('OX1 2JD');
+	});
+});
+
+describe('install nudging', () => {
+	const base = {
+		installed: false,
+		mobile: true,
+		hasBrowserPrompt: false,
+		snoozes: 0,
+		snoozeUntil: null as string | null,
+		visits: 2,
+		earned: false,
+		today: '2026-08-04'
+	};
+
+	it('stays quiet on a first visit, then asks on the second', async () => {
+		const { shouldPrompt } = await import('./install.svelte');
+		expect(shouldPrompt({ ...base, visits: 1 })).toBe(false);
+		expect(shouldPrompt({ ...base, visits: 2 })).toBe(true);
+	});
+
+	it('asks immediately after a delight moment, even on visit one', async () => {
+		const { shouldPrompt } = await import('./install.svelte');
+		expect(shouldPrompt({ ...base, visits: 1, earned: true })).toBe(true);
+	});
+
+	it('never nags an installed app', async () => {
+		const { shouldPrompt } = await import('./install.svelte');
+		expect(shouldPrompt({ ...base, installed: true, earned: true })).toBe(false);
+	});
+
+	it('respects a snooze, then returns when it expires', async () => {
+		const { shouldPrompt } = await import('./install.svelte');
+		expect(shouldPrompt({ ...base, snoozes: 1, snoozeUntil: '2026-08-08' })).toBe(false);
+		expect(shouldPrompt({ ...base, snoozes: 1, snoozeUntil: '2026-08-04' })).toBe(true);
+	});
+
+	it('takes three refusals as a final no', async () => {
+		const { shouldPrompt } = await import('./install.svelte');
+		expect(shouldPrompt({ ...base, snoozes: 3, snoozeUntil: null })).toBe(false);
+	});
+
+	it('is silent on desktop unless the browser offers an install', async () => {
+		const { shouldPrompt } = await import('./install.svelte');
+		expect(shouldPrompt({ ...base, mobile: false })).toBe(false);
+		expect(shouldPrompt({ ...base, mobile: false, hasBrowserPrompt: true })).toBe(true);
+	});
+});

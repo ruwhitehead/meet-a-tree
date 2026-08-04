@@ -38,7 +38,12 @@
 
 <main class="view">
 	<div class="row between">
-		<a class="backlink" href="{base}/learn/">← All trees</a>
+		<a class="backlink" href="{base}/learn/">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M19 12H6" /><path d="M11.5 6.5L6 12l5.5 5.5" />
+			</svg>
+			All trees
+		</a>
 		<button class="pill" onclick={() => shareSpecies(sp)}>Share</button>
 	</div>
 
@@ -125,7 +130,13 @@
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
+		gap: 5px;
 		text-decoration: none;
+	}
+	.backlink svg {
+		width: 15px;
+		height: 15px;
+		flex: none;
 	}
 	.photos {
 		display: grid;

@@ -18,6 +18,8 @@
 	</div>
 	<p class="scope">The trees of <strong>Britain and Ireland</strong> — natives, long-established introductions, and the ones you actually meet on a street or a hillside.</p>
 
+	<a class="seasonlink" href="{base}/missions/">Seasonal hunts — what to look for right now →</a>
+
 	<search>
 		<label class="searchbox">
 			<span class="visually-hidden">Search for a tree by name</span>
@@ -73,6 +75,19 @@
 </main>
 
 <style>
+	.seasonlink {
+		font-size: 13.5px;
+		font-weight: 700;
+		color: var(--deep);
+		text-decoration: none;
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 12px;
+		padding: 11px 14px;
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
 	.scope {
 		margin: -4px 0 0;
 		font-size: 13px;
