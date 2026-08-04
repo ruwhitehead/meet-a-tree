@@ -3,6 +3,7 @@
 	import LeafShape from '$lib/components/LeafShape.svelte';
 	import { KEY1, KEY2, keyCandidates } from '$lib/content/key';
 	import { speciesById } from '$lib/content/species';
+	import { PLACES, placeSpecies } from '$lib/content/habitats';
 	import type { LeafKind } from '$lib/content/types';
 	import { grove } from '$lib/grove.svelte';
 
@@ -222,6 +223,30 @@
 			<p class="sub">Nothing in the guide matches that combination — try stepping back.</p>
 		{/if}
 	{/if}
+
+	<details class="habitats">
+		<summary>Still stuck? Narrow it down by where you are</summary>
+		<p class="sub" style="margin-top:8px">
+			Trees are not scattered at random. The place you're standing in usually cuts the candidates to
+			three or four before you look at a leaf.
+		</p>
+		{#each PLACES as p (p.place)}
+			<section class="place">
+				<h2>{p.place}</h2>
+				<p class="blurb">{p.blurb}</p>
+				<ul class="chips">
+					{#each placeSpecies(p.ids) as sp (sp.id)}
+						<li>
+							<a class="chip" href="{base}/species/{sp.id}/">
+								<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" decoding="async" />
+								<span>{sp.name}</span>
+							</a>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/each}
+	</details>
 </main>
 
 <style>
@@ -351,6 +376,69 @@
 		flex: 1;
 		height: 1px;
 		background: var(--line);
+	}
+	.habitats {
+		margin-top: 10px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 15px;
+		padding: 12px 15px;
+	}
+	.habitats summary {
+		font-weight: 700;
+		font-size: 14px;
+		color: var(--deep);
+		cursor: pointer;
+		min-height: 44px;
+		display: flex;
+		align-items: center;
+	}
+	.place {
+		margin-top: 12px;
+		padding-top: 12px;
+		border-top: 1px solid var(--line);
+	}
+	.place h2 {
+		font-family: var(--display);
+		font-weight: 400;
+		font-size: 17px;
+		margin: 0 0 4px;
+	}
+	.blurb {
+		margin: 0 0 10px;
+		font-size: 13px;
+		line-height: 1.55;
+		color: var(--soft);
+		max-width: 62ch;
+	}
+	.chips {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 999px;
+		padding: 5px 13px 5px 5px;
+		text-decoration: none;
+		color: var(--deep);
+		font-weight: 700;
+		font-size: 12.5px;
+		min-height: 44px;
+	}
+	.chip img {
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		object-fit: cover;
+		display: block;
 	}
 	.opt {
 		display: flex;

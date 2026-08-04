@@ -1,0 +1,363 @@
+<script lang="ts">
+	import { base } from '$app/paths';
+	import { goto } from '$app/navigation';
+	import ObsPhoto from '$lib/components/ObsPhoto.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import { SPECIES, searchSpecies, speciesById } from '$lib/content/species';
+	import { EVENTS, trees } from '$lib/trees.svelte';
+	import { grove } from '$lib/grove.svelte';
+
+	let adding = $state(false);
+	let q = $state('');
+	let chosen: string | null = $state(null);
+	let treeName = $state('');
+	let placeName = $state('');
+
+	const results = $derived(q ? searchSpecies(q).slice(0, 6) : []);
+	const prompts = $derived(trees.prompts());
+	const chosenSpecies = $derived(chosen ? speciesById(chosen) : undefined);
+
+	function startAdd() {
+		adding = true;
+		q = '';
+		chosen = null;
+		treeName = '';
+		placeName = '';
+	}
+	function pick(id: string) {
+		chosen = id;
+		q = '';
+		if (!treeName) treeName = `The ${speciesById(id)?.name.toLowerCase() ?? 'tree'}`;
+	}
+	async function save() {
+		if (!chosen) return;
+		const t = trees.add(chosen, treeName, placeName);
+		// meeting a tree in person counts as meeting the species
+		if (!grove.has(chosen)) grove.addFind(chosen);
+		adding = false;
+		await goto(`${base}/trees/${t.id}/`);
+	}
+
+	function label(id: string) {
+		return EVENTS.find((e) => e.id === id)?.label ?? id;
+	}
+	function pretty(date: string) {
+		return new Date(date + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+	}
+	function driftLine(drift: number | undefined, lastYear: string | undefined) {
+		if (drift === undefined || !lastYear) return 'No record yet — this year sets the baseline.';
+		const y = lastYear.slice(0, 4);
+		if (drift > 2) return `${drift} days later than ${y} already.`;
+		if (drift < -2) return `Due in about ${Math.abs(drift)} days, going by ${y}.`;
+		return `Right about now, going by ${y}.`;
+	}
+</script>
+
+<svelte:head>
+	<title>My Trees · Meet a Tree</title>
+	<meta
+		name="description"
+		content="Follow individual trees through the year — first leaves, blossom, fruit, autumn colour — and build a photo timeline of each one."
+	/>
+</svelte:head>
+
+<main class="view">
+	<div class="vhead">
+		<h1>My Trees</h1>
+		{#if trees.count}
+			<span class="pill nums">{trees.count} {trees.count === 1 ? 'tree' : 'trees'}</span>
+		{/if}
+	</div>
+
+	{#if trees.count === 0}
+		<div class="card tint">
+			<p class="label">Follow one tree for a year</p>
+			<p class="serif" style="font-size:15.5px">
+				Pick a tree you walk past often — the oak at the end of the road, the lime outside work — and
+				note when it comes into leaf, flowers, fruits and turns. A year later you have its calendar,
+				a photo timeline, and a genuinely useful record of how your patch is changing.
+			</p>
+			<button class="btn small" style="margin-top:10px" onclick={startAdd}>Add your first tree</button>
+		</div>
+		<div class="card">
+			<p class="label">Why bother</p>
+			<p class="sub" style="margin:0">
+				First-leaf and first-flower dates are real science — Britain has records going back to 1736,
+				and they are how we measure spring arriving earlier. Yours stay on your phone; nothing is
+				uploaded.
+			</p>
+		</div>
+	{:else}
+		<button class="btn" onclick={startAdd}>+ Add a tree</button>
+
+		{#if prompts.length}
+			<p class="label" style="margin-top:6px">Worth a look this week</p>
+			{#each prompts.slice(0, 4) as p (p.tree.id + p.event.id)}
+				<a class="prompt" href="{base}/trees/{p.tree.id}/">
+					<span class="pthumb">
+						<img src="{base}/images/species/{p.species.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" />
+					</span>
+					<span class="ptext">
+						<span class="pt">{p.event.label} · {p.tree.name}</span>
+						<span class="pb">{driftLine(p.drift, p.lastYear)}</span>
+					</span>
+					<span class="chev" aria-hidden="true">›</span>
+				</a>
+			{/each}
+		{/if}
+
+		<p class="label" style="margin-top:6px">Your trees</p>
+		<ul class="list">
+			{#each trees.items as t (t.id)}
+				{@const sp = speciesById(t.speciesId)}
+				{@const latest = t.observations.filter((o) => o.photoKey).slice(-1)[0]}
+				<li>
+					<a class="treecard" href="{base}/trees/{t.id}/">
+						<span class="pic">
+							{#if latest?.photoKey}
+								<ObsPhoto photoKey={latest.photoKey} alt="" height={104} />
+							{:else if sp}
+								<img class="fallback" src="{base}/images/species/{sp.id}-tree.webp" alt="" width="900" height="675" loading="lazy" />
+							{/if}
+						</span>
+						<span class="tbody">
+							<span class="tn">{t.name}</span>
+							<span class="tl">{sp?.name ?? 'Unknown'}{t.place ? ` · ${t.place}` : ''}</span>
+							<span class="tmeta">
+								{t.observations.length}
+								{t.observations.length === 1 ? 'note' : 'notes'}
+								{#if t.observations.length}
+									· last {pretty(t.observations[t.observations.length - 1].date)}
+									({label(t.observations[t.observations.length - 1].event)})
+								{/if}
+							</span>
+						</span>
+					</a>
+				</li>
+			{/each}
+		</ul>
+	{/if}
+</main>
+
+<Modal open={adding} onclose={() => (adding = false)} labelledby="add-title">
+	<h2 id="add-title">Add a tree</h2>
+	{#if !chosenSpecies}
+		<p>Which tree is it? Search the guide, or identify it first if you're not sure.</p>
+		<label class="field">
+			<span class="visually-hidden">Search species</span>
+			<input type="search" bind:value={q} placeholder="oak, lime, rowan…" autocomplete="off" />
+		</label>
+		{#if q && results.length}
+			<ul class="picks">
+				{#each results as sp (sp.id)}
+					<li>
+						<button class="pickrow" onclick={() => pick(sp.id)}>
+							<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" />
+							<span><strong>{sp.name}</strong><br /><em>{sp.latin}</em></span>
+						</button>
+					</li>
+				{/each}
+			</ul>
+		{:else if q}
+			<p class="sub">Nothing by that name in the guide's {SPECIES.length} trees.</p>
+		{/if}
+		<div class="actions">
+			<a class="btn ghost" href="{base}/identify/">Identify it first</a>
+			<button class="btn ghost" onclick={() => (adding = false)}>Cancel</button>
+		</div>
+	{:else}
+		<p><strong>{chosenSpecies.name}</strong> — now give it a name you'll recognise.</p>
+		<label class="field">
+			<span class="flabel">What do you call it?</span>
+			<input type="text" bind:value={treeName} placeholder="The oak at the end of the road" />
+		</label>
+		<label class="field">
+			<span class="flabel">Where is it? (optional)</span>
+			<input type="text" bind:value={placeName} placeholder="Park gates, or just “home”" />
+		</label>
+		<p class="itf">
+			Kept on your phone. Type whatever helps you find it again — we never ask for or store your
+			location.
+		</p>
+		<div class="actions">
+			<button class="btn" onclick={save}>Add this tree</button>
+			<button class="btn ghost" onclick={() => (chosen = null)}>Back</button>
+		</div>
+	{/if}
+</Modal>
+
+<style>
+	.nums {
+		font-variant-numeric: tabular-nums;
+	}
+	.list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 10px;
+	}
+	.treecard,
+	.prompt {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 15px;
+		padding: 10px 12px;
+		text-decoration: none;
+		color: inherit;
+		min-height: 66px;
+		transition: border-color 0.12s ease, transform 0.12s ease;
+	}
+	.treecard:hover,
+	.prompt:hover {
+		border-color: var(--green);
+	}
+	.treecard:active,
+	.prompt:active {
+		transform: scale(0.99);
+	}
+	.pic {
+		width: 104px;
+		flex: none;
+		border-radius: 12px;
+		overflow: hidden;
+		background: var(--stonewash);
+	}
+	.pic .fallback {
+		width: 104px;
+		height: 104px;
+		object-fit: cover;
+		display: block;
+		opacity: 0.85;
+	}
+	.tbody {
+		flex: 1;
+		min-width: 0;
+	}
+	.tn {
+		display: block;
+		font-family: var(--display);
+		font-size: 17px;
+		line-height: 1.2;
+	}
+	.tl {
+		display: block;
+		font-size: 12.5px;
+		color: var(--soft);
+		margin-top: 2px;
+	}
+	.tmeta {
+		display: block;
+		font-size: 12px;
+		color: var(--soft);
+		margin-top: 5px;
+	}
+	.prompt {
+		background: var(--wash);
+		border-color: var(--wash-line);
+	}
+	.pthumb {
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		overflow: hidden;
+		flex: none;
+	}
+	.pthumb img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.ptext {
+		flex: 1;
+		min-width: 0;
+	}
+	.pt {
+		display: block;
+		font-weight: 700;
+		font-size: 13.5px;
+		color: var(--deep);
+	}
+	.pb {
+		display: block;
+		font-size: 12.5px;
+		color: var(--soft);
+	}
+	.chev {
+		color: var(--soft);
+		font-size: 20px;
+		flex: none;
+	}
+	.field {
+		display: block;
+		margin-top: 10px;
+	}
+	.flabel {
+		display: block;
+		font-size: 12px;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--soft);
+		margin-bottom: 4px;
+	}
+	.field input {
+		width: 100%;
+		font: inherit;
+		font-size: 15px;
+		color: var(--ink);
+		background: var(--card);
+		border: 1.5px solid var(--line);
+		border-radius: 12px;
+		padding: 11px 13px;
+		min-height: 48px;
+	}
+	.field input:focus {
+		outline: none;
+		border-color: var(--green);
+	}
+	.picks {
+		list-style: none;
+		margin: 10px 0 0;
+		padding: 0;
+		display: grid;
+		gap: 6px;
+		max-height: 240px;
+		overflow-y: auto;
+	}
+	.pickrow {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 12px;
+		padding: 8px 10px;
+		min-height: 56px;
+		font-size: 13.5px;
+	}
+	.pickrow:hover {
+		border-color: var(--green);
+	}
+	.pickrow img {
+		width: 40px;
+		height: 40px;
+		border-radius: 8px;
+		object-fit: cover;
+		flex: none;
+	}
+	.pickrow em {
+		font-size: 12px;
+		color: var(--soft);
+	}
+	@media (min-width: 700px) {
+		.list {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+</style>

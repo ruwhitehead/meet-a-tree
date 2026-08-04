@@ -4,7 +4,7 @@
 
 	const items = [
 		{ href: '/', label: 'Today', icon: 'sun' },
-		{ href: '/near', label: 'Near You', icon: 'pin' }
+		{ href: '/trees', label: 'My Trees', icon: 'pin' }
 	];
 	const items2 = [
 		{ href: '/grove', label: 'My Grove', icon: 'leaf' },

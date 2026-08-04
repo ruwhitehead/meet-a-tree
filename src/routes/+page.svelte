@@ -4,6 +4,7 @@
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { SPECIES, speciesById } from '$lib/content/species';
 	import { grove } from '$lib/grove.svelte';
+	import { trees } from '$lib/trees.svelte';
 
 	const now = new Date();
 	const dateLine = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${SEASONS[now.getMonth()]}`;
@@ -20,6 +21,8 @@
 			return pool[dayIndex % pool.length];
 		})()
 	);
+
+	const treePrompts = $derived(trees.prompts(now));
 
 	/** What's worth looking at this month, drawn from the species calendars. */
 	const seasonNow = $derived(
@@ -103,12 +106,26 @@
 		{/each}
 	</div>
 
-	<a class="card linkcard" href="{base}/near/">
-		<p class="label">Where to look</p>
-		<p class="serif small">
-			Streets, churchyards, hedgerows and chalk downs each hold a different handful of trees. →
-		</p>
-	</a>
+	{#if treePrompts.length}
+		<div class="card tint">
+			<p class="label">Your trees, this week</p>
+			{#each treePrompts.slice(0, 2) as p (p.tree.id + p.event.id)}
+				<p class="seasonline">
+					<a href="{base}/trees/{p.tree.id}/">{p.tree.name}</a> — {p.event.label.toLowerCase()}
+					{#if p.lastYear}(last year {new Date(p.lastYear + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}){/if}
+				</p>
+			{/each}
+			<a class="btn small ghost" style="margin-top:8px" href="{base}/trees/">Open My Trees</a>
+		</div>
+	{:else}
+		<a class="card linkcard" href="{base}/trees/">
+			<p class="label">Follow one tree</p>
+			<p class="serif small">
+				Pick a tree you walk past often and note when it leafs, flowers and turns. In a year you have
+				its calendar. →
+			</p>
+		</a>
+	{/if}
 
 	<div class="card">
 		<p class="label">Your grove</p>
