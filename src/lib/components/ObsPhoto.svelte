@@ -1,30 +1,57 @@
 <script lang="ts">
 	import { getPhoto } from '$lib/trees.svelte';
+	import { detectSaveCapability, saveToPhotos } from '$lib/photos';
+	import { grove } from '$lib/grove.svelte';
 
-	let { photoKey, alt, height = 150 }: { photoKey: string; alt: string; height?: number } = $props();
+	let {
+		photoKey,
+		alt,
+		height = 150,
+		savable = false
+	}: { photoKey: string; alt: string; height?: number; savable?: boolean } = $props();
 
 	let url: string | null = $state(null);
+	/** kept in memory so the save handler can share immediately — awaiting
+	 *  IndexedDB inside the click would cost us WebKit's transient activation */
+	let blob: Blob | null = $state(null);
 
-	// Photos live as blobs in IndexedDB; mint an object URL per mount and revoke
-	// it on teardown so a long timeline doesn't leak.
+	const cap = detectSaveCapability();
+
 	$effect(() => {
 		let mine: string | null = null;
 		let cancelled = false;
-		getPhoto(photoKey).then((blob) => {
-			if (!blob || cancelled) return;
-			mine = URL.createObjectURL(blob);
+		getPhoto(photoKey).then((b) => {
+			if (!b || cancelled) return;
+			blob = b;
+			mine = URL.createObjectURL(b);
 			url = mine;
 		});
 		return () => {
 			cancelled = true;
 			if (mine) URL.revokeObjectURL(mine);
 			url = null;
+			blob = null;
 		};
 	});
+
+	async function save() {
+		if (!blob) return;
+		const outcome = await saveToPhotos(blob);
+		if (outcome === 'shared') grove.toast('Choose “Save Image” to keep it in Photos');
+		else if (outcome === 'unsupported')
+			grove.toast('Press and hold the photo, then “Add to Photos”');
+		else if (outcome === 'failed') grove.toast('Couldn’t open the share sheet — press and hold instead');
+	}
 </script>
 
 {#if url}
 	<img src={url} {alt} style="--h:{height}px" />
+	{#if savable && cap.offer}
+		<button class="save" onclick={save}>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 3v12" /><path d="M8 11l4 4 4-4" /><rect x="4" y="17" width="16" height="4" rx="1.5" /></svg>
+			Save to Photos
+		</button>
+	{/if}
 {:else}
 	<span class="ph" style="--h:{height}px" aria-hidden="true"></span>
 {/if}
@@ -38,5 +65,23 @@
 		object-fit: cover;
 		border-radius: 12px;
 		background: var(--stonewash);
+	}
+	.save {
+		display: inline-flex;
+		align-items: center;
+		gap: 7px;
+		margin-top: 8px;
+		font-size: 12.5px;
+		font-weight: 700;
+		color: var(--deep);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 999px;
+		padding: 8px 14px;
+		min-height: 44px;
+	}
+	.save svg {
+		width: 15px;
+		height: 15px;
 	}
 </style>

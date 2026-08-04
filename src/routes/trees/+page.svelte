@@ -6,6 +6,7 @@
 	import { SPECIES, searchSpecies, speciesById } from '$lib/content/species';
 	import { EVENTS, trees } from '$lib/trees.svelte';
 	import { grove } from '$lib/grove.svelte';
+	import { detectSaveCapability } from '$lib/photos';
 
 	let adding = $state(false);
 	let q = $state('');
@@ -16,6 +17,7 @@
 	const results = $derived(q ? searchSpecies(q).slice(0, 6) : []);
 	const prompts = $derived(trees.prompts());
 	const chosenSpecies = $derived(chosen ? speciesById(chosen) : undefined);
+	const savecap = detectSaveCapability();
 
 	function startAdd() {
 		adding = true;
@@ -104,6 +106,18 @@
 					<span class="chev" aria-hidden="true">›</span>
 				</a>
 			{/each}
+		{/if}
+
+		{#if savecap.ios}
+			<div class="card stonebg">
+				<p class="label">Where your photos live</p>
+				<p class="sub" style="margin:0">
+					On iPhone, photos taken inside a browser are kept by this app and
+					<strong>not</strong> added to your Photos library, so they aren’t in your iCloud backup.
+					Each photo has a <strong>Save to Photos</strong> button if you want a copy alongside your
+					other pictures.
+				</p>
+			</div>
 		{/if}
 
 		<p class="label" style="margin-top:6px">Your trees</p>

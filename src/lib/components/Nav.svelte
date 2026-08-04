@@ -77,7 +77,7 @@
 
 <!-- desktop: persistent side rail -->
 <div class="rail">
-	<p class="railmark"><span class="mark" aria-hidden="true"></span>Meet a Tree</p>
+	<p class="railmark"><TreeMark size={28} />Meet a Tree</p>
 	<nav aria-label="Sections">
 		{#each railItems as item (item.href)}
 			<a

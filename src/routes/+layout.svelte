@@ -6,8 +6,16 @@
 	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import Overlays from '$lib/components/Overlays.svelte';
+	import { requestPersistence } from '$lib/photos';
 
 	let { children } = $props();
+
+	// Ask the browser not to evict this site's storage. Chrome grants it quietly
+	// for installed or well-used sites; it only ever helps, and photos are the
+	// thing worth protecting.
+	$effect(() => {
+		void requestPersistence();
+	});
 
 	// App-like cross-fade between views (skipped for reduced-motion users)
 	onNavigate((navigation) => {

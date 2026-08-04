@@ -3,6 +3,7 @@
 	import { base } from '$app/paths';
 	import { speciesById } from '$lib/content/species';
 	import { shareApp, shareGrove, shareSpecies } from '$lib/share';
+	import TreeMark from '$lib/components/TreeMark.svelte';
 
 	/** Share is always one tap away, top right — the app spreads by link, so the
 	 *  affordance should never be more than a thumb-reach from wherever you are. */
@@ -19,24 +20,7 @@
 
 <div class="topbar">
 	<a class="brand" href="{base}/">
-		<!-- the app-icon tree (scripts/icons.mjs), drawn straight on the page rather
-		     than in a green tile: at 24px a tile leaves too little room for the
-		     crown to read. Masked, so the canopy bites are transparent, not paper. -->
-		<svg class="mark" viewBox="0 0 512 512" aria-hidden="true">
-			<mask id="mat-tree" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512">
-				<rect width="512" height="512" fill="#000" />
-				<g fill="#fff">
-					<circle cx="256" cy="206" r="108" /><circle cx="140" cy="240" r="82" />
-					<circle cx="372" cy="236" r="86" /><circle cx="198" cy="138" r="64" />
-					<circle cx="316" cy="142" r="62" /><circle cx="256" cy="152" r="66" />
-				</g>
-				<g fill="#000">
-					<circle cx="146" cy="352" r="84" /><circle cx="362" cy="348" r="86" />
-				</g>
-				<path d="M231 258C231 334 225.8 372 205 424L307 424C286.2 372 281 334 281 258Z" fill="#fff" />
-			</mask>
-			<rect width="512" height="512" fill="currentColor" mask="url(#mat-tree)" />
-		</svg>
+		<TreeMark size={26} />
 		<span class="name">Meet a Tree</span>
 	</a>
 	<button class="sharebtn" onclick={share} aria-label="Share Meet a Tree">
@@ -62,23 +46,23 @@
 	.brand {
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
+		gap: 9px;
 		text-decoration: none;
-		color: var(--forest);
+		/* one colour for mark and word, so the pair reads as a single lockup.
+		   --deep is the token the field-key leaves use, and it survives the dark
+		   theme flipping the paper underneath. */
+		color: var(--deep);
 		min-height: 44px;
 	}
-	.mark {
-		width: 26px;
-		height: 26px;
-		display: block;
-		flex: none;
-		/* --deep, not --green: the same token the field-key leaves use, so the
-		   mark stays legible when the dark theme flips the paper underneath */
-		color: var(--deep);
-	}
+	/* Tracked capitals rather than the page title's face at a smaller size: set
+	   the same way, the wordmark reads as a lesser heading and the app name goes
+	   unnoticed. Caslon also takes a bold cut far better in caps than lowercase. */
 	.name {
 		font-family: var(--display);
-		font-size: 16px;
+		font-weight: 700;
+		font-size: 12px;
+		text-transform: uppercase;
+		letter-spacing: 0.14em;
 	}
 	.sharebtn {
 		display: inline-flex;

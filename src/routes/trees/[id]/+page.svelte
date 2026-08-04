@@ -8,6 +8,7 @@
 	import { EVENTS, putPhoto, trees, type EventId } from '$lib/trees.svelte';
 	import { grove } from '$lib/grove.svelte';
 	import { shareTreeYear } from '$lib/share';
+	import { detectSaveCapability, saveToPhotos } from '$lib/photos';
 	import {
 		NATURES_CALENDAR_URL,
 		draftSubmission,
@@ -30,6 +31,17 @@
 	let editPostcode = $state('');
 	let submitting: string | null = $state(null);
 	let copied = $state(false);
+	const savecap = detectSaveCapability();
+
+	/** Share straight from the click with the File already in hand — WebKit
+	 *  revokes the gesture if you await anything first. */
+	async function savePending() {
+		if (!pendingPhoto) return;
+		const outcome = await saveToPhotos(pendingPhoto);
+		if (outcome === 'shared') grove.toast('Choose “Save Image” to keep it in Photos');
+		else if (outcome === 'unsupported')
+			grove.toast('Press and hold the photo, then “Add to Photos”');
+	}
 
 	const submitObs = $derived(
 		submitting && tree ? tree.observations.find((o) => o.id === submitting) : undefined
@@ -250,7 +262,7 @@
 							<span class="edate">{pretty(o.date)}</span>
 						</div>
 						{#if o.photoKey}
-							<ObsPhoto photoKey={o.photoKey} alt="{tree.name} on {pretty(o.date)}" height={170} />
+							<ObsPhoto photoKey={o.photoKey} alt="{tree.name} on {pretty(o.date)}" height={170} savable />
 						{/if}
 						{#if o.note}
 							<p class="enote">{o.note}</p>
@@ -290,10 +302,22 @@
 	<p>{EVENTS.find((e) => e.id === recording)?.hint}</p>
 	{#if pendingUrl}
 		<img class="pending" src={pendingUrl} alt="What you just captured" />
-		<div class="actions">
-			<button class="btn ghost small" onclick={() => camInput?.click()}>Retake</button>
-			<button class="btn ghost small" onclick={clearPending}>Remove photo</button>
-		</div>
+		{#if savecap.offer}
+			<p class="reality">
+				On iPhone, a photo taken in a browser <strong>isn’t added to your Photos library</strong> — it
+				lives in this app only. Save a copy if you want it alongside your other pictures.
+			</p>
+			<div class="actions">
+				<button class="btn small" onclick={savePending}>Save to Photos</button>
+				<button class="btn ghost small" onclick={() => camInput?.click()}>Retake</button>
+				<button class="btn ghost small" onclick={clearPending}>Remove</button>
+			</div>
+		{:else}
+			<div class="actions">
+				<button class="btn ghost small" onclick={() => camInput?.click()}>Retake</button>
+				<button class="btn ghost small" onclick={clearPending}>Remove photo</button>
+			</div>
+		{/if}
 	{:else}
 		<button class="btn ghost" onclick={() => camInput?.click()}>📷 Add a photo</button>
 	{/if}
@@ -552,6 +576,19 @@
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
+	}
+	.reality {
+		margin: 10px 0 0;
+		font-size: 12.5px;
+		line-height: 1.5;
+		color: var(--soft);
+		background: var(--stonewash);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 9px 11px;
+	}
+	.reality strong {
+		color: var(--ink);
 	}
 	.pending {
 		width: 100%;

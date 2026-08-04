@@ -196,3 +196,46 @@ describe('Pl@ntNet mapping', () => {
 		expect(isOrgan('trunk')).toBe(false);
 	});
 });
+
+describe('saving photos to the library', () => {
+	it('offers the button on iPhone when file sharing is available', async () => {
+		const { saveCapability } = await import('./photos');
+		const iphone =
+			'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Version/17.5 Mobile/15E148 Safari/604.1';
+		expect(saveCapability({ ua: iphone, maxTouchPoints: 5, canShareFiles: true })).toEqual({
+			offer: true,
+			ios: true
+		});
+	});
+
+	it('recognises iPadOS, which lies about being a Mac', async () => {
+		const { saveCapability } = await import('./photos');
+		const ipad = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Safari/605.1.15';
+		expect(saveCapability({ ua: ipad, maxTouchPoints: 5, canShareFiles: true }).ios).toBe(true);
+		// a real Mac has no touch points
+		expect(saveCapability({ ua: ipad, maxTouchPoints: 0, canShareFiles: true }).ios).toBe(false);
+	});
+
+	it('stays out of the way on Android, which already saved a copy', async () => {
+		const { saveCapability } = await import('./photos');
+		const android = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
+		expect(saveCapability({ ua: android, maxTouchPoints: 5, canShareFiles: true }).offer).toBe(false);
+	});
+
+	it('hides the button when the browser cannot share files', async () => {
+		const { saveCapability } = await import('./photos');
+		const iphone = 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1';
+		const cap = saveCapability({ ua: iphone, maxTouchPoints: 5, canShareFiles: false });
+		expect(cap.offer).toBe(false);
+		expect(cap.ios).toBe(true); // still iOS, so the honest note still shows
+	});
+
+	it('treats every iOS browser as WebKit', async () => {
+		const { saveCapability } = await import('./photos');
+		for (const ua of [
+			'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) CriOS/120 Mobile Safari/604.1',
+			'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) FxiOS/121 Mobile Safari/604.1'
+		])
+			expect(saveCapability({ ua, maxTouchPoints: 5, canShareFiles: true }).offer, ua).toBe(true);
+	});
+});
