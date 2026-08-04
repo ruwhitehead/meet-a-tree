@@ -6,6 +6,7 @@
 	import { PLACES, placeSpecies } from '$lib/content/habitats';
 	import type { LeafKind } from '$lib/content/types';
 	import { grove } from '$lib/grove.svelte';
+	import { shrinkImage } from '$lib/trees.svelte';
 
 	type Match = { latin: string; common: string; score: number; id: string | null };
 
@@ -17,28 +18,55 @@
 	/** Photo identification. Runs against /api/identify, which proxies Pl@ntNet
 	 *  with the key held server-side. On a static host the endpoint isn't there,
 	 *  so we fall through to the field key rather than pretending. */
-	let idState: 'idle' | 'working' | 'done' | 'unavailable' | 'failed' = $state('idle');
+	let idState:
+		| 'idle'
+		| 'working'
+		| 'done'
+		| 'unavailable'
+		| 'failed'
+		| 'quota'
+		| 'slow-down'
+		| 'badformat' = $state('idle');
 	let matches: Match[] = $state([]);
+	let remaining: number | null = $state(null);
 	let organ: 'leaf' | 'bark' | 'flower' | 'fruit' = $state('leaf');
 
 	async function identify(file: File) {
 		idState = 'working';
 		matches = [];
 		try {
+			// Normalise before upload: shrinks a 4 MB camera original to a few
+			// hundred KB and re-encodes HEIC or WebP as the JPEG Pl@ntNet needs.
+			const upload = await shrinkImage(file, 1280, 0.85);
 			const body = new FormData();
-			body.append('image', file);
+			body.append('image', new File([upload], 'photo.jpg', { type: upload.type || 'image/jpeg' }));
 			body.append('organ', organ);
 			const res = await fetch(`${base}/api/identify`, { method: 'POST', body });
+
 			if (res.status === 503 || res.status === 404) {
 				idState = 'unavailable';
+				return;
+			}
+			if (res.status === 415) {
+				idState = 'badformat';
+				return;
+			}
+			if (res.status === 429) {
+				const why = (await res.json().catch(() => ({}))) as { reason?: string };
+				idState = why?.reason === 'slow-down' ? 'slow-down' : 'quota';
 				return;
 			}
 			if (!res.ok) {
 				idState = 'failed';
 				return;
 			}
-			const data = (await res.json()) as { ok: boolean; matches?: Match[] };
+			const data = (await res.json()) as {
+				ok: boolean;
+				matches?: Match[];
+				remaining?: number | null;
+			};
 			matches = data.matches ?? [];
+			remaining = data.remaining ?? null;
 			idState = 'done';
 			if (matches.length) grove.toast(`Best guess: ${matches[0].common || matches[0].latin}`);
 		} catch {
@@ -65,6 +93,7 @@
 		photo = null;
 		idState = 'idle';
 		matches = [];
+		remaining = null;
 	}
 </script>
 
@@ -153,6 +182,10 @@
 				<p class="sub">
 					Percentages are Pl@ntNet’s confidence, not certainty. Check the spotting notes before you
 					trust one.
+					{#if remaining !== null && remaining < 50}
+						<br /><strong>{remaining} identifications left today</strong> — the field key below always
+						works.
+					{/if}
 				</p>
 			{/if}
 		</div>
@@ -161,6 +194,24 @@
 			<p class="how">
 				<strong>Photo matching isn’t available here.</strong> This copy of the app is running without
 				its identification server, so use the questions below — they need no signal and no server.
+			</p>
+		</div>
+	{:else if idState === 'quota'}
+		<div class="card stonebg" aria-live="polite">
+			<p class="how">
+				<strong>Today’s identifications are used up.</strong> The service allows a fixed number a day
+				and we’ve hit it. The questions below don’t use it at all.
+			</p>
+		</div>
+	{:else if idState === 'slow-down'}
+		<div class="card stonebg" aria-live="polite">
+			<p class="how"><strong>One moment.</strong> That’s a lot of photos very quickly — try again in a minute.</p>
+		</div>
+	{:else if idState === 'badformat'}
+		<div class="card stonebg" aria-live="polite">
+			<p class="how">
+				<strong>That image format didn’t work.</strong> A photo straight from the camera normally does;
+				try taking a new one.
 			</p>
 		</div>
 	{:else if idState === 'failed'}

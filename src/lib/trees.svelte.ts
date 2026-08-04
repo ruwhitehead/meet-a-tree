@@ -77,7 +77,36 @@ function openDb(): Promise<IDBDatabase> {
 	});
 }
 
-export async function putPhoto(blob: Blob): Promise<string> {
+/** Downscale and re-encode as JPEG. Camera originals are 3–5 MB, which is slow
+ *  to upload and wasteful to store, and iOS sometimes hands over HEIC that
+ *  Pl@ntNet will not accept. Falls back to the original if the APIs are absent —
+ *  an unshrunk photo beats no photo. */
+export async function shrinkImage(file: Blob, maxEdge = 1600, quality = 0.82): Promise<Blob> {
+	if (typeof createImageBitmap !== 'function' || typeof OffscreenCanvas !== 'function') return file;
+	try {
+		const bmp = await createImageBitmap(file);
+		const scale = Math.min(1, maxEdge / Math.max(bmp.width, bmp.height));
+		const w = Math.round(bmp.width * scale);
+		const h = Math.round(bmp.height * scale);
+		const canvas = new OffscreenCanvas(w, h);
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			bmp.close();
+			return file;
+		}
+		ctx.drawImage(bmp, 0, 0, w, h);
+		bmp.close();
+		const out = await canvas.convertToBlob({ type: 'image/jpeg', quality });
+		// keep whichever is smaller, unless the original is a format we must convert
+		const mustConvert = !/^image\/(jpe?g|png)$/.test(file.type);
+		return mustConvert || out.size < file.size ? out : file;
+	} catch {
+		return file;
+	}
+}
+
+export async function putPhoto(input: Blob): Promise<string> {
+	const blob = await shrinkImage(input);
 	const key = newId('photo');
 	const db = await openDb();
 	await new Promise<void>((resolve, reject) => {

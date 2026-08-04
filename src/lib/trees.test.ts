@@ -135,3 +135,64 @@ describe('install nudging', () => {
 		expect(shouldPrompt({ ...base, mobile: false, hasBrowserPrompt: true })).toBe(true);
 	});
 });
+
+describe('Pl@ntNet mapping', () => {
+	it('maps a response to ranked matches with our species ids', async () => {
+		const { mapResults } = await import('./plantnet');
+		const { matches, remaining } = mapResults({
+			results: [
+				{ score: 0.90734, species: { scientificNameWithoutAuthor: 'Quercus robur', commonNames: ['Pedunculate oak'] } },
+				{ score: 0.0421, species: { scientificNameWithoutAuthor: 'Quercus petraea', commonNames: ['Sessile oak'] } }
+			],
+			remainingIdentificationRequests: 498
+		});
+		expect(matches).toHaveLength(2);
+		expect(matches[0]).toEqual({ latin: 'Quercus robur', common: 'Pedunculate oak', score: 91, id: 'oak' });
+		expect(matches[1].id).toBe('sessile-oak');
+		expect(remaining).toBe(498);
+	});
+
+	it('keeps species we do not carry, with a null id', async () => {
+		const { mapResults } = await import('./plantnet');
+		const { matches } = mapResults({
+			results: [{ score: 0.5, species: { scientificNameWithoutAuthor: 'Eucalyptus globulus' } }]
+		});
+		expect(matches[0].latin).toBe('Eucalyptus globulus');
+		expect(matches[0].id).toBeNull();
+	});
+
+	it('falls back to genus only when it is unambiguous in our guide', async () => {
+		const { idFor } = await import('./plantnet');
+		expect(idFor('Aesculus indica')).toBe('chestnut'); // one Aesculus in the guide
+		expect(idFor('Quercus cerris')).toBeNull(); // three oaks — refuse to guess
+		expect(idFor('Tilia platyphyllos')).toBe('lime');
+	});
+
+	it('handles the London plane hybrid spellings', async () => {
+		const { idFor } = await import('./plantnet');
+		for (const n of ['Platanus × hispanica', 'Platanus x hispanica', 'Platanus acerifolia'])
+			expect(idFor(n), n).toBe('london-plane');
+	});
+
+	it('survives an empty or malformed response', async () => {
+		const { mapResults } = await import('./plantnet');
+		expect(mapResults({}).matches).toEqual([]);
+		expect(mapResults({ results: [{ score: 0.5, species: {} }] }).matches).toEqual([]);
+		expect(mapResults({ results: [] }).remaining).toBeNull();
+	});
+
+	it('clamps scores into 0–100', async () => {
+		const { mapResults } = await import('./plantnet');
+		const { matches } = mapResults({
+			results: [{ score: 1.4, species: { scientificNameWithoutAuthor: 'Quercus robur' } }]
+		});
+		expect(matches[0].score).toBe(100);
+	});
+
+	it('accepts only the organs Pl@ntNet documents', async () => {
+		const { isOrgan } = await import('./plantnet');
+		for (const o of ['leaf', 'flower', 'fruit', 'bark', 'auto']) expect(isOrgan(o), o).toBe(true);
+		expect(isOrgan('whole-tree')).toBe(false);
+		expect(isOrgan('trunk')).toBe(false);
+	});
+});
