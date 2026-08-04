@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import TreeMark from '$lib/components/TreeMark.svelte';
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { SPECIES, speciesById } from '$lib/content/species';
 	import { grove } from '$lib/grove.svelte';
@@ -60,7 +61,6 @@
 			<p class="vsub">{dateLine}</p>
 			<h1>{greeting}</h1>
 		</div>
-		<span class="pill nums">🌿 {grove.streak.count === 1 ? 'day 1' : `${grove.streak.count}-day streak`}</span>
 	</div>
 
 	<div class="card tint">
@@ -156,7 +156,7 @@
 				year between them.
 			{/if}
 		</p>
-		<a class="btn small ghost" style="margin-top:10px" href="{base}/grove/">Open my grove</a>
+		<a class="btn small ghost" style="margin-top:10px" href="{base}/trees/">Open my grove</a>
 	</div>
 
 	<div class="give">
@@ -174,19 +174,67 @@
 		>
 	</div>
 
-	<div class="lockup">
-		<div class="mark" aria-hidden="true"></div>
-		<p class="lt">
-			<b>Meet a Tree — in support of the International Tree Foundation</b>
-			A field guide to the trees of Britain and Ireland. Registered charity no. 1106269. Free forever
-			· no ads · your grove stays on your phone.
-		</p>
-	</div>
+	<a
+		class="itf"
+		href="https://internationaltreefoundation.org"
+		target="_blank"
+		rel="noopener"
+	>
+		<img
+			src="{base}/images/itf-logo.png"
+			alt="International Tree Foundation"
+			width="168"
+			height="88"
+			loading="lazy"
+		/>
+		<span class="itftext">
+			<strong>Meet a Tree is made in support of the International Tree Foundation</strong>
+			Registered charity no. 1106269. Free forever · no ads · your trees stay on your phone. Tap the
+			logo to visit them ↗
+		</span>
+	</a>
 </main>
 
 <style>
-	.nums {
-		font-variant-numeric: tabular-nums;
+	.itf {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 16px;
+		padding: 14px 15px;
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.12s ease;
+	}
+	.itf:hover {
+		border-color: var(--green);
+	}
+	.itf img {
+		width: 96px;
+		height: auto;
+		flex: none;
+	}
+	/* their mark is dark green artwork on transparency, so it needs a light
+	   ground to stay legible in dark mode */
+	@media (prefers-color-scheme: dark) {
+		.itf img {
+			background: #fbfaf7;
+			border-radius: 8px;
+			padding: 6px 8px;
+		}
+	}
+	.itftext {
+		font-size: 11.5px;
+		line-height: 1.45;
+		color: var(--soft);
+	}
+	.itftext strong {
+		display: block;
+		color: var(--ink);
+		font-size: 12.5px;
+		margin-bottom: 2px;
 	}
 	.vhead h1 {
 		font-size: 27px;

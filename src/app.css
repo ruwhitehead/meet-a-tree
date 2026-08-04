@@ -327,20 +327,7 @@ main.view {
 	background: var(--card);
 }
 .lockup .mark {
-	width: 30px;
-	height: 30px;
-	border-radius: 50%;
-	background: var(--green);
-	position: relative;
-	flex: none;
-}
-.lockup .mark::after {
-	content: '';
-	position: absolute;
-	inset: 7px;
-	border-radius: 0 55% 0 55%;
-	background: var(--paper);
-	transform: rotate(-8deg);
+	color: var(--deep);
 }
 .lockup .lt {
 	font-size: 12px;

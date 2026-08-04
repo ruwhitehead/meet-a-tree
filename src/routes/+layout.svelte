@@ -7,6 +7,7 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import Overlays from '$lib/components/Overlays.svelte';
 	import { requestPersistence } from '$lib/photos';
+	import Onboarding from '$lib/components/Onboarding.svelte';
 
 	let { children } = $props();
 
@@ -36,5 +37,6 @@
 	{@render children()}
 	<Nav />
 </div>
+<Onboarding />
 <Toast />
 <Overlays />

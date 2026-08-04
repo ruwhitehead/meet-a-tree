@@ -239,3 +239,79 @@ describe('saving photos to the library', () => {
 			expect(saveCapability({ ua, maxTouchPoints: 5, canShareFiles: true }).offer, ua).toBe(true);
 	});
 });
+
+describe('records drawn from your own history', () => {
+	const tree = (obs: { event: string; date: string }[]) =>
+		({
+			id: 't',
+			speciesId: 'oak',
+			name: 'The oak',
+			planted: '2023-01-01',
+			observations: obs.map((o, i) => ({ id: `o${i}`, ...o }))
+		}) as never;
+
+	it('sets a baseline from a single record', async () => {
+		const { recordsFor } = await import('./records');
+		const r = recordsFor(tree([{ event: 'budburst', date: '2026-04-14' }]));
+		expect(r[0].kind).toBe('first');
+		expect(r[0].detail).toContain('2026');
+	});
+
+	it('reports the shift against last year, in the right direction', async () => {
+		const { recordsFor } = await import('./records');
+		const earlier = recordsFor(
+			tree([
+				{ event: 'budburst', date: '2025-04-23' },
+				{ event: 'budburst', date: '2026-04-14' }
+			])
+		);
+		expect(earlier[0].kind).toBe('earlier');
+		expect(earlier[0].label).toContain('9 days earlier');
+
+		const later = recordsFor(
+			tree([
+				{ event: 'budburst', date: '2025-04-10' },
+				{ event: 'budburst', date: '2026-04-20' }
+			])
+		);
+		expect(later[0].kind).toBe('later');
+		expect(later[0].label).toContain('10 days later');
+	});
+
+	it('stays quiet about a shift of a day or two', async () => {
+		const { recordsFor } = await import('./records');
+		const r = recordsFor(
+			tree([
+				{ event: 'budburst', date: '2025-04-14' },
+				{ event: 'budburst', date: '2026-04-15' }
+			])
+		);
+		expect(r.filter((x) => x.kind === 'earlier' || x.kind === 'later')).toEqual([]);
+	});
+
+	it('only claims a personal earliest once there are three years', async () => {
+		const { recordsFor } = await import('./records');
+		const two = recordsFor(
+			tree([
+				{ event: 'budburst', date: '2025-04-20' },
+				{ event: 'budburst', date: '2026-04-10' }
+			])
+		);
+		expect(two.some((r) => r.label.includes('Earliest'))).toBe(false);
+
+		const three = recordsFor(
+			tree([
+				{ event: 'budburst', date: '2024-04-20' },
+				{ event: 'budburst', date: '2025-04-18' },
+				{ event: 'budburst', date: '2026-04-08' }
+			])
+		);
+		expect(three.some((r) => r.label.includes('Earliest'))).toBe(true);
+		expect(three.some((r) => r.label.includes('3 years of records'))).toBe(true);
+	});
+
+	it('ignores plain notes, which carry no season meaning', async () => {
+		const { recordsFor } = await import('./records');
+		expect(recordsFor(tree([{ event: 'note', date: '2026-08-04' }]))).toEqual([]);
+	});
+});

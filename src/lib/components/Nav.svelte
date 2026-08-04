@@ -1,21 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { base } from '$app/paths';
+	import TreeMark from '$lib/components/TreeMark.svelte';
 
 	const items = [
 		{ href: '/', label: 'Today', icon: 'sun' },
-		{ href: '/trees', label: 'My Trees', icon: 'pin' }
+		{ href: '/trees', label: 'My Trees', icon: 'leaf' }
 	];
 	const items2 = [
-		{ href: '/grove', label: 'My Grove', icon: 'leaf' },
+		{ href: '/missions', label: 'Seasons', icon: 'season' },
 		{ href: '/learn', label: 'Learn', icon: 'book' }
 	];
-	const railItems = [
-		...items,
-		{ href: '/identify', label: 'Identify', icon: 'camera' },
-		...items2,
-		{ href: '/missions', label: 'Seasons', icon: 'season' }
-	];
+	const railItems = [...items, { href: '/identify', label: 'Identify', icon: 'camera' }, ...items2];
 
 	const isActive = (href: string) =>
 		href === '/'
@@ -177,30 +173,18 @@
 			flex-direction: column;
 			gap: 4px;
 		}
+		/* the same lockup as the top bar, one step up in size for the rail */
 		.railmark {
 			display: flex;
 			align-items: center;
-			gap: 9px;
+			gap: 10px;
 			margin: 0;
 			font-family: var(--display);
-			font-size: 18px;
-			color: var(--forest);
-		}
-		.railmark .mark {
-			width: 24px;
-			height: 24px;
-			border-radius: 50%;
-			background: var(--green);
-			position: relative;
-			flex: none;
-		}
-		.railmark .mark::after {
-			content: '';
-			position: absolute;
-			inset: 6px;
-			border-radius: 0 55% 0 55%;
-			background: var(--card);
-			transform: rotate(-8deg);
+			font-weight: 700;
+			font-size: 13.5px;
+			text-transform: uppercase;
+			letter-spacing: 0.14em;
+			color: var(--deep);
 		}
 		.rail-btn {
 			display: flex;

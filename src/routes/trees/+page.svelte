@@ -5,6 +5,8 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import { SPECIES, searchSpecies, speciesById } from '$lib/content/species';
 	import { EVENTS, trees } from '$lib/trees.svelte';
+	import { BADGES } from '$lib/grove.svelte';
+	import { shareGrove } from '$lib/share';
 	import { grove } from '$lib/grove.svelte';
 	import { detectSaveCapability } from '$lib/photos';
 
@@ -18,6 +20,10 @@
 	const prompts = $derived(trees.prompts());
 	const chosenSpecies = $derived(chosen ? speciesById(chosen) : undefined);
 	const savecap = detectSaveCapability();
+
+	/** Two halves of the same idea: the trees you follow, and the species you've
+	 *  met. They used to be separate tabs, which nobody could tell apart. */
+	let view: 'following' | 'species' = $state('following');
 
 	function startAdd() {
 		adding = true;
@@ -66,12 +72,71 @@
 <main class="view">
 	<div class="vhead">
 		<h1>My Trees</h1>
-		{#if trees.count}
-			<span class="pill nums">{trees.count} {trees.count === 1 ? 'tree' : 'trees'}</span>
+		{#if view === 'species' && grove.speciesCount}
+			<button class="pill" onclick={shareGrove}>Share</button>
 		{/if}
 	</div>
 
-	{#if trees.count === 0}
+	<div class="tabs" role="tablist" aria-label="What to show">
+		<button class="tab" role="tab" aria-selected={view === 'following'} onclick={() => (view = 'following')}>
+			Following{trees.count ? ` · ${trees.count}` : ''}
+		</button>
+		<button class="tab" role="tab" aria-selected={view === 'species'} onclick={() => (view = 'species')}>
+			Species met · {grove.speciesCount}
+		</button>
+	</div>
+
+	{#if view === 'species'}
+		<div class="stats">
+			<div class="stat"><div class="n">{grove.speciesCount}</div><div class="l">of {SPECIES.length}</div></div>
+			<div class="stat"><div class="n">{grove.co2 ? `~${grove.co2}` : '0'}<span class="unit">kg</span></div><div class="l">CO₂ / yr</div></div>
+			<div class="stat"><div class="n">{SPECIES.length - grove.speciesCount}</div><div class="l">to find</div></div>
+		</div>
+
+		{#if grove.speciesCount === 0}
+			<div class="card tint">
+				<p class="label">Nothing met yet</p>
+				<p class="serif" style="font-size:15.5px">
+					Every tree you work out gets added here. Start with whatever is outside your window.
+				</p>
+				<a class="btn small" style="margin-top:10px" href="{base}/identify/">Identify a leaf</a>
+			</div>
+		{/if}
+
+		<div class="grid">
+			{#each SPECIES as sp (sp.id)}
+				{@const has = grove.has(sp.id)}
+				<a class="spcard" class:locked={!has} href={has ? `${base}/species/${sp.id}/` : `${base}/identify/`}>
+					<span class="pic sq">
+						{#if has}
+							<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" decoding="async" />
+						{:else}
+							<span class="silhouette" aria-hidden="true">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 21c0-9 3-15 12-17-1 9-4 14-12 17z" /><path d="M6 21c2-5 5-9 9-12" /></svg>
+							</span>
+						{/if}
+					</span>
+					<span class="sn">{has ? sp.name : 'Not yet met'}</span>
+					<span class="sl">{has ? sp.latin : 'tap to identify'}</span>
+				</a>
+			{/each}
+		</div>
+
+		<p class="label" style="margin-top:6px">Badges</p>
+		<div class="badges">
+			{#each BADGES as b (b.id)}
+				{@const won = b.test(grove.speciesCount)}
+				<span class="badge" class:won>{won ? '✓ ' : ''}{b.name}</span>
+			{/each}
+		</div>
+
+		<div class="give">
+			<p class="gt">🌱 Met some trees? Plant a real one.</p>
+			<p class="gb">Your gift goes to the International Tree Foundation — registered charity 1106269.</p>
+			<a class="btn small" style="margin-top:10px" href="https://internationaltreefoundation.org/donate/" target="_blank" rel="noopener">Donate to ITF ↗</a>
+		</div>
+	{:else if trees.count === 0}
+
 		<div class="card tint">
 			<p class="label">Follow one tree for a year</p>
 			<p class="serif" style="font-size:15.5px">
@@ -201,8 +266,134 @@
 </Modal>
 
 <style>
-	.nums {
+	.tabs {
+		display: flex;
+		gap: 4px;
+		background: var(--stonewash);
+		border-radius: 12px;
+		padding: 4px;
+	}
+	.tab {
+		flex: 1;
+		text-align: center;
+		font-size: 12.5px;
+		font-weight: 700;
+		padding: 9px 0;
+		border-radius: 9px;
+		color: var(--soft);
+		min-height: 44px;
+	}
+	.tab[aria-selected='true'] {
+		background: var(--card);
+		color: var(--ink);
+		box-shadow: 0 1px 3px rgba(30, 30, 30, 0.18);
+	}
+	.stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 8px;
+	}
+	.stat {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 12px;
+		padding: 10px 4px;
+		text-align: center;
+	}
+	.stat .n {
+		font-family: var(--display);
+		font-size: 20px;
+		color: var(--deep);
 		font-variant-numeric: tabular-nums;
+	}
+	.stat .unit {
+		font-size: 11px;
+	}
+	.stat .l {
+		font-size: 9.5px;
+		font-weight: 700;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--soft);
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 9px;
+	}
+	.spcard {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 14px;
+		padding: 8px 8px 10px;
+		text-align: center;
+		text-decoration: none;
+		color: inherit;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		transition: transform 0.12s ease, border-color 0.12s ease;
+	}
+	.spcard:hover {
+		border-color: var(--green);
+	}
+	.spcard:active {
+		transform: scale(0.96);
+	}
+	.pic.sq {
+		aspect-ratio: 1;
+		width: auto;
+		margin-bottom: 5px;
+	}
+	.pic.sq img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.silhouette {
+		width: 100%;
+		height: 100%;
+		display: grid;
+		place-items: center;
+		color: var(--line);
+	}
+	.silhouette svg {
+		width: 46%;
+		height: 46%;
+	}
+	.sn {
+		font-size: 11.5px;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+	.sl {
+		font-size: 9.5px;
+		font-style: italic;
+		color: var(--soft);
+	}
+	.spcard.locked .sn {
+		color: var(--soft);
+		font-weight: 600;
+	}
+	.badges {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+	.badge {
+		font-size: 11.5px;
+		font-weight: 700;
+		color: var(--forest);
+		background: var(--stonewash);
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		padding: 6px 12px;
+	}
+	.badge.won {
+		color: var(--deep);
+		background: var(--wash);
+		border-color: var(--wash-line);
 	}
 	.list {
 		list-style: none;
@@ -372,6 +563,18 @@
 	@media (min-width: 700px) {
 		.list {
 			grid-template-columns: 1fr 1fr;
+		}
+		.grid {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	@media (min-width: 900px) {
+		.grid {
+			grid-template-columns: repeat(6, 1fr);
+		}
+		.stats,
+		.tabs {
+			max-width: 620px;
 		}
 	}
 </style>

@@ -1,33 +1,15 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { advanceStreak, dateStr } from './streak';
+import { dateStr } from './streak';
 import { keyCandidates } from './content/key';
 import { SPECIES, searchSpecies } from './content/species';
 import { KEY1, KEY2 } from './content/key';
 import { factForDate, FACTS } from './content/facts';
 
-describe('advanceStreak', () => {
-	it('starts at 1 on first visit', () => {
-		expect(advanceStreak({ last: null, count: 1 }, new Date(2026, 7, 4))).toEqual({
-			last: '2026-08-04',
-			count: 1
-		});
-	});
-	it('is idempotent within the same day', () => {
-		const s = { last: '2026-08-04', count: 3 };
-		expect(advanceStreak(s, new Date(2026, 7, 4))).toEqual(s);
-	});
-	it('increments on consecutive days', () => {
-		expect(advanceStreak({ last: '2026-08-03', count: 3 }, new Date(2026, 7, 4)).count).toBe(4);
-	});
-	it('resets after a gap', () => {
-		expect(advanceStreak({ last: '2026-08-01', count: 9 }, new Date(2026, 7, 4)).count).toBe(1);
-	});
-	it('handles month boundaries', () => {
-		expect(advanceStreak({ last: '2026-07-31', count: 2 }, new Date(2026, 7, 1)).count).toBe(3);
-	});
-	it('uses local dates, zero-padded', () => {
+describe('dates', () => {
+	it('formats local dates, zero-padded', () => {
 		expect(dateStr(new Date(2026, 0, 5))).toBe('2026-01-05');
+		expect(dateStr(new Date(2026, 11, 31))).toBe('2026-12-31');
 	});
 });
 

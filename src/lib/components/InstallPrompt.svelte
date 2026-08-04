@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import { install } from '$lib/install.svelte';
 	import { grove } from '$lib/grove.svelte';
 	import { trees } from '$lib/trees.svelte';
@@ -53,9 +54,9 @@
 {#if install.shouldAsk}
 	<aside class="bar" aria-labelledby="install-title">
 		<div class="head">
-			<span class="icon" aria-hidden="true">
-				<span class="mark"></span>
-			</span>
+			<!-- the generated icon itself, not a re-creation of it: this is a preview
+			     of what lands on the home screen, so it must not be able to drift -->
+			<img class="icon" src="{base}/icons/icon-192.png" alt="" width="40" height="40" />
 			<div class="copy">
 				<p class="t" id="install-title">Add Meet a Tree to your home screen</p>
 				<p class="b">{reason}</p>
@@ -120,18 +121,9 @@
 	.icon {
 		width: 40px;
 		height: 40px;
-		border-radius: 11px;
-		background: var(--green);
-		display: grid;
-		place-items: center;
+		display: block;
 		flex: none;
-	}
-	.icon .mark {
-		width: 22px;
-		height: 22px;
-		border-radius: 0 55% 0 55%;
-		background: var(--card);
-		transform: rotate(-8deg);
+		/* the PNG carries its own rounded corners, so none are added here */
 	}
 	.copy {
 		min-width: 0;

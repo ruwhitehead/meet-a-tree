@@ -66,6 +66,31 @@
 		border-radius: 12px;
 		background: var(--stonewash);
 	}
+	/* a shimmer while the blob comes out of IndexedDB — a bare grey block reads
+	   as a broken image */
+	.ph {
+		background-image: linear-gradient(
+			100deg,
+			var(--stonewash) 30%,
+			color-mix(in oklab, var(--stonewash) 60%, var(--card)) 50%,
+			var(--stonewash) 70%
+		);
+		background-size: 200% 100%;
+		animation: sweep 1.4s ease-in-out infinite;
+	}
+	@keyframes sweep {
+		from {
+			background-position: 140% 0;
+		}
+		to {
+			background-position: -40% 0;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ph {
+			animation: none;
+		}
+	}
 	.save {
 		display: inline-flex;
 		align-items: center;

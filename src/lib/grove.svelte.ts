@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { advanceStreak, dateStr, type Streak } from './streak';
+import { dateStr } from './streak';
 import { speciesById } from './content/species';
 
 export interface Find {
@@ -9,7 +9,6 @@ export interface Find {
 
 interface Persisted {
 	finds: Find[];
-	streak: Streak;
 	milestones: number[];
 	visits: number;
 }
@@ -18,18 +17,17 @@ const KEY = 'grove-v1';
 const MILESTONES = [5, 10];
 
 function load(): Persisted {
-	if (!browser) return { finds: [], streak: { last: null, count: 1 }, milestones: [], visits: 0 };
+	if (!browser) return { finds: [], milestones: [], visits: 0 };
 	try {
 		const raw = localStorage.getItem(KEY);
 		const p = raw ? (JSON.parse(raw) as Partial<Persisted>) : {};
 		return {
 			finds: p.finds ?? [],
-			streak: p.streak ?? { last: null, count: 1 },
 			milestones: p.milestones ?? [],
 			visits: p.visits ?? 0
 		};
 	} catch {
-		return { finds: [], streak: { last: null, count: 1 }, milestones: [], visits: 0 };
+		return { finds: [], milestones: [], visits: 0 };
 	}
 }
 
@@ -45,7 +43,6 @@ export const BADGES: { id: string; name: string; test: (speciesCount: number) =>
 
 class Grove {
 	finds = $state<Find[]>([]);
-	streak = $state<Streak>({ last: null, count: 1 });
 	milestones = $state<number[]>([]);
 	visits = $state(0);
 
@@ -65,8 +62,7 @@ class Grove {
 		const p = load();
 		this.finds = p.finds;
 		this.milestones = p.milestones;
-		this.streak = advanceStreak(p.streak, new Date());
-		this.visits = p.visits + (browser && p.streak.last !== dateStr(new Date()) ? 1 : 0);
+		this.visits = p.visits + 1;
 		this.save();
 	}
 
@@ -77,7 +73,6 @@ class Grove {
 				KEY,
 				JSON.stringify({
 					finds: this.finds,
-					streak: this.streak,
 					milestones: this.milestones,
 					visits: this.visits
 				} satisfies Persisted)

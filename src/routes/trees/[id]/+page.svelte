@@ -9,6 +9,7 @@
 	import { grove } from '$lib/grove.svelte';
 	import { shareTreeYear } from '$lib/share';
 	import { detectSaveCapability, saveToPhotos } from '$lib/photos';
+	import { recordsFor } from '$lib/records';
 	import {
 		NATURES_CALENDAR_URL,
 		draftSubmission,
@@ -32,6 +33,21 @@
 	let submitting: string | null = $state(null);
 	let copied = $state(false);
 	const savecap = detectSaveCapability();
+	const records = $derived(tree ? recordsFor(tree) : []);
+	const GHOST: [string, string][] = [
+		['Spring', 'First leaves'],
+		['Summer', 'First ripe fruit'],
+		['Autumn', 'Leaves turning']
+	];
+
+	/** Season colour for the timeline spine, so a year reads at a glance. */
+	function seasonOf(iso: string): 'spring' | 'summer' | 'autumn' | 'winter' {
+		const m = Number(iso.slice(5, 7)) - 1;
+		if (m <= 1 || m === 11) return 'winter';
+		if (m <= 4) return 'spring';
+		if (m <= 7) return 'summer';
+		return 'autumn';
+	}
 
 	/** Share straight from the click with the File already in hand — WebKit
 	 *  revokes the gesture if you await anything first. */
@@ -226,6 +242,18 @@
 			{/each}
 		</div>
 
+		{#if records.length}
+			<p class="label" style="margin-top:6px">What your records show</p>
+			<div class="records">
+				{#each records as r (r.label)}
+					<div class="record" class:earlier={r.kind === 'earlier'}>
+						<p class="rl">{r.label}</p>
+						<p class="rd">{r.detail}</p>
+					</div>
+				{/each}
+			</div>
+		{/if}
+
 		{#if history.length}
 			<div class="card">
 				<p class="label">Year on year</p>
@@ -247,16 +275,25 @@
 			Timeline{timeline.length ? ` · ${timeline.length}` : ''}
 		</p>
 		{#if timeline.length === 0}
-			<div class="card tint">
-				<p class="serif" style="font-size:15px">
-					Nothing recorded yet. Take a photo of it today — even a plain one — and you have the first
-					frame of its year.
-				</p>
+			<div class="ghost" aria-hidden="true">
+				{#each GHOST as [season, ev] (season)}
+					<div class="gentry">
+						<span class="gspine {season.toLowerCase()}"></span>
+						<span class="gbody">
+							<span class="gtag">{season}</span>
+							<span class="gname">{ev}</span>
+							<span class="gpic"></span>
+						</span>
+					</div>
+				{/each}
 			</div>
+			<p class="sub" style="margin-top:-4px">
+				This is what a year looks like. Photograph it today and you have the first frame.
+			</p>
 		{:else}
 			<ol class="timeline">
 				{#each timeline as o (o.id)}
-					<li class="entry">
+					<li class="entry {seasonOf(o.date)}">
 						<div class="ehead">
 							<span class="ename">{label(o.event)}</span>
 							<span class="edate">{pretty(o.date)}</span>
@@ -496,11 +533,114 @@
 		display: grid;
 		gap: 12px;
 	}
+	/* the season reads as a coloured spine down the left of each entry, so a
+	   year of records is legible without reading a single date */
 	.entry {
 		background: var(--card);
 		border: 1px solid var(--line);
+		border-left: 4px solid var(--line);
 		border-radius: 15px;
 		padding: 12px;
+	}
+	.entry.spring {
+		border-left-color: #8fbf5a;
+	}
+	.entry.summer {
+		border-left-color: var(--green);
+	}
+	.entry.autumn {
+		border-left-color: #c8862f;
+	}
+	.entry.winter {
+		border-left-color: #6b7f8a;
+	}
+	.entry :global(img) {
+		aspect-ratio: 4 / 3;
+		height: auto !important;
+	}
+	.records {
+		display: grid;
+		gap: 9px;
+	}
+	.record {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-left: 4px solid var(--wash-line);
+		border-radius: 13px;
+		padding: 11px 13px;
+	}
+	.record.earlier {
+		border-left-color: var(--green);
+	}
+	.rl {
+		margin: 0;
+		font-weight: 700;
+		font-size: 14px;
+	}
+	.rd {
+		margin: 3px 0 0;
+		font-size: 12.5px;
+		color: var(--soft);
+	}
+	.ghost {
+		display: grid;
+		gap: 9px;
+		opacity: 0.75;
+	}
+	.gentry {
+		display: flex;
+		gap: 10px;
+		border: 1px dashed var(--line);
+		border-radius: 15px;
+		padding: 11px;
+	}
+	.gspine {
+		width: 4px;
+		border-radius: 999px;
+		flex: none;
+	}
+	.gspine.spring {
+		background: #8fbf5a;
+	}
+	.gspine.summer {
+		background: var(--green);
+	}
+	.gspine.autumn {
+		background: #c8862f;
+	}
+	.gbody {
+		flex: 1;
+		min-width: 0;
+	}
+	.gtag {
+		display: block;
+		font-size: 10px;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--soft);
+	}
+	.gname {
+		display: block;
+		font-weight: 700;
+		font-size: 13.5px;
+		color: var(--soft);
+		margin-top: 2px;
+	}
+	.gpic {
+		display: block;
+		margin-top: 8px;
+		aspect-ratio: 4 / 3;
+		border-radius: 10px;
+		border: 1px dashed var(--line);
+	}
+	@media (min-width: 700px) {
+		.records {
+			grid-template-columns: 1fr 1fr;
+		}
+		.ghost {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 	.ehead {
 		display: flex;
