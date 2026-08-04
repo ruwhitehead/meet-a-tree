@@ -1,0 +1,16 @@
+{
+	"name": "Grove — meet the trees near you",
+	"short_name": "Grove",
+	"description": "A free pocket companion that turns noticing trees into a habit — in support of the International Tree Foundation.",
+	"start_url": "./",
+	"scope": "./",
+	"display": "standalone",
+	"orientation": "portrait",
+	"background_color": "#FBFAF7",
+	"theme_color": "#167E3C",
+	"icons": [
+		{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+		{ "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+		{ "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+	]
+}
