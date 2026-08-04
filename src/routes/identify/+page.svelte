@@ -36,7 +36,7 @@
 </script>
 
 <svelte:head>
-	<title>Identify a tree · Grove</title>
+	<title>Identify a tree · Meet a Tree</title>
 </svelte:head>
 
 <main class="view">
@@ -107,7 +107,7 @@
 <Modal open={primer} onclose={() => (primer = false)} labelledby="cam-title">
 	<h2 id="cam-title">Your camera, only when you ask</h2>
 	<p>
-		Grove opens the camera at the moment you need it — never before. Your photo stays on your phone
+		Meet a Tree opens the camera at the moment you need it — never before. Your photo stays on your phone
 		in this build; nothing is uploaded.
 	</p>
 	<div class="actions">
@@ -130,8 +130,14 @@
 		text-decoration: none;
 		color: inherit;
 	}
+	.opt {
+		transition: transform 0.12s ease, border-color 0.12s ease;
+	}
 	.opt:hover {
 		border-color: var(--green);
+	}
+	.opt:active {
+		transform: scale(0.98);
 	}
 	.glyph {
 		width: 44px;

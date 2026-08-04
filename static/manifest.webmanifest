@@ -1,6 +1,6 @@
 {
-	"name": "Grove — meet the trees near you",
-	"short_name": "Grove",
+	"name": "Meet a Tree — the trees near you, by name",
+	"short_name": "Meet a Tree",
 	"description": "A free pocket companion that turns noticing trees into a habit — in support of the International Tree Foundation.",
 	"start_url": "./",
 	"scope": "./",

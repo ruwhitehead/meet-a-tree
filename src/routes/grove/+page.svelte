@@ -17,7 +17,7 @@
 </script>
 
 <svelte:head>
-	<title>My Grove · Grove</title>
+	<title>My Grove · Meet a Tree</title>
 </svelte:head>
 
 <main class="view">
@@ -25,6 +25,17 @@
 		<h1>My Grove</h1>
 		<button class="pill" onclick={onShare}>Share my Grove</button>
 	</div>
+
+	{#if grove.speciesCount === 0}
+		<div class="card tint">
+			<p class="label">Your grove is waiting</p>
+			<p class="serif" style="font-size:15.5px">
+				Every grove starts with one tree. The field key takes under a minute — there's probably a
+				candidate outside your window.
+			</p>
+			<a class="btn small" style="margin-top:10px" href="{base}/identify/">Meet your first tree</a>
+		</div>
+	{/if}
 
 	<div class="stats">
 		<div class="stat"><div class="n">{grove.speciesCount}</div><div class="l">species</div></div>
@@ -90,6 +101,7 @@
 		font-family: var(--display);
 		font-size: 20px;
 		color: var(--deep);
+		font-variant-numeric: tabular-nums;
 	}
 	.stat .l {
 		font-size: 10px;
@@ -112,6 +124,13 @@
 		min-height: 44px;
 		text-decoration: none;
 		color: inherit;
+		transition: transform 0.12s ease, border-color 0.12s ease;
+	}
+	.spcard:hover {
+		border-color: var(--green);
+	}
+	.spcard:active {
+		transform: scale(0.96);
 	}
 	.spcard .leafwrap {
 		display: block;

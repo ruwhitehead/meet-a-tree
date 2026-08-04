@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Lost among the trees · Grove</title>
+	<title>Lost among the trees · Meet a Tree</title>
 </svelte:head>
 
 <main class="view" style="justify-content:center; text-align:center">

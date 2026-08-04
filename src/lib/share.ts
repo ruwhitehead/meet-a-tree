@@ -82,7 +82,7 @@ async function drawCard(head: string, sub: string, eyebrow: string): Promise<HTM
 
 	ctx.fillStyle = '#1E1E1E';
 	ctx.font = '700 34px "Inter Tight", Arial';
-	ctx.fillText('Grove', 80, 950);
+	ctx.fillText('Meet a Tree', 80, 950);
 	ctx.fillStyle = '#5E684F';
 	ctx.font = '400 27px "Inter Tight", Arial';
 	ctx.fillText('in support of the International Tree Foundation', 80, 992);
@@ -97,7 +97,7 @@ async function drawCard(head: string, sub: string, eyebrow: string): Promise<HTM
 	ctx.stroke();
 	ctx.fillStyle = '#0E5C2B';
 	ctx.font = '700 28px "Inter Tight", Arial';
-	ctx.fillText('grove app', 796, 982);
+	ctx.fillText('meetatree.app', 776, 982);
 	return c;
 }
 
@@ -125,7 +125,7 @@ export async function shareSpecies(sp: Species) {
 		sp.latin + (n ? ` · one of ${n} species in my Grove` : ''),
 		'A find worth sharing'
 	);
-	present(c, `${sp.name} — shared from Grove`);
+	present(c, `${sp.name} — shared from Meet a Tree`);
 }
 
 export async function shareGrove() {
@@ -135,5 +135,5 @@ export async function shareGrove() {
 		`Together they absorb ~${grove.co2} kg of CO₂ a year — how many trees can you name?`,
 		'My Grove so far'
 	);
-	present(c, 'My Grove — shared from Grove');
+	present(c, 'My Grove — shared from Meet a Tree');
 }

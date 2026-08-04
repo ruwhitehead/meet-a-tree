@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>Learn · Grove</title>
+	<title>Learn · Meet a Tree</title>
 </svelte:head>
 
 <main class="view">

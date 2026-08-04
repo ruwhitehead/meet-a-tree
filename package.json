@@ -1,9 +1,9 @@
 {
-  "name": "grove",
+  "name": "meet-a-tree",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Grove — a free tree companion PWA in support of the International Tree Foundation",
+  "description": "Meet a Tree — a free tree companion PWA in support of the International Tree Foundation",
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",

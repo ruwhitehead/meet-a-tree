@@ -11,7 +11,7 @@
 </script>
 
 <svelte:head>
-	<title>Near you · Grove</title>
+	<title>Near you · Meet a Tree</title>
 </svelte:head>
 
 <main class="view">

@@ -18,9 +18,9 @@
 </script>
 
 <svelte:head>
-	<title>{sp.name} · Grove</title>
+	<title>{sp.name} · Meet a Tree</title>
 	<meta name="description" content="{sp.name} ({sp.latin}) — how to spot it, its folklore and its science. {sp.tell}" />
-	<meta property="og:title" content="{sp.name} · Grove" />
+	<meta property="og:title" content="{sp.name} · Meet a Tree" />
 	<meta property="og:description" content={sp.tell} />
 </svelte:head>
 

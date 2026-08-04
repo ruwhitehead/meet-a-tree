@@ -39,12 +39,12 @@
 <svelte:window onbeforeinstallprompt={onBeforeInstall} />
 
 {#if earned && !dismissed && (deferred || isIos)}
-	<div class="installbar" role="region" aria-label="Install Grove">
+	<div class="installbar" role="region" aria-label="Install Meet a Tree">
 		{#if iosHint}
 			<p>On iPhone: tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>.</p>
 			<button class="btn ghost small" onclick={dismiss}>Got it</button>
 		{:else}
-			<p><strong>Keep Grove in your pocket</strong> — install it like an app, works offline.</p>
+			<p><strong>Keep Meet a Tree in your pocket</strong> — install it like an app, works offline.</p>
 			<div class="row">
 				<button class="btn small" onclick={install}>Install</button>
 				<button class="btn ghost small" onclick={dismiss}>Not now</button>

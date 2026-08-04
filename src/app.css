@@ -81,6 +81,11 @@ body {
 	font-size: 16px;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
+	-webkit-tap-highlight-color: transparent;
+}
+::selection {
+	background: var(--wash-line);
+	color: var(--forest);
 }
 button {
 	font: inherit;
@@ -181,6 +186,23 @@ main.view {
 	min-height: 44px;
 	text-decoration: none;
 	text-align: center;
+	transition: transform 0.12s ease, filter 0.12s ease;
+}
+.btn:hover {
+	filter: brightness(1.08);
+}
+.btn:active {
+	transform: scale(0.97);
+}
+.btn:focus-visible {
+	outline: 3px solid var(--ink);
+	outline-offset: 3px;
+}
+.pill {
+	transition: transform 0.12s ease;
+}
+.pill:active {
+	transform: scale(0.96);
 }
 .btn.ghost {
 	background: transparent;

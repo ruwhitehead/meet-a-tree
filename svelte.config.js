@@ -6,7 +6,7 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
-		// '' locally and on Vercel; '/grove' when building for GitHub project pages
+		// '' locally and on Vercel; '/meet-a-tree' when building for GitHub project pages
 		paths: { base: process.env.BASE_PATH || '' }
 	}
 };
