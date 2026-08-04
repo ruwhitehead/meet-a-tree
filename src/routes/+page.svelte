@@ -3,11 +3,9 @@
 	import Give from '$lib/components/Give.svelte';
 	import TreeMark from '$lib/components/TreeMark.svelte';
 	import { factForDate, SEASONS } from '$lib/content/facts';
-	import { SPECIES, speciesById } from '$lib/content/species';
+	import { SPECIES } from '$lib/content/species';
 	import { grove } from '$lib/grove.svelte';
 	import { trees } from '$lib/trees.svelte';
-	import { missionsFor } from '$lib/content/missions';
-	import { progressFor } from '$lib/missions.svelte';
 
 	const now = new Date();
 	const dateLine = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${SEASONS[now.getMonth()]}`;
@@ -26,26 +24,7 @@
 	);
 
 	const treePrompts = $derived(trees.prompts(now));
-	const liveMission = $derived(
-		(() => {
-			const { current } = missionsFor(now);
-			return current.length ? progressFor(current[0], now) : undefined;
-		})()
-	);
 
-	/** What's worth looking at this month, drawn from the species calendars. */
-	const seasonNow = $derived(
-		(() => {
-			const m = now.getMonth();
-			const label = m <= 1 || m === 11 ? 'Winter' : m <= 4 ? 'Spring' : m <= 7 ? 'Summer' : 'Autumn';
-			const picks = ['oak', 'hawthorn', 'rowan', 'beech']
-				.map((id) => speciesById(id))
-				.filter((s): s is NonNullable<typeof s> => Boolean(s))
-				.map((s) => ({ s, note: s.season.find(([k]) => k === label)?.[1] ?? '' }))
-				.filter((x) => x.note);
-			return { label, picks: picks.slice(0, 2) };
-		})()
-	);
 </script>
 
 <svelte:head>
@@ -92,39 +71,6 @@
 		</span>
 	</a>
 
-	{#if liveMission}
-		<a class="card linkcard mission" href="{base}/missions/">
-			<p class="label forest">In season now</p>
-			<p class="serif small">
-				<strong>{liveMission.mission.title}</strong> — {liveMission.done.length} of {liveMission.mission
-					.target} found. Looking for {liveMission.mission.looking}. →
-			</p>
-			<span class="meter" aria-hidden="true">
-				<span class="fill" style="width:{Math.round(liveMission.fraction * 100)}%"></span>
-			</span>
-		</a>
-	{/if}
-
-	<div class="row two">
-		<a class="card linkcard" href="{base}/identify/">
-			<p class="label">Identify</p>
-			<p class="serif small">Found a leaf? Three questions and the guide narrows it down. →</p>
-		</a>
-		<a class="card linkcard" href="{base}/learn/">
-			<p class="label">Field guide</p>
-			<p class="serif small">{SPECIES.length} British trees, with folklore and science. →</p>
-		</a>
-	</div>
-
-	<div class="card">
-		<p class="label forest">{seasonNow.label} · what to look for</p>
-		{#each seasonNow.picks as p (p.s.id)}
-			<p class="seasonline">
-				<a href="{base}/species/{p.s.id}/">{p.s.name}</a> — {p.note}
-			</p>
-		{/each}
-	</div>
-
 	{#if treePrompts.length}
 		<div class="card tint">
 			<p class="label">Your trees, this week</p>
@@ -140,25 +86,11 @@
 		<a class="card linkcard" href="{base}/trees/">
 			<p class="label">Follow one tree</p>
 			<p class="serif small">
-				Pick a tree you walk past often and note when it leafs, flowers and turns. In a year you have
-				its calendar. →
+				Pick a tree you walk past often and note when it leafs, flowers and turns. In a year it tells
+				you whether spring came early. →
 			</p>
 		</a>
 	{/if}
-
-	<div class="card">
-		<p class="label">Your grove</p>
-		<p class="serif small">
-			{#if grove.speciesCount === 0}
-				Nothing in it yet. The first tree is the hard one — after that you start noticing them
-				everywhere.
-			{:else}
-				{grove.speciesCount} of {SPECIES.length} species met, absorbing about {grove.co2} kg of CO₂ a
-				year between them.
-			{/if}
-		</p>
-		<a class="btn small ghost" style="margin-top:10px" href="{base}/trees/">Open my grove</a>
-	</div>
 
 	<Give />
 
@@ -241,12 +173,6 @@
 	.serif.small {
 		font-size: 15px;
 	}
-	.row.two {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 12px;
-		align-items: stretch;
-	}
 	.featured {
 		display: flex;
 		flex-direction: column;
@@ -301,38 +227,10 @@
 		color: var(--forest);
 		margin-top: 8px;
 	}
-	.seasonline {
-		margin: 0 0 8px;
-		font-size: 13.5px;
-		line-height: 1.55;
-		color: var(--soft);
-	}
 	.seasonline:last-child {
 		margin-bottom: 0;
 	}
-	.seasonline a {
-		color: var(--deep);
-		font-weight: 700;
-		text-decoration: none;
-	}
-	.mission .meter {
-		display: block;
-		height: 7px;
-		border-radius: 999px;
-		background: var(--stonewash);
-		overflow: hidden;
-		margin-top: 10px;
-	}
-	.mission .fill {
-		display: block;
-		height: 100%;
-		background: var(--green);
-		border-radius: 999px;
-	}
 	@media (min-width: 900px) {
-		.row.two {
-			grid-template-columns: 1fr 1fr 1fr;
-		}
 		.featured {
 			flex-direction: row;
 			align-items: stretch;

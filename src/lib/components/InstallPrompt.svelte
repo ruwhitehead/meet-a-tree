@@ -78,13 +78,13 @@
 						<strong>Share</strong>, in the bar at the bottom of Safari.
 					</li>
 					<li>Scroll the list and tap <strong>Add to Home Screen</strong>.</li>
-					<li>Tap <strong>Add</strong>. Look for the green leaf.</li>
+					<li>Tap <strong>Add</strong>. Look for the green tree.</li>
 				</ol>
 			{:else}
 				<ol class="steps">
 					<li>Tap the <strong>⋮</strong> menu, top right of Chrome.</li>
 					<li>Tap <strong>Add to Home screen</strong> (or <strong>Install app</strong>).</li>
-					<li>Confirm <strong>Install</strong>. Look for the green leaf.</li>
+					<li>Confirm <strong>Install</strong>. Look for the green tree.</li>
 				</ol>
 			{/if}
 			<div class="row">

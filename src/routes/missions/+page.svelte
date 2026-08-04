@@ -3,11 +3,26 @@
 	import { missionsFor, windowLabel } from '$lib/content/missions';
 	import { progressFor } from '$lib/missions.svelte';
 	import { shareMission } from '$lib/share';
+	import { seasonOfMonth } from '$lib/season';
+	import { speciesById } from '$lib/content/species';
 
 	const now = new Date();
 	const { current, next } = missionsFor(now);
 	const running = $derived(current.map((m) => progressFor(m, now)));
 	const upcoming = next.map((m) => ({ mission: m }));
+
+	/** Two species at their most recognisable right now, with the note from their
+	 *  own calendar. Moved here from Today, which had four cards doing a tab's job. */
+	const seasonPicks = (() => {
+		const season = seasonOfMonth(now.getMonth());
+		const label = season[0].toUpperCase() + season.slice(1);
+		return ['oak', 'hawthorn', 'rowan', 'beech']
+			.map((id) => speciesById(id))
+			.filter((sp): sp is NonNullable<typeof sp> => Boolean(sp))
+			.map((sp) => ({ sp, season, note: sp.season.find(([k]) => k === label)?.[1] ?? '' }))
+			.filter((x) => x.note)
+			.slice(0, 2);
+	})();
 </script>
 
 <svelte:head>
@@ -28,7 +43,7 @@
 	{/if}
 
 	{#each running as p (p.mission.id)}
-		<section class="mission" class:done={p.complete}>
+		<section class="mission {seasonOfMonth(p.mission.from[0])}" class:done={p.complete}>
 			<div class="mhead">
 				<div>
 					<h2>{p.mission.title}</h2>
@@ -96,11 +111,24 @@
 	{#if upcoming.length}
 		<p class="label" style="margin-top:6px">Coming up</p>
 		{#each upcoming as u (u.mission.id)}
-			<div class="card">
+			<div class="card soon {seasonOfMonth(u.mission.from[0])}">
 				<p class="soonhead">{u.mission.title}</p>
 				<p class="when">{windowLabel(u.mission)}</p>
 				<p class="blurb" style="margin-bottom:0">{u.mission.blurb}</p>
 			</div>
+		{/each}
+	{/if}
+
+	{#if seasonPicks.length}
+		<p class="label" style="margin-top:6px">Worth looking at this month</p>
+		{#each seasonPicks as pick (pick.sp.id)}
+			<a class="pick {pick.season}" href="{base}/species/{pick.sp.id}/">
+				<img src="{base}/images/species/{pick.sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" />
+				<span class="ptext">
+					<span class="pn">{pick.sp.name}</span>
+					<span class="pd">{pick.note}</span>
+				</span>
+			</a>
 		{/each}
 	{/if}
 
@@ -114,11 +142,27 @@
 	.nums {
 		font-variant-numeric: tabular-nums;
 	}
-	.mission {
+	.mission,
+	.soon {
 		background: var(--card);
 		border: 1px solid var(--line);
+		border-left: 4px solid var(--line);
 		border-radius: 16px;
 		padding: 15px;
+	}
+	/* the same spine as the timeline and the species calendar: colour that says
+	   which season, not colour for its own sake */
+	.spring {
+		border-left-color: #8fbf5a;
+	}
+	.summer {
+		border-left-color: var(--green);
+	}
+	.autumn {
+		border-left-color: #c8862f;
+	}
+	.winter {
+		border-left-color: #6b7f8a;
 	}
 	.mission.done {
 		border-color: var(--green);
@@ -195,6 +239,39 @@
 	.fb {
 		margin: 3px 0 0;
 		font-size: 12.5px;
+		color: var(--soft);
+	}
+	.pick {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-left: 4px solid var(--line);
+		border-radius: 14px;
+		padding: 10px 12px;
+		text-decoration: none;
+		color: inherit;
+	}
+	.pick img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		flex: none;
+	}
+	.ptext {
+		min-width: 0;
+	}
+	.pn {
+		display: block;
+		font-weight: 700;
+		font-size: 14px;
+	}
+	.pd {
+		display: block;
+		font-size: 12.5px;
+		line-height: 1.5;
 		color: var(--soft);
 	}
 	.chips {

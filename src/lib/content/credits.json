@@ -153,160 +153,6 @@
 			"file": "File:Sambucus nigra leaves in Muttental.jpg"
 		}
 	},
-	"london-plane": {
-		"tree": {
-			"artist": "Richard Croft",
-			"license": "CC BY-SA 2.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Berkeley_Square_-_geograph.org.uk_-_911963.jpg",
-			"file": "File:Berkeley Square - geograph.org.uk - 911963.jpg"
-		},
-		"leaf": {
-			"artist": "Krzysztof Golik",
-			"license": "CC BY-SA 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Fallen_leaf_of_Platanus_x_hispanica_(1).jpg",
-			"file": "File:Fallen leaf of Platanus x hispanica (1).jpg"
-		}
-	},
-	"lime": {
-		"tree": {
-			"artist": "Unknown",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Tilia-cordata2.JPG",
-			"file": "File:Tilia-cordata2.JPG"
-		},
-		"leaf": {
-			"artist": "Bartosz Cuber",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Tilia_cordata_-_leaves_02.jpg",
-			"file": "File:Tilia cordata - leaves 02.jpg"
-		}
-	},
-	"hazel": {
-		"tree": {
-			"artist": "Unknown",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Corylus_avellana.jpg",
-			"file": "File:Corylus avellana.jpg"
-		},
-		"leaf": {
-			"artist": "Willow",
-			"license": "CC BY 2.5",
-			"page": "https://commons.wikimedia.org/wiki/File:Corylus_avellana_001.jpg",
-			"file": "File:Corylus avellana 001.jpg"
-		}
-	},
-	"alder": {
-		"tree": {
-			"artist": "AnRo0002",
-			"license": "CC0",
-			"page": "https://commons.wikimedia.org/wiki/File:20120904Alnus_glutinosa01.jpg",
-			"file": "File:20120904Alnus glutinosa01.jpg"
-		},
-		"leaf": {
-			"artist": "Hladac",
-			"license": "CC BY-SA 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Alnus_glutinosa_2.jpg",
-			"file": "File:(ms) Alnus glutinosa 2.jpg"
-		}
-	},
-	"wych-elm": {
-		"tree": {
-			"artist": "Ronnie Nijboer",
-			"license": "CC0",
-			"page": "https://commons.wikimedia.org/wiki/File:RN_Ulmus_glabra_(alnarp_sweden).jpg",
-			"file": "File:RN Ulmus glabra (alnarp sweden).jpg"
-		},
-		"leaf": {
-			"artist": "Mike Pennington",
-			"license": "CC BY-SA 2.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Wych_Elm_(Ulmus_glabra)_leaves_in_bud,_Halligarth_-_geograph.org.uk_-_3454149.jpg",
-			"file": "File:Wych Elm (Ulmus glabra) leaves in bud, Halligarth - geograph.org.uk - 3454149.jpg"
-		}
-	},
-	"goat-willow": {
-		"tree": {
-			"artist": "Trougnouf (Benoit Brummer)",
-			"license": "CC BY 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Waterwilg_(DSC_2539).jpg",
-			"file": "File:Waterwilg (DSC 2539).jpg"
-		},
-		"leaf": {
-			"artist": "T. Kebert",
-			"license": "CC BY-SA 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Salix_caprea_leaves_TK_2021-05-15_1.jpg",
-			"file": "File:Salix caprea leaves TK 2021-05-15 1.jpg"
-		}
-	},
-	"white-willow": {
-		"tree": {
-			"artist": "MPF",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Salix_alba_leaves.jpg",
-			"file": "File:Salix alba leaves.jpg"
-		},
-		"leaf": {
-			"artist": "Crusier",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Salix_alba_foliage.JPG",
-			"file": "File:Salix alba foliage.JPG"
-		}
-	},
-	"aspen": {
-		"tree": {
-			"artist": "Šarūnas Šimkus",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:PopulusTremula001.JPG",
-			"file": "File:PopulusTremula001.JPG"
-		},
-		"leaf": {
-			"artist": "Dmitry Makeev",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Summer._Leaves_-_populus_tremula._Adaxial_side.jpg",
-			"file": "File:Summer. Leaves - populus tremula. Adaxial side.jpg"
-		}
-	},
-	"black-poplar": {
-		"tree": {
-			"artist": "Kenraiz",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Populus_nigra_kz1.jpg",
-			"file": "File:Populus nigra kz1.jpg"
-		},
-		"leaf": {
-			"artist": "Krzysztof Ziarnek, Kenraiz",
-			"license": "CC BY-SA 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Populus_nigra_kz03.jpg",
-			"file": "File:Populus nigra kz03.jpg"
-		}
-	},
-	"walnut": {
-		"tree": {
-			"artist": "Thesupermat",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Noyer_centenaire_en_automne.JPG",
-			"file": "File:Noyer centenaire en automne.JPG"
-		},
-		"leaf": {
-			"artist": "Uoaei1",
-			"license": "CC BY-SA 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Juglans_regia_Herbstlaub_01.jpg",
-			"file": "File:Juglans regia Herbstlaub 01.jpg"
-		}
-	},
-	"box": {
-		"tree": {
-			"artist": "No machine-readable author provided. MPF assumed (based on c",
-			"license": "CC BY 2.5",
-			"page": "https://commons.wikimedia.org/wiki/File:Buxus_sempervirens.jpg",
-			"file": "File:Buxus sempervirens.jpg"
-		},
-		"leaf": {
-			"artist": "I.Sáček, senior",
-			"license": "CC0",
-			"page": "https://commons.wikimedia.org/wiki/File:Buxus_sempervirens_10860.JPG",
-			"file": "File:Buxus sempervirens 10860.JPG"
-		}
-	},
 	"field-maple": {
 		"tree": {
 			"artist": "Rosenzweig",
@@ -559,76 +405,6 @@
 			"file": "File:Juniperus communis Jałowiec pospolity 2021-06-23 04.jpg"
 		}
 	},
-	"monkey-puzzle": {
-		"tree": {
-			"artist": "Vicente Fernández Rioja",
-			"license": "CC BY-SA 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Araucaria_en_Parque_Nacional_Conguillio.jpg",
-			"file": "File:Araucaria en Parque Nacional Conguillio.jpg"
-		},
-		"leaf": {
-			"artist": "This photo was taken by Roman Bonnefoy (  Romanceor [parlons",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Araucaria_araucana-detail.jpg",
-			"file": "File:Araucaria araucana-detail.jpg"
-		}
-	},
-	"giant-redwood": {
-		"tree": {
-			"artist": "Mike Murphy (talk · contribs)",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Grizzly_Giant_Mariposa_Grove.jpg",
-			"file": "File:Grizzly Giant Mariposa Grove.jpg"
-		},
-		"leaf": {
-			"artist": "Aethonatic",
-			"license": "CC0",
-			"page": "https://commons.wikimedia.org/wiki/File:Sequoiadendron_giganteum_leaves_-_22_March_2026.jpg",
-			"file": "File:Sequoiadendron giganteum leaves - 22 March 2026.jpg"
-		}
-	},
-	"cedar-of-lebanon": {
-		"tree": {
-			"artist": "Olivier BEZES",
-			"license": "CC BY 2.5",
-			"page": "https://commons.wikimedia.org/wiki/File:C%C3%A8dre_du_Liban_Barouk_2005.jpg",
-			"file": "File:Cèdre du Liban Barouk 2005.jpg"
-		},
-		"leaf": {
-			"artist": "Crusier",
-			"license": "CC BY 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Cedrus_libani_foliage_PAN.JPG",
-			"file": "File:Cedrus libani foliage PAN.JPG"
-		}
-	},
-	"weeping-willow": {
-		"tree": {
-			"artist": "Weepingraf",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Salix_Sepulcralis_Group_%27Sepulcralis%278.JPG",
-			"file": "File:Salix Sepulcralis Group 'Sepulcralis'8.JPG"
-		},
-		"leaf": {
-			"artist": "André Karwath aka Aka",
-			"license": "CC BY-SA 2.5",
-			"page": "https://commons.wikimedia.org/wiki/File:Salix_x_sepulcralis_-_leafs_(aka).jpg",
-			"file": "File:Salix x sepulcralis - leafs (aka).jpg"
-		}
-	},
-	"ornamental-cherry": {
-		"tree": {
-			"artist": "Myrabella",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Cerisier_du_Japon_Prunus_serrulata.jpg",
-			"file": "File:Cerisier du Japon Prunus serrulata.jpg"
-		},
-		"leaf": {
-			"artist": "Kropsoq",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Prunus_serrulata_2005_spring_025.jpg",
-			"file": "File:Prunus serrulata 2005 spring 025.jpg"
-		}
-	},
 	"sitka-spruce": {
 		"tree": {
 			"artist": "Graaf van Vlaanderen",
@@ -671,20 +447,6 @@
 			"file": "File:Salix fragilis kz05.jpg"
 		}
 	},
-	"leylandii": {
-		"tree": {
-			"artist": "Unknown",
-			"license": "CC BY-SA 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Leyland_Cypress.jpg",
-			"file": "File:Leyland Cypress.jpg"
-		},
-		"leaf": {
-			"artist": "Crusier",
-			"license": "CC BY 3.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Cupressocyparis_leylandii_%27Castlewellan_Gold%27_green_leafs.jpg",
-			"file": "File:Cupressocyparis leylandii 'Castlewellan Gold' green leafs.jpg"
-		}
-	},
 	"lombardy-poplar": {
 		"tree": {
 			"artist": "Graham Newell",
@@ -697,6 +459,244 @@
 			"license": "CC BY-SA 3.0",
 			"page": "https://commons.wikimedia.org/wiki/File:Italiaanse_populier_ruitvormigblad_Populus_nigra_%27Italica%27.jpg",
 			"file": "File:Italiaanse populier ruitvormigblad Populus nigra 'Italica'.jpg"
+		}
+	},
+	"leylandii": {
+		"tree": {
+			"artist": "Christine Johnstone",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Leylandii_hedge_hiding_Cherry_Tree_Farm_-_geograph.org.uk_-_2722634.jpg",
+			"file": "File:Leylandii hedge hiding Cherry Tree Farm - geograph.org.uk - 2722634.jpg"
+		},
+		"leaf": {
+			"artist": "Crusier",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cupressocyparis_leylandii_%27Castlewellan_Gold%27_green_leafs.jpg",
+			"file": "File:Cupressocyparis leylandii 'Castlewellan Gold' green leafs.jpg"
+		}
+	},
+	"weeping-willow": {
+		"tree": {
+			"artist": "Humphrey Bolton",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Weeping_willow_tree_in_Edgerton_Cemetery,_Huddersfield_-_geograph.org.uk_-_7559909.jpg",
+			"file": "File:Weeping willow tree in Edgerton Cemetery, Huddersfield - geograph.org.uk - 7559909.jpg"
+		},
+		"leaf": {
+			"artist": "André Karwath aka Aka",
+			"license": "CC BY-SA 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_x_sepulcralis_-_leafs_(aka).jpg",
+			"file": "File:Salix x sepulcralis - leafs (aka).jpg"
+		}
+	},
+	"ornamental-cherry": {
+		"tree": {
+			"artist": "Myrabella",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cerisier_du_Japon_Prunus_serrulata.jpg",
+			"file": "File:Cerisier du Japon Prunus serrulata.jpg"
+		},
+		"leaf": {
+			"artist": "Marie-Lan Nguyen",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Prunus_serrulata_Kanzan_blossom_Jardin_des_Plantes_2013-04-21.jpg",
+			"file": "File:Prunus serrulata Kanzan blossom Jardin des Plantes 2013-04-21.jpg"
+		}
+	},
+	"london-plane": {
+		"tree": {
+			"artist": "N Chadwick",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:London_Plane_Tree_-_geograph.org.uk_-_4711783.jpg",
+			"file": "File:London Plane Tree - geograph.org.uk - 4711783.jpg"
+		},
+		"leaf": {
+			"artist": "No machine-readable author provided. Bogdan assumed (based o",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Platanus_x_hispanica_leaves_fruit_bgiu.jpg",
+			"file": "File:Platanus x hispanica leaves fruit bgiu.jpg"
+		}
+	},
+	"lime": {
+		"tree": {
+			"artist": "N Chadwick",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Traffic_calming,_Lime_Tree_Rd_-_geograph.org.uk_-_1976877.jpg",
+			"file": "File:Traffic calming, Lime Tree Rd - geograph.org.uk - 1976877.jpg"
+		},
+		"leaf": {
+			"artist": "Bartosz Cuber",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Tilia_cordata_-_leaves_02.jpg",
+			"file": "File:Tilia cordata - leaves 02.jpg"
+		}
+	},
+	"hazel": {
+		"tree": {
+			"artist": "Evelyn Simak",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Coppiced_hazel_tree_-_geograph.org.uk_-_607882.jpg",
+			"file": "File:Coppiced hazel tree - geograph.org.uk - 607882.jpg"
+		},
+		"leaf": {
+			"artist": "Hladac",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Corylus_avellana_9.jpg",
+			"file": "File:(ms) Corylus avellana 9.jpg"
+		}
+	},
+	"alder": {
+		"tree": {
+			"artist": "Philip Halling",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:An_alder_tree_-_geograph.org.uk_-_7303253.jpg",
+			"file": "File:An alder tree - geograph.org.uk - 7303253.jpg"
+		},
+		"leaf": {
+			"artist": "Hladac",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Alnus_glutinosa_2.jpg",
+			"file": "File:(ms) Alnus glutinosa 2.jpg"
+		}
+	},
+	"wych-elm": {
+		"tree": {
+			"artist": "Craig Wallace",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Wych_elm,_Gleann_na_C%C3%ACche_(geograph_7210938).jpg",
+			"file": "File:Wych elm, Gleann na Cìche (geograph 7210938).jpg"
+		},
+		"leaf": {
+			"artist": "Tom elm",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Leaves_of_Ulmus_glabra_var._montana.jpg",
+			"file": "File:Leaves of Ulmus glabra var. montana.jpg"
+		}
+	},
+	"goat-willow": {
+		"tree": {
+			"artist": "Robin Webster",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Goat_Willow_near_Gravetye_Manor_-_geograph.org.uk_-_6321371.jpg",
+			"file": "File:Goat Willow near Gravetye Manor - geograph.org.uk - 6321371.jpg"
+		},
+		"leaf": {
+			"artist": "Hladac",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Salix_caprea_8.jpg",
+			"file": "File:(ms) Salix caprea 8.jpg"
+		}
+	},
+	"white-willow": {
+		"tree": {
+			"artist": "Steve Daniels",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:A_willow_tree_in_the_meadow_-_geograph.org.uk_-_1893836.jpg",
+			"file": "File:A willow tree in the meadow - geograph.org.uk - 1893836.jpg"
+		},
+		"leaf": {
+			"artist": "MPF",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_alba_leaves.jpg",
+			"file": "File:Salix alba leaves.jpg"
+		}
+	},
+	"aspen": {
+		"tree": {
+			"artist": "Adrian Taylor",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Aspen_Tree_-_geograph.org.uk_-_6577077.jpg",
+			"file": "File:Aspen Tree - geograph.org.uk - 6577077.jpg"
+		},
+		"leaf": {
+			"artist": "Dmitry Makeev",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Summer._Leaves_-_populus_tremula._Adaxial_side.jpg",
+			"file": "File:Summer. Leaves - populus tremula. Adaxial side.jpg"
+		}
+	},
+	"black-poplar": {
+		"tree": {
+			"artist": "Philip Halling",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Black_Poplar_tree,_Castlemorton_Common_-_geograph.org.uk_-_665895.jpg",
+			"file": "File:Black Poplar tree, Castlemorton Common - geograph.org.uk - 665895.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Populus_nigra_kz03.jpg",
+			"file": "File:Populus nigra kz03.jpg"
+		}
+	},
+	"walnut": {
+		"tree": {
+			"artist": "Uoaei1",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Juglans_regia_Herbstlaub_01.jpg",
+			"file": "File:Juglans regia Herbstlaub 01.jpg"
+		},
+		"leaf": {
+			"artist": "Karduelis",
+			"license": "Public domain",
+			"page": "https://commons.wikimedia.org/wiki/File:Juglans_regia-01.JPG",
+			"file": "File:Juglans regia-01.JPG"
+		}
+	},
+	"box": {
+		"tree": {
+			"artist": "I.Sáček, senior",
+			"license": "CC0",
+			"page": "https://commons.wikimedia.org/wiki/File:Buxus_sempervirens_10866.JPG",
+			"file": "File:Buxus sempervirens 10866.JPG"
+		},
+		"leaf": {
+			"artist": "I.Sáček, senior",
+			"license": "CC0",
+			"page": "https://commons.wikimedia.org/wiki/File:Buxus_sempervirens_10862.JPG",
+			"file": "File:Buxus sempervirens 10862.JPG"
+		}
+	},
+	"monkey-puzzle": {
+		"tree": {
+			"artist": "Alan Hunt",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Monkey_Puzzle_Tree_-_geograph.org.uk_-_3015763.jpg",
+			"file": "File:Monkey Puzzle Tree - geograph.org.uk - 3015763.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Araucaria_araucana_kz15.jpg",
+			"file": "File:Araucaria araucana kz15.jpg"
+		}
+	},
+	"giant-redwood": {
+		"tree": {
+			"artist": "David Smith",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Giant_Redwood_tree,_Knightshayes_Court_-_geograph.org.uk_-_6204272.jpg",
+			"file": "File:Giant Redwood tree, Knightshayes Court - geograph.org.uk - 6204272.jpg"
+		},
+		"leaf": {
+			"artist": "NobbiP",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Riesenmammutbaum_Sequoiadendron_giganteum_top_08.jpg",
+			"file": "File:Riesenmammutbaum Sequoiadendron giganteum top 08.jpg"
+		}
+	},
+	"cedar-of-lebanon": {
+		"tree": {
+			"artist": "Philip Halling",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cedar_of_Lebanon_tree_-_geograph.org.uk_-_5602261.jpg",
+			"file": "File:Cedar of Lebanon tree - geograph.org.uk - 5602261.jpg"
+		},
+		"leaf": {
+			"artist": "KATHERINE WAGNER-REISS",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cedrus_libani_var._stenocoma%E2%80%94cone_and_foliage.jpg",
+			"file": "File:Cedrus libani var. stenocoma—cone and foliage.jpg"
 		}
 	}
 }

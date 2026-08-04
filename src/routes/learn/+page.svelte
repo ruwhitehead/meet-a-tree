@@ -1,9 +1,17 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import { SPECIES, searchSpecies } from '$lib/content/species';
+	import { missionsFor } from '$lib/content/missions';
+	import { seasonOfMonth } from '$lib/season';
 
 	let q = $state('');
 	const results = $derived(searchSpecies(q));
+
+	/** Species a hunt is actively looking for get the season spine and a marker.
+	 *  Earned information, not decoration: it tells you what is findable today. */
+	const now = new Date();
+	const season = seasonOfMonth(now.getMonth());
+	const inSeason = new Set(missionsFor(now).current.flatMap((m) => m.ids));
 </script>
 
 <svelte:head>
@@ -58,7 +66,7 @@
 	<ul class="list">
 		{#each results as sp (sp.id)}
 			<li>
-				<a class="row-link" href="{base}/species/{sp.id}/">
+				<a class="row-link" class:seasonal={inSeason.has(sp.id)} class:spring={inSeason.has(sp.id) && season === 'spring'} class:summer={inSeason.has(sp.id) && season === 'summer'} class:autumn={inSeason.has(sp.id) && season === 'autumn'} class:winter={inSeason.has(sp.id) && season === 'winter'} href="{base}/species/{sp.id}/">
 					<span class="thumb">
 						<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" decoding="async" />
 					</span>
@@ -66,6 +74,7 @@
 						<span class="n">{sp.name}</span>
 						<span class="l">{sp.latin}</span>
 						<span class="h">{sp.hint}</span>
+							{#if inSeason.has(sp.id)}<span class="now">Findable now</span>{/if}
 					</span>
 					<span class="chev" aria-hidden="true">›</span>
 				</a>
@@ -200,6 +209,30 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+	.row-link.seasonal {
+		border-left-width: 4px;
+	}
+	.spring {
+		border-left-color: #8fbf5a;
+	}
+	.summer {
+		border-left-color: var(--green);
+	}
+	.autumn {
+		border-left-color: #c8862f;
+	}
+	.winter {
+		border-left-color: #6b7f8a;
+	}
+	.now {
+		display: inline-block;
+		margin-top: 3px;
+		font-size: 10px;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--deep);
 	}
 	.chev {
 		color: var(--soft);
