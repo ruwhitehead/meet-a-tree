@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { base } from '$app/paths';
-	import Modal from '$lib/components/Modal.svelte';
 	import LeafCard from '$lib/components/LeafCard.svelte';
 	import { KEY1, KEY2, keyCandidates } from '$lib/content/key';
 	import type { LeafKind } from '$lib/content/types';
@@ -9,15 +8,10 @@
 	let step1: LeafKind | null = $state(null);
 	let step2: string | null = $state(null);
 	let photo: string | null = $state(null);
-	let primer = $state(false);
 	let camInput: HTMLInputElement | undefined = $state();
 
 	const candidates = $derived(step1 && step2 ? keyCandidates(step1, step2) : []);
 
-	function openCamera() {
-		primer = false;
-		camInput?.click();
-	}
 	function onPhoto(e: Event) {
 		const input = e.currentTarget as HTMLInputElement;
 		const f = input.files?.[0];
@@ -42,8 +36,11 @@
 <main class="view">
 	<div class="vhead"><h1>Identify a tree</h1></div>
 
-	<button class="btn" style="text-align:center" onclick={() => (primer = true)}>
-		📷 Photograph a leaf
+	<!-- Opens the native camera straight away: a single photo needs no permission
+	     dialog on iOS or Android, so there's nothing to explain first. -->
+	<button class="btn camerabtn" onclick={() => camInput?.click()}>
+		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.4" /></svg>
+		Photograph a leaf
 	</button>
 	<input
 		bind:this={camInput}
@@ -56,17 +53,8 @@
 		onchange={onPhoto}
 	/>
 
-	<div class="card stonebg">
-		<p class="sub" style="margin:0">
-			<strong style="color:var(--ink)">This build:</strong> on a phone, the button above opens your
-			camera directly — no permission dialog needed for a single photo. Automatic species matching
-			(Pl@ntNet) arrives with the next release; for now your photo joins the field key below — how
-			naturalists did it for 200 years.
-		</p>
-	</div>
-
 	{#if photo}
-		<div class="card photocard" style="padding:6px">
+		<div class="card photocard">
 			<img alt="Your leaf, ready for the field key" src={photo} />
 			<button class="rm" onclick={removePhoto}>✕ Remove</button>
 		</div>
@@ -80,6 +68,10 @@
 				<span><span class="ot">{k.title}</span><br /><span class="ob">{k.desc}</span></span>
 			</button>
 		{/each}
+		<p class="samplenote">
+			Automatic photo matching arrives with the next release. The key below is how naturalists have
+			done it for 200 years, and it works with no signal.
+		</p>
 	{:else if !step2}
 		<button class="backlink" onclick={() => (step1 = null)}>← Start again</button>
 		<p class="label">Step 2 of 3 · Look closer</p>
@@ -93,7 +85,9 @@
 		<p class="label">Step 3 of 3 · Your candidates</p>
 		{#each candidates as sp (sp.id)}
 			<a class="opt" href="{base}/species/{sp.id}/">
-				<span class="glyph"><LeafCard colors={sp.colors} size={34} /></span>
+				<span class="thumb">
+					<img src="{base}/images/species/{sp.id}-leaf.webp" alt="" width="80" height="80" loading="lazy" />
+				</span>
 				<span>
 					<span class="ot">{sp.name}</span>
 					<span class="ob" style="font-style:italic">{sp.latin}</span><br />
@@ -104,19 +98,20 @@
 	{/if}
 </main>
 
-<Modal open={primer} onclose={() => (primer = false)} labelledby="cam-title">
-	<h2 id="cam-title">Your camera, only when you ask</h2>
-	<p>
-		Meet a Tree opens the camera at the moment you need it — never before. Your photo stays on your phone
-		in this build; nothing is uploaded.
-	</p>
-	<div class="actions">
-		<button class="btn" onclick={openCamera}>Open camera</button>
-		<button class="btn ghost" onclick={() => (primer = false)}>Not now</button>
-	</div>
-</Modal>
-
 <style>
+	.camerabtn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 9px;
+		font-size: 15px;
+		padding: 13px 20px;
+		min-height: 52px;
+	}
+	.camerabtn svg {
+		width: 21px;
+		height: 21px;
+	}
 	.opt {
 		display: flex;
 		align-items: center;
@@ -129,8 +124,6 @@
 		min-height: 60px;
 		text-decoration: none;
 		color: inherit;
-	}
-	.opt {
 		transition: transform 0.12s ease, border-color 0.12s ease;
 	}
 	.opt:hover {
@@ -145,6 +138,20 @@
 		flex: none;
 		display: grid;
 		place-items: center;
+	}
+	.thumb {
+		width: 52px;
+		height: 52px;
+		flex: none;
+		border-radius: 10px;
+		overflow: hidden;
+		background: var(--stonewash);
+	}
+	.thumb img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
 	}
 	.ot {
 		font-weight: 700;
@@ -164,24 +171,33 @@
 	}
 	.photocard {
 		position: relative;
+		padding: 6px;
 	}
 	.photocard img {
 		width: 100%;
-		max-height: 200px;
+		max-height: 220px;
 		object-fit: cover;
 		border-radius: 12px;
 		display: block;
 	}
 	.photocard .rm {
 		position: absolute;
-		top: 8px;
-		right: 8px;
-		background: rgba(18, 27, 20, 0.72);
+		top: 12px;
+		right: 12px;
+		background: rgba(18, 27, 20, 0.78);
 		color: #fff;
 		font-size: 12px;
 		font-weight: 700;
 		border-radius: 999px;
-		padding: 6px 12px;
-		min-height: 36px;
+		padding: 7px 13px;
+		min-height: 38px;
+	}
+	@media (min-width: 900px) {
+		.camerabtn {
+			align-self: start;
+		}
+		.opt {
+			max-width: 620px;
+		}
 	}
 </style>

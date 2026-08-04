@@ -119,6 +119,38 @@ main.view {
 	gap: 12px;
 	padding: 16px 16px 96px;
 }
+
+/* ---------- desktop / tablet: side rail, wider canvas, multi-column ---------- */
+@media (min-width: 900px) {
+	body {
+		background: var(--stone);
+	}
+	.frame {
+		max-width: 1180px;
+		display: grid;
+		grid-template-columns: 232px minmax(0, 1fr);
+		align-items: start;
+		min-height: 100dvh;
+		box-shadow: 0 0 80px rgba(28, 59, 35, 0.16);
+	}
+	main.view {
+		padding: 40px 48px 64px;
+		gap: 16px;
+		max-width: 900px;
+	}
+	.vhead h1 {
+		font-size: 34px;
+	}
+	/* two-column reading layout for card stacks that suit it */
+	main.view.split {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-content: start;
+	}
+	main.view.split > .fullwidth {
+		grid-column: 1 / -1;
+	}
+}
 .vhead {
 	display: flex;
 	align-items: baseline;

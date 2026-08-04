@@ -1,82 +1,149 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import { speciesById } from '$lib/content/species';
 
-	const NEAR: { name: string; dist: string; id: string | null }[] = [
-		{ name: 'English oak', dist: '120 m · park gates, the big one', id: 'oak' },
-		{ name: 'Sycamore', dist: '200 m · churchyard corner', id: 'sycamore' },
-		{ name: 'Rowan', dist: '450 m · three along the cycle path', id: 'rowan' },
-		{ name: 'Silver birch', dist: '600 m · edge of the playing field', id: 'birch' },
-		{ name: 'Wild service tree', dist: '800 m · rare — one of few in the area', id: null }
+	/** Habitat-led guidance: honest, useful with no signal and no location
+	 *  permission. Live per-location species counts (GBIF) come with the next
+	 *  release; until then we tell you where to look rather than inventing
+	 *  distances we cannot know. */
+	const PLACES: { place: string; blurb: string; ids: string[] }[] = [
+		{
+			place: 'A street or town park',
+			blurb: 'Planted for shade and toughness. Look up at the crown shape first — street trees are usually pruned, so leaves and bark tell you more than outline.',
+			ids: ['chestnut', 'sycamore', 'birch', 'rowan']
+		},
+		{
+			place: 'An old churchyard',
+			blurb: 'The most reliable place in lowland Britain to meet a genuinely ancient tree. Check the girth: anything over 5 m round is likely centuries old.',
+			ids: ['yew', 'holly', 'ash']
+		},
+		{
+			place: 'A hedgerow or field edge',
+			blurb: 'Hedges were planted to be stock-proof, so expect thorns. Count woody species along thirty paces — roughly one per century of hedge age.',
+			ids: ['hawthorn', 'elder', 'ash', 'oak']
+		},
+		{
+			place: 'Chalk or limestone downland',
+			blurb: 'Thin alkaline soil suits a particular set of trees. Beech hangers on scarp slopes are the signature of the southern chalk.',
+			ids: ['beech', 'yew', 'hawthorn']
+		},
+		{
+			place: 'Heath, sandy or acid ground',
+			blurb: 'Poor, free-draining soil favours pioneers and conifers. Birch arrives first; pine follows and stays.',
+			ids: ['birch', 'pine', 'rowan']
+		},
+		{
+			place: 'Ancient or damp woodland',
+			blurb: 'Look at the ground flora as well as the canopy — bluebells, dog’s mercury and ramsons all say the wood is old.',
+			ids: ['oak', 'beech', 'ash', 'holly']
+		},
+		{
+			place: 'Uplands, crags and mountainsides',
+			blurb: 'Trees survive here where grazing animals cannot reach. A lone tree wedged in a crag is almost always rowan.',
+			ids: ['rowan', 'birch', 'pine']
+		}
 	];
 </script>
 
 <svelte:head>
 	<title>Near you · Meet a Tree</title>
+	<meta name="description" content="Which trees to expect where you are — by habitat, from streets and churchyards to chalk downland and upland crags." />
 </svelte:head>
 
 <main class="view">
-	<div class="vhead">
-		<h1>Near you</h1>
-		<span class="pill">within 1 km</span>
-	</div>
+	<div class="vhead"><h1>Near you</h1></div>
 
 	<div class="card tint">
-		<p class="label">Species around you</p>
-		<p class="serif" style="font-size:22px">27 species <span style="font-size:14px">within a kilometre</span></p>
-		<p class="sub">More than a botanic garden's worth, hiding in plain sight.</p>
+		<p class="label">Where to look</p>
+		<p class="serif" style="font-size:15.5px">
+			Trees are not scattered at random. Pick the place you’re standing in and you can usually narrow
+			it to three or four candidates before you even look at a leaf.
+		</p>
 	</div>
 
-	<div class="nearlist">
-		{#each NEAR as n (n.name)}
-			{#if n.id}
-				<a class="nearrow" href="{base}/species/{n.id}/">
-					<span><span class="nn">{n.name}</span><br /><span class="nd">{n.dist}</span></span>
-					<span class="pill">Guide</span>
-				</a>
-			{:else}
-				<div class="nearrow">
-					<span><span class="nn">{n.name}</span><br /><span class="nd">{n.dist}</span></span>
-					<span class="pill rare">Rare</span>
-				</div>
-			{/if}
-		{/each}
-	</div>
+	{#each PLACES as p (p.place)}
+		<section class="place">
+			<h2>{p.place}</h2>
+			<p class="blurb">{p.blurb}</p>
+			<ul class="chips">
+				{#each p.ids as id (id)}
+					{@const sp = speciesById(id)}
+					{#if sp}
+						<li>
+							<a class="chip" href="{base}/species/{sp.id}/">
+								<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" decoding="async" />
+								<span>{sp.name}</span>
+							</a>
+						</li>
+					{/if}
+				{/each}
+			</ul>
+		</section>
+	{/each}
+
 	<p class="samplenote">
-		Sample data for this build — the production feed pulls live occurrence records from GBIF &amp;
-		iNaturalist, cached for offline walks.
+		Live species counts for your exact spot — drawn from open GBIF and iNaturalist records — arrive
+		with the next release, along with a map. This page deliberately shows habitat guidance instead of
+		distances we can’t yet measure.
 	</p>
 </main>
 
 <style>
-	.nearlist {
-		display: flex;
-		flex-direction: column;
-		gap: 9px;
-	}
-	.nearrow {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 10px;
+	.place {
 		background: var(--card);
 		border: 1px solid var(--line);
-		border-radius: 13px;
-		padding: 11px 14px;
-		min-height: 44px;
-		text-decoration: none;
-		color: inherit;
+		border-radius: 15px;
+		padding: 14px 15px;
 	}
-	.nn {
-		font-weight: 700;
+	.place h2 {
+		font-family: var(--display);
+		font-weight: 400;
+		font-size: 18px;
+		margin: 0 0 4px;
+	}
+	.blurb {
+		margin: 0 0 11px;
 		font-size: 13.5px;
-	}
-	.nd {
-		font-size: 12px;
+		line-height: 1.55;
 		color: var(--soft);
+		max-width: 62ch;
 	}
-	.pill.rare {
-		background: var(--stonewash);
-		color: var(--forest);
-		border-color: var(--line);
+	.chips {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 999px;
+		padding: 5px 13px 5px 5px;
+		text-decoration: none;
+		color: var(--deep);
+		font-weight: 700;
+		font-size: 12.5px;
+		min-height: 44px;
+		transition: transform 0.12s ease;
+	}
+	.chip:active {
+		transform: scale(0.97);
+	}
+	.chip img {
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		object-fit: cover;
+		display: block;
+	}
+	@media (min-width: 900px) {
+		.place {
+			max-width: 760px;
+		}
 	}
 </style>

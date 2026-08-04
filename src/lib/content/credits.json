@@ -1,0 +1,170 @@
+{
+	"oak": {
+		"tree": {
+			"artist": "Юрий Д.К.",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Efremov_-_2026_-_Quercus_robur_in_City_Grove.jpg",
+			"file": "File:Efremov - 2026 - Quercus robur in City Grove.jpg"
+		},
+		"leaf": {
+			"artist": "Manuel R Popp",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Quercus_robur_179727189.jpg",
+			"file": "File:Quercus robur 179727189.jpg"
+		}
+	},
+	"birch": {
+		"tree": {
+			"artist": "Юрий Д.К.",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Efremov_-_2025_-_Betula_pendula_at_Kurgan.jpg",
+			"file": "File:Efremov - 2025 - Betula pendula at Kurgan.jpg"
+		},
+		"leaf": {
+			"artist": "T. Kebert",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Betula_pendula_leaves_TK_2021-05-15_1.jpg",
+			"file": "File:Betula pendula leaves TK 2021-05-15 1.jpg"
+		}
+	},
+	"rowan": {
+		"tree": {
+			"artist": "Юрий Д.К.",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sorbus_aucuparia_on_Red_Square_-_Efremov,_Russia.jpg",
+			"file": "File:Sorbus aucuparia on Red Square - Efremov, Russia.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sorbus_aucuparia_kz14.jpg",
+			"file": "File:Sorbus aucuparia kz14.jpg"
+		}
+	},
+	"beech": {
+		"tree": {
+			"artist": "Jean-Pol GRANDMONT",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Fagus_sylvatica_JPG2a.jpg",
+			"file": "File:Fagus sylvatica JPG2a.jpg"
+		},
+		"leaf": {
+			"artist": "Crusier",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Fagus_sylvatica_leaves_bottom.jpg",
+			"file": "File:Fagus sylvatica leaves bottom.jpg"
+		}
+	},
+	"ash": {
+		"tree": {
+			"artist": "Bartosz Cuber",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Fraxinus_excelsior_-_leaves.jpg",
+			"file": "File:Fraxinus excelsior - leaves.jpg"
+		},
+		"leaf": {
+			"artist": "Javier martin",
+			"license": "Public domain",
+			"page": "https://commons.wikimedia.org/wiki/File:Fraxinus_excelsior_Leaves_12October2009_RioFresnedas_ValledeAlcudia.jpg",
+			"file": "File:Fraxinus excelsior Leaves 12October2009 RioFresnedas ValledeAlcudia.jpg"
+		}
+	},
+	"holly": {
+		"tree": {
+			"artist": "Yuriy Kvach",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Ilex_aquifolium_in_the_Odessa_city_garden.jpg",
+			"file": "File:Ilex aquifolium in the Odessa city garden.jpg"
+		},
+		"leaf": {
+			"artist": "Michel Langeveld",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Ilex_aquifolium_145607515.jpg",
+			"file": "File:Ilex aquifolium 145607515.jpg"
+		}
+	},
+	"yew": {
+		"tree": {
+			"artist": "Another one of my pictures:\n\n\n\nThis photograph was taken by ",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Taxus_baccata_(If_commun)_-_20150731_08h56_(10473).jpg",
+			"file": "File:Taxus baccata (If commun) - 20150731 08h56 (10473).jpg"
+		},
+		"leaf": {
+			"artist": "Tournasol7",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Taxus_baccata_in_botanical_garden_of_UKW_Bydgoszcz_(6).jpg",
+			"file": "File:Taxus baccata in botanical garden of UKW Bydgoszcz (6).jpg"
+		}
+	},
+	"pine": {
+		"tree": {
+			"artist": "Dominicus Johannes Bergsma",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Vliegden_(Pinus_sylvestris)_spiegelt_zich_in_een_heide_ven._Locatie,_natuurgebied_Delleboersterheide_%E2%80%93_Catspoele_01.jpg",
+			"file": "File:Vliegden (Pinus sylvestris) spiegelt zich in een heide ven. Locatie, natuurgebied Delleboersterheide – Catspoele 01.jpg"
+		},
+		"leaf": {
+			"artist": "Emőke Dénes",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Pinus_sylvestris_-_UK_1.jpg",
+			"file": "File:Pinus sylvestris - UK 1.jpg"
+		}
+	},
+	"hawthorn": {
+		"tree": {
+			"artist": "Anne Burgess",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Crataegus_monogyna_-_geograph.org.uk_-_472881.jpg",
+			"file": "File:Crataegus monogyna - geograph.org.uk - 472881.jpg"
+		},
+		"leaf": {
+			"artist": "Hladac",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Crataegus_monogyna_2.jpg",
+			"file": "File:(ms) Crataegus monogyna 2.jpg"
+		}
+	},
+	"chestnut": {
+		"tree": {
+			"artist": "Uoaei1",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Aesculus_hippocastanum_Seckau_20151024.JPG",
+			"file": "File:Aesculus hippocastanum Seckau 20151024.JPG"
+		},
+		"leaf": {
+			"artist": "Mike Pennington",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Horse_Chestnut_(Aesculus_hippocastanum)_leaf,_Halligarth_-_geograph.org.uk_-_1884676.jpg",
+			"file": "File:Horse Chestnut (Aesculus hippocastanum) leaf, Halligarth - geograph.org.uk - 1884676.jpg"
+		}
+	},
+	"sycamore": {
+		"tree": {
+			"artist": "Gordon Leggett",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:2018-06-07_Sycamore_Gap_Tree_(Acer_pseudoplatanus),_next_to_Hadrian%E2%80%99s_Wall_UK.jpg",
+			"file": "File:2018-06-07 Sycamore Gap Tree (Acer pseudoplatanus), next to Hadrian’s Wall UK.jpg"
+		},
+		"leaf": {
+			"artist": "Mike Pennington",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sycamore_(Acer_pseudoplatanus)_leaves,_Halligarth_-_geograph.org.uk_-_1884638.jpg",
+			"file": "File:Sycamore (Acer pseudoplatanus) leaves, Halligarth - geograph.org.uk - 1884638.jpg"
+		}
+	},
+	"elder": {
+		"tree": {
+			"artist": "Ввласенко",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sambucus_nigra.Inflorescence.jpg",
+			"file": "File:Sambucus nigra.Inflorescence.jpg"
+		},
+		"leaf": {
+			"artist": "Sebastian Martin Dicke",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sambucus_nigra_leaves_in_Muttental.jpg",
+			"file": "File:Sambucus nigra leaves in Muttental.jpg"
+		}
+	}
+}

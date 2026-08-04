@@ -1,63 +1,193 @@
 <script lang="ts">
 	import { base } from '$app/paths';
-	import { SPECIES } from '$lib/content/species';
+	import { SPECIES, searchSpecies } from '$lib/content/species';
 
-	let shelf: 'folklore' | 'science' = $state('folklore');
+	let q = $state('');
+	const results = $derived(searchSpecies(q));
 </script>
 
 <svelte:head>
 	<title>Learn · Meet a Tree</title>
+	<meta name="description" content="Search the field guide: {SPECIES.length} trees, each with how to spot it, its folklore and its science." />
 </svelte:head>
 
 <main class="view">
-	<div class="vhead"><h1>Learn</h1></div>
-
-	<div class="tabs" role="tablist" aria-label="Learn sections">
-		<button class="tab" role="tab" aria-selected={shelf === 'folklore'} onclick={() => (shelf = 'folklore')}>
-			Folklore
-		</button>
-		<button class="tab" role="tab" aria-selected={shelf === 'science'} onclick={() => (shelf = 'science')}>
-			Science
-		</button>
+	<div class="vhead">
+		<h1>Learn</h1>
+		<span class="pill">{SPECIES.length} trees</span>
 	</div>
 
-	{#each SPECIES as sp (sp.id)}
-		{#each sp[shelf] as [title, body] (title)}
-			<a class="card shelfcard" href="{base}/species/{sp.id}/">
-				<p class="label">{sp.name}</p>
-				<p class="serif" style="font-size:15.5px">{title}</p>
-				<p class="sub">{body.slice(0, 92)}…</p>
-			</a>
+	<search>
+		<label class="searchbox">
+			<span class="visually-hidden">Search for a tree by name</span>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M16.5 16.5L21 21" /></svg>
+			<input
+				type="search"
+				bind:value={q}
+				placeholder="Search a tree — oak, rowan, Quercus…"
+				autocomplete="off"
+				enterkeyhint="search"
+			/>
+			{#if q}
+				<button class="clear" onclick={() => (q = '')} aria-label="Clear search">✕</button>
+			{/if}
+		</label>
+	</search>
+
+	<p class="samplenote" aria-live="polite">
+		{#if q}
+			{results.length} {results.length === 1 ? 'tree' : 'trees'} match “{q}”
+		{:else}
+			Every tree in the guide, with spotting notes, folklore and science.
+		{/if}
+	</p>
+
+	{#if results.length === 0}
+		<div class="card tint">
+			<p class="serif" style="font-size:15.5px">No tree by that name — yet.</p>
+			<p class="sub">
+				The guide covers {SPECIES.length} common British trees. Try a shorter word, a Latin name, or
+				browse the full list by clearing the search.
+			</p>
+		</div>
+	{/if}
+
+	<ul class="list">
+		{#each results as sp (sp.id)}
+			<li>
+				<a class="row-link" href="{base}/species/{sp.id}/">
+					<span class="thumb">
+						<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" decoding="async" />
+					</span>
+					<span class="text">
+						<span class="n">{sp.name}</span>
+						<span class="l">{sp.latin}</span>
+						<span class="h">{sp.hint}</span>
+					</span>
+					<span class="chev" aria-hidden="true">›</span>
+				</a>
+			</li>
 		{/each}
-	{/each}
+	</ul>
 </main>
 
 <style>
-	.tabs {
+	.searchbox {
 		display: flex;
-		gap: 4px;
-		background: var(--stonewash);
-		border-radius: 12px;
-		padding: 4px;
-	}
-	.tab {
-		flex: 1;
-		text-align: center;
-		font-size: 12.5px;
-		font-weight: 700;
-		padding: 9px 0;
-		border-radius: 9px;
-		color: var(--soft);
-		min-height: 40px;
-	}
-	.tab[aria-selected='true'] {
+		align-items: center;
+		gap: 9px;
 		background: var(--card);
-		color: var(--ink);
-		box-shadow: 0 1px 3px rgba(30, 30, 30, 0.18);
+		border: 1.5px solid var(--line);
+		border-radius: 999px;
+		padding: 0 14px;
+		min-height: 50px;
 	}
-	.shelfcard {
-		display: block;
+	.searchbox:focus-within {
+		border-color: var(--green);
+	}
+	.searchbox svg {
+		width: 19px;
+		height: 19px;
+		color: var(--soft);
+		flex: none;
+	}
+	.searchbox input {
+		flex: 1;
+		border: none;
+		background: none;
+		font: inherit;
+		font-size: 15px;
+		color: var(--ink);
+		min-height: 46px;
+		outline: none;
+	}
+	.searchbox input::placeholder {
+		color: var(--soft);
+	}
+	.clear {
+		font-size: 15px;
+		color: var(--soft);
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		flex: none;
+	}
+	.list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 9px;
+	}
+	.row-link {
+		display: flex;
+		align-items: center;
+		gap: 13px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: 14px;
+		padding: 10px 12px;
 		text-decoration: none;
 		color: inherit;
+		min-height: 66px;
+		transition: transform 0.12s ease, border-color 0.12s ease;
+	}
+	.row-link:hover {
+		border-color: var(--green);
+	}
+	.row-link:active {
+		transform: scale(0.99);
+	}
+	.thumb {
+		width: 54px;
+		height: 54px;
+		border-radius: 11px;
+		overflow: hidden;
+		flex: none;
+		background: var(--stonewash);
+	}
+	.thumb img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.text {
+		flex: 1;
+		min-width: 0;
+	}
+	.n {
+		display: block;
+		font-weight: 700;
+		font-size: 14.5px;
+	}
+	.l {
+		display: block;
+		font-size: 12px;
+		font-style: italic;
+		color: var(--soft);
+	}
+	.h {
+		display: block;
+		font-size: 12px;
+		color: var(--soft);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.chev {
+		color: var(--soft);
+		font-size: 20px;
+		flex: none;
+	}
+	@media (min-width: 700px) {
+		.list {
+			grid-template-columns: 1fr 1fr;
+		}
+		.searchbox {
+			max-width: 520px;
+		}
 	}
 </style>

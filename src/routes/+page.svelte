@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { grove } from '$lib/grove.svelte';
 
@@ -31,13 +32,13 @@
 		<p class="serif">{fact}</p>
 	</div>
 
-	<div class="card">
-		<p class="label">Near you this week</p>
+	<a class="card linkcard" href="{base}/near/">
+		<p class="label">Where to look this week</p>
 		<p class="serif" style="font-size:15px">
-			Rowan berries are turning — three rowans within 500 m of the park gates.
+			Streets, churchyards, hedgerows and chalk downs each hold a different handful of trees. Narrow
+			it down before you even look at a leaf. →
 		</p>
-		<p class="samplenote">Sample data — the live feed uses open GBIF records.</p>
-	</div>
+	</a>
 
 	<div class="card">
 		<p class="label forest">September challenge</p>
@@ -100,6 +101,15 @@
 	}
 	.nums {
 		font-variant-numeric: tabular-nums;
+	}
+	.linkcard {
+		text-decoration: none;
+		color: inherit;
+		display: block;
+		transition: border-color 0.12s ease;
+	}
+	.linkcard:hover {
+		border-color: var(--green);
 	}
 	.vhead h1 {
 		font-size: 27px;

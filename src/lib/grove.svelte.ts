@@ -33,11 +33,13 @@ function load(): Persisted {
 	}
 }
 
+import { SPECIES } from './content/species';
+
 export const BADGES: { id: string; name: string; test: (speciesCount: number) => boolean }[] = [
 	{ id: 'first', name: 'First Find', test: (c) => c >= 1 },
 	{ id: 'handful', name: 'A Handful (5)', test: (c) => c >= 5 },
 	{ id: 'ten', name: 'Ten Trees (10)', test: (c) => c >= 10 },
-	{ id: 'all', name: 'The Full Grove', test: (c) => c >= 12 }
+	{ id: 'all', name: 'The Full Grove', test: (c) => c >= SPECIES.length }
 ];
 
 class Grove {
