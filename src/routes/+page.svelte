@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { base } from '$app/paths';
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { grove } from '$lib/grove.svelte';
 
@@ -70,7 +69,6 @@
 		</p>
 	</div>
 
-	<a class="pill" style="align-self:center; margin-bottom:12px" href="{base}/identify/">Meet your first tree →</a>
 </main>
 
 <style>
