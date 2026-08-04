@@ -23,8 +23,10 @@ jobs:
         run: npm run check
       - name: Unit tests
         run: npm test
-      - name: Build (no base path, for Lighthouse)
+      - name: Build (static, for Lighthouse)
         run: npm run build
+        env:
+          STATIC_BUILD: '1'
       - name: Lighthouse — accessibility must be 100
         uses: treosh/lighthouse-ci-action@v12
         with:
@@ -47,9 +49,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: Build for GitHub Pages
+      - name: Build for GitHub Pages (static mirror; no server routes)
         run: npm run build
         env:
+          STATIC_BUILD: '1'
           BASE_PATH: /meet-a-tree
       - run: touch build/.nojekyll
       - uses: actions/upload-pages-artifact@v3
