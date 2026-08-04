@@ -20,7 +20,8 @@
 		padding: 10px 18px;
 		border-radius: 999px;
 		opacity: 0;
-		transition: opacity 0.25s;
+		visibility: hidden;
+		transition: opacity 0.25s, visibility 0.25s;
 		pointer-events: none;
 		max-width: 88vw;
 	}
@@ -32,5 +33,6 @@
 	}
 	.toast.on {
 		opacity: 1;
+		visibility: visible;
 	}
 </style>

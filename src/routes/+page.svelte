@@ -70,7 +70,7 @@
 		</p>
 	</div>
 
-	<a class="pill" style="align-self:center" href="{base}/identify/">Meet your first tree →</a>
+	<a class="pill" style="align-self:center; margin-bottom:12px" href="{base}/identify/">Meet your first tree →</a>
 </main>
 
 <style>
