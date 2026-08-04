@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths';
-	import LeafCard from '$lib/components/LeafCard.svelte';
+	import LeafShape from '$lib/components/LeafShape.svelte';
 	import { KEY1, KEY2, keyCandidates } from '$lib/content/key';
 	import type { LeafKind } from '$lib/content/types';
 	import { grove } from '$lib/grove.svelte';
@@ -11,6 +11,7 @@
 	let camInput: HTMLInputElement | undefined = $state();
 
 	const candidates = $derived(step1 && step2 ? keyCandidates(step1, step2) : []);
+	const step2Options: { id: string; title: string }[] = $derived(step1 ? KEY2[step1] : []);
 
 	function onPhoto(e: Event) {
 		const input = e.currentTarget as HTMLInputElement;
@@ -20,7 +21,7 @@
 		photo = URL.createObjectURL(f);
 		step1 = null;
 		step2 = null;
-		grove.toast('Lovely. Three quick questions about it 🌿');
+		grove.toast('Got it. Now three quick questions 🌿');
 		input.value = '';
 	}
 	function removePhoto() {
@@ -36,12 +37,33 @@
 <main class="view">
 	<div class="vhead"><h1>Identify a tree</h1></div>
 
-	<!-- Opens the native camera straight away: a single photo needs no permission
-	     dialog on iOS or Android, so there's nothing to explain first. -->
-	<button class="btn camerabtn" onclick={() => camInput?.click()}>
-		<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.4" /></svg>
-		Photograph a leaf
-	</button>
+	<!-- Honest about what this build does. Automatic photo matching needs a
+	     server to hold the Pl@ntNet API key, which the static build has not got
+	     yet — so the photo is a record and the key does the identifying. -->
+	<div class="card stonebg">
+		<p class="how">
+			<strong>How this works.</strong> Answer three quick questions about the leaf and the guide
+			narrows 40 British trees down to a shortlist. It takes under a minute and needs no signal.
+		</p>
+		<p class="how soft">
+			Photographing the leaf is optional — it keeps the leaf on screen while you work through the
+			questions. <strong>Automatic species matching from the photo is not in this build yet</strong>;
+			it needs a server to talk to the Pl@ntNet service.
+		</p>
+	</div>
+
+	{#if photo}
+		<div class="card photocard">
+			<img alt="Your leaf, ready for the field key" src={photo} />
+			<button class="rm" onclick={removePhoto}>✕ Remove</button>
+		</div>
+		<button class="btn ghost" onclick={() => camInput?.click()}>Retake photo</button>
+	{:else}
+		<button class="btn ghost camerabtn" onclick={() => camInput?.click()}>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z" /><circle cx="12" cy="13" r="3.4" /></svg>
+			Photograph the leaf (optional)
+		</button>
+	{/if}
 	<input
 		bind:this={camInput}
 		type="file"
@@ -53,40 +75,33 @@
 		onchange={onPhoto}
 	/>
 
-	{#if photo}
-		<div class="card photocard">
-			<img alt="Your leaf, ready for the field key" src={photo} />
-			<button class="rm" onclick={removePhoto}>✕ Remove</button>
-		</div>
-	{/if}
-
 	{#if !step1}
-		<p class="label">Step 1 of 3 · What kind of leaf?</p>
+		<p class="label">Step 1 of 3 · What kind of leaf is it?</p>
 		{#each KEY1 as k (k.id)}
 			<button class="opt" onclick={() => (step1 = k.id)}>
-				<span class="glyph"><LeafCard colors={['#4FA372', '#167E3C']} size={30} /></span>
+				<span class="glyph"><LeafShape shape={k.id} size={44} /></span>
 				<span><span class="ot">{k.title}</span><br /><span class="ob">{k.desc}</span></span>
 			</button>
 		{/each}
-		<p class="samplenote">
-			Automatic photo matching arrives with the next release. The key below is how naturalists have
-			done it for 200 years, and it works with no signal.
-		</p>
 	{:else if !step2}
 		<button class="backlink" onclick={() => (step1 = null)}>← Start again</button>
-		<p class="label">Step 2 of 3 · Look closer</p>
-		{#each KEY2[step1] as k (k.id)}
+		<p class="label">Step 2 of 3 · Look a little closer</p>
+		{#each step2Options as k (k.id)}
 			<button class="opt" onclick={() => (step2 = k.id)}>
-				<span class="ot" style="padding-left:4px">{k.title}</span>
+				<span class="glyph"><LeafShape shape={k.id} size={44} /></span>
+				<span class="ot">{k.title}</span>
 			</button>
 		{/each}
 	{:else}
 		<button class="backlink" onclick={() => (step2 = null)}>← Back</button>
-		<p class="label">Step 3 of 3 · Your candidates</p>
+		<p class="label">
+			Step 3 of 3 · {candidates.length}
+			{candidates.length === 1 ? 'candidate' : 'candidates'} — compare with your leaf
+		</p>
 		{#each candidates as sp (sp.id)}
 			<a class="opt" href="{base}/species/{sp.id}/">
 				<span class="thumb">
-					<img src="{base}/images/species/{sp.id}-leaf.webp" alt="" width="80" height="80" loading="lazy" />
+					<img src="{base}/images/species/{sp.id}-leaf.webp" alt="" width="120" height="120" loading="lazy" decoding="async" />
 				</span>
 				<span>
 					<span class="ot">{sp.name}</span>
@@ -95,22 +110,37 @@
 				</span>
 			</a>
 		{/each}
+		{#if candidates.length === 0}
+			<p class="sub">Nothing in the guide matches that combination — try stepping back.</p>
+		{/if}
 	{/if}
 </main>
 
 <style>
+	.how {
+		margin: 0;
+		font-size: 13.5px;
+		line-height: 1.55;
+		color: var(--soft);
+	}
+	.how strong {
+		color: var(--ink);
+	}
+	.how.soft {
+		margin-top: 8px;
+	}
 	.camerabtn {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		gap: 9px;
-		font-size: 15px;
-		padding: 13px 20px;
-		min-height: 52px;
+		font-size: 14.5px;
+		padding: 12px 18px;
+		min-height: 50px;
 	}
 	.camerabtn svg {
-		width: 21px;
-		height: 21px;
+		width: 20px;
+		height: 20px;
 	}
 	.opt {
 		display: flex;
@@ -121,7 +151,7 @@
 		border: 1px solid var(--line);
 		border-radius: 14px;
 		padding: 13px 14px;
-		min-height: 60px;
+		min-height: 66px;
 		text-decoration: none;
 		color: inherit;
 		transition: transform 0.12s ease, border-color 0.12s ease;
@@ -133,15 +163,14 @@
 		transform: scale(0.98);
 	}
 	.glyph {
-		width: 44px;
-		height: 44px;
+		width: 46px;
 		flex: none;
 		display: grid;
 		place-items: center;
 	}
 	.thumb {
-		width: 52px;
-		height: 52px;
+		width: 54px;
+		height: 54px;
 		flex: none;
 		border-radius: 10px;
 		overflow: hidden;
@@ -193,9 +222,7 @@
 		min-height: 38px;
 	}
 	@media (min-width: 900px) {
-		.camerabtn {
-			align-self: start;
-		}
+		.camerabtn,
 		.opt {
 			max-width: 620px;
 		}

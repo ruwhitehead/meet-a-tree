@@ -51,7 +51,12 @@ class Grove {
 	/* transient UI state */
 	pendingMilestone = $state<number | null>(null);
 	toastMsg = $state<string | null>(null);
-	sharePreview = $state<{ url: string; filename: string } | null>(null);
+	sharePreview = $state<{
+		url: string;
+		filename: string;
+		link: string;
+		text: string;
+	} | null>(null);
 
 	#toastTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -107,6 +112,13 @@ class Grove {
 		}
 		this.save();
 		this.toast(`${sp.name} added to your Grove 🌿`);
+	}
+
+	removeFind(id: string) {
+		const sp = speciesById(id);
+		this.finds = this.finds.filter((f) => f.id !== id);
+		this.save();
+		this.toast(`${sp?.name ?? 'Tree'} removed from your grove`);
 	}
 
 	toast(msg: string) {

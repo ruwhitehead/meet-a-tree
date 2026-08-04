@@ -2,7 +2,7 @@
 // Wikimedia Commons, resizes to webp, and writes licence credits for display.
 // Run: node scripts/fetch-species-images.mjs
 import sharp from 'sharp';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 
 const UA = 'MeetATree/0.1 (https://github.com/ruwhitehead/meet-a-tree; tree companion PWA)';
 
@@ -10,17 +10,45 @@ const UA = 'MeetATree/0.1 (https://github.com/ruwhitehead/meet-a-tree; tree comp
 // close-ups come from a Commons search unless pinned to an exact File: title.
 const SPECIES = [
 	{ id: 'oak', latin: 'Quercus robur' },
+	{ id: 'sessile-oak', latin: 'Quercus petraea' },
+	{ id: 'holm-oak', latin: 'Quercus ilex' },
 	{ id: 'birch', latin: 'Betula pendula' },
+	{ id: 'downy-birch', latin: 'Betula pubescens' },
 	{ id: 'rowan', latin: 'Sorbus aucuparia' },
+	{ id: 'whitebeam', latin: 'Sorbus aria' },
+	{ id: 'wild-service', latin: 'Sorbus torminalis' },
 	{ id: 'beech', latin: 'Fagus sylvatica' },
+	{ id: 'hornbeam', latin: 'Carpinus betulus' },
 	{ id: 'ash', latin: 'Fraxinus excelsior' },
 	{ id: 'holly', latin: 'Ilex aquifolium' },
 	{ id: 'yew', latin: 'Taxus baccata' },
 	{ id: 'pine', latin: 'Pinus sylvestris' },
+	{ id: 'larch', latin: 'Larix decidua' },
+	{ id: 'spruce', latin: 'Picea abies' },
+	{ id: 'douglas-fir', latin: 'Pseudotsuga menziesii' },
+	{ id: 'juniper', latin: 'Juniperus communis' },
 	{ id: 'hawthorn', latin: 'Crataegus monogyna' },
+	{ id: 'blackthorn', latin: 'Prunus spinosa' },
+	{ id: 'wild-cherry', latin: 'Prunus avium' },
+	{ id: 'bird-cherry', latin: 'Prunus padus' },
+	{ id: 'crab-apple', latin: 'Malus sylvestris' },
 	{ id: 'chestnut', latin: 'Aesculus hippocastanum' },
+	{ id: 'sweet-chestnut', latin: 'Castanea sativa' },
 	{ id: 'sycamore', latin: 'Acer pseudoplatanus' },
-	{ id: 'elder', latin: 'Sambucus nigra' }
+	{ id: 'norway-maple', latin: 'Acer platanoides' },
+	{ id: 'field-maple', latin: 'Acer campestre' },
+	{ id: 'london-plane', latin: 'Platanus x hispanica' },
+	{ id: 'lime', latin: 'Tilia cordata' },
+	{ id: 'elder', latin: 'Sambucus nigra' },
+	{ id: 'hazel', latin: 'Corylus avellana' },
+	{ id: 'alder', latin: 'Alnus glutinosa' },
+	{ id: 'wych-elm', latin: 'Ulmus glabra' },
+	{ id: 'goat-willow', latin: 'Salix caprea' },
+	{ id: 'white-willow', latin: 'Salix alba' },
+	{ id: 'aspen', latin: 'Populus tremula' },
+	{ id: 'black-poplar', latin: 'Populus nigra' },
+	{ id: 'walnut', latin: 'Juglans regia' },
+	{ id: 'box', latin: 'Buxus sempervirens' }
 ].map((s) => ({
 	...s,
 	leaf: [`${s.latin} leaves`, `${s.latin} leaf`, `${s.latin} foliage`, `${s.latin} needles`],
@@ -63,7 +91,10 @@ async function commonsFile(title) {
 
 // Curated by eye from candidate contact sheets (scripts/candidates.mjs).
 const TREE_PINS = {
- "oak": "File:Efremov - 2026 - Quercus robur in City Grove.jpg",
+ "field-maple": "File:Acer campestre Weinsberg 20070419 1.jpg",
+ "whitebeam": "File:Ropsley, Whitebeam 'Sorbus aria', a small part of a very large tree - geograph.org.uk - 8325288.jpg",
+ "downy-birch": "File:Betula pubescens - Burgwald 002.jpg",
+ "oak": "File:The Council Oak in late summer, Coate Water, Swindon - geograph.org.uk - 943049.jpg",
  "birch": "File:Efremov - 2025 - Betula pendula at Kurgan.jpg",
  "rowan": "File:Sorbus aucuparia on Red Square - Efremov, Russia.jpg",
  "beech": "File:Fagus sylvatica JPG2a.jpg",
@@ -77,6 +108,9 @@ const TREE_PINS = {
  "elder": "File:Sambucus nigra.Inflorescence.jpg"
 };
 const LEAF_PINS = {
+ "field-maple": "File:Acer campestre 02 by-dpc.jpg",
+ "whitebeam": "File:(ms) Sorbus aria 9.jpg",
+ "downy-birch": "File:Betula-pubescens-downy-leaves.JPG",
  "oak": "File:Quercus robur 179727189.jpg",
  "birch": "File:Betula pendula leaves TK 2021-05-15 1.jpg",
  "rowan": "File:Sorbus aucuparia kz14.jpg",
@@ -143,9 +177,12 @@ async function grab(hit, terms, latin, out, thumbOut) {
 }
 
 mkdirSync('static/images/species', { recursive: true });
-const credits = {};
+const credits = existsSync('src/lib/content/credits.json')
+	? JSON.parse(readFileSync('src/lib/content/credits.json', 'utf8'))
+	: {};
 for (const sp of SPECIES) {
 	try {
+		if (existsSync(`static/images/species/${sp.id}-tree.webp`) && credits[sp.id]) continue;
 		const treeHit = TREE_PINS[sp.id] ? await commonsFile(TREE_PINS[sp.id]) : await wikipediaLead(sp.latin);
 		const leafHit = LEAF_PINS[sp.id] ? await commonsFile(LEAF_PINS[sp.id]) : null;
 		const t = await grab(

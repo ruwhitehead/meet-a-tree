@@ -145,11 +145,13 @@ main.view {
 		box-shadow: 0 0 80px rgba(28, 59, 35, 0.16);
 	}
 	main.view {
-		padding: 40px 48px 64px;
+		padding: 16px 48px 64px;
 		gap: 16px;
 		max-width: 900px;
 		overflow-y: visible;
 		min-height: 0;
+		grid-column: 2;
+		grid-row: 2;
 	}
 	.vhead h1 {
 		font-size: 34px;

@@ -68,8 +68,11 @@
 				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M6 21c0-9 3-15 12-17-1 9-4 14-12 17z" /><path d="M6 21c2-5 5-9 9-12" /></svg>
 			</span>
 			<div>
-				<p class="it" id="install-title">Add Meet a Tree to your home screen</p>
-				<p class="ib">One tap to open in the field, and it works with no signal.</p>
+				<p class="it" id="install-title">Keep this in your pocket</p>
+				<p class="ib">
+					Add Meet a Tree to your home screen and the whole guide — all 40 trees, pictures included —
+					works with no signal, deep in a wood. It takes two taps and no app store.
+				</p>
 			</div>
 		</div>
 

@@ -81,11 +81,21 @@
 		</section>
 	{/each}
 
-	<p class="samplenote">
-		Live species counts for your exact spot — drawn from open GBIF and iNaturalist records — arrive
-		with the next release, along with a map. This page deliberately shows habitat guidance instead of
-		distances we can’t yet measure.
-	</p>
+	<section class="place locnote">
+		<h2>Does this know where I am?</h2>
+		<p class="blurb">
+			<strong>No — and that is deliberate.</strong> This page asks for no location permission and
+			sends nothing anywhere. It works the same on any phone, in any country, with no signal, because
+			it is habitat guidance rather than a map of your surroundings.
+		</p>
+		<p class="blurb">
+			When live species counts arrive, they will work like this: tap a button, your phone asks
+			<em>you</em> whether to share your location, and only then do we query open GBIF and
+			iNaturalist records for that rough area — rounded to about a kilometre, never your exact
+			position, and never stored. If you decline, or your phone can’t get a fix, or you are offline,
+			you keep this page. Location will always be the optional extra, never the way in.
+		</p>
+	</section>
 </main>
 
 <style>
@@ -94,6 +104,12 @@
 		border: 1px solid var(--line);
 		border-radius: 15px;
 		padding: 14px 15px;
+	}
+	.locnote {
+		background: var(--stonewash);
+	}
+	.locnote em {
+		font-style: italic;
 	}
 	.place h2 {
 		font-family: var(--display);

@@ -163,7 +163,7 @@
 			border-right: 1px solid var(--line);
 			background: var(--card);
 			grid-column: 1;
-			grid-row: 1;
+			grid-row: 1 / 3;
 		}
 		.rail nav {
 			display: flex;

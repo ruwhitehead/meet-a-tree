@@ -25,7 +25,10 @@
 		<button class="pill" onclick={onShare}>Share my grove</button>
 	</div>
 	<p class="howto">
-		<a href="{base}/identify/">Photograph a leaf</a> to add a tree to your grove.
+		Your grove is the trees you’ve met. Add one by
+		<a href="{base}/identify/">working out what it is</a>
+		from a leaf, or straight from
+		<a href="{base}/learn/">the field guide</a> if you already know its name.
 	</p>
 
 	<div class="stats">
@@ -45,10 +48,13 @@
 		<div class="card tint">
 			<p class="label">Your grove is waiting</p>
 			<p class="serif" style="font-size:15.5px">
-				Every grove starts with one tree. Photograph a leaf, answer three quick questions, and it’s
-				yours — there’s probably a candidate outside your window.
+				Every grove starts with one tree. There is almost certainly a candidate outside your window —
+				answer three questions about its leaf and it’s yours.
 			</p>
-			<a class="btn small" style="margin-top:10px" href="{base}/identify/">Meet your first tree</a>
+			<div class="row" style="gap:8px; margin-top:10px; flex-wrap:wrap">
+				<a class="btn small" href="{base}/identify/">Identify a leaf</a>
+				<a class="btn small ghost" href="{base}/learn/">Browse the guide</a>
+			</div>
 		</div>
 	{/if}
 

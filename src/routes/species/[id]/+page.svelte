@@ -58,6 +58,7 @@
 	<div class="row" style="flex-wrap:wrap">
 		{#if inGrove}
 			<span class="pill">✓ In your grove</span>
+			<button class="removebtn" onclick={() => grove.removeFind(sp.id)}>Remove from grove</button>
 		{:else}
 			<button class="btn" onclick={add}>Add to my grove</button>
 		{/if}
@@ -229,6 +230,19 @@
 		font-size: 13.5px;
 		line-height: 1.55;
 		color: var(--soft);
+	}
+	.removebtn {
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--soft);
+		text-decoration: underline;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		padding: 0 4px;
+	}
+	.removebtn:hover {
+		color: var(--ink);
 	}
 	.tell {
 		background: var(--stonewash);

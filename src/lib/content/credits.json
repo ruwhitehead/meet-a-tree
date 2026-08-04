@@ -1,18 +1,4 @@
 {
-	"oak": {
-		"tree": {
-			"artist": "Юрий Д.К.",
-			"license": "CC BY 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Efremov_-_2026_-_Quercus_robur_in_City_Grove.jpg",
-			"file": "File:Efremov - 2026 - Quercus robur in City Grove.jpg"
-		},
-		"leaf": {
-			"artist": "Manuel R Popp",
-			"license": "CC BY 4.0",
-			"page": "https://commons.wikimedia.org/wiki/File:Quercus_robur_179727189.jpg",
-			"file": "File:Quercus robur 179727189.jpg"
-		}
-	},
 	"birch": {
 		"tree": {
 			"artist": "Юрий Д.К.",
@@ -165,6 +151,412 @@
 			"license": "CC BY-SA 4.0",
 			"page": "https://commons.wikimedia.org/wiki/File:Sambucus_nigra_leaves_in_Muttental.jpg",
 			"file": "File:Sambucus nigra leaves in Muttental.jpg"
+		}
+	},
+	"sessile-oak": {
+		"tree": {
+			"artist": "Willow",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Quercus_petraea_06.jpg",
+			"file": "File:Quercus petraea 06.jpg"
+		},
+		"leaf": {
+			"artist": "T137",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Quercus_petraea_-_Leaves.jpg",
+			"file": "File:Quercus petraea - Leaves.jpg"
+		}
+	},
+	"holm-oak": {
+		"tree": {
+			"artist": "Jean-Pol GRANDMONT",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Quercus_ilex_JPG1.jpg",
+			"file": "File:Quercus ilex JPG1.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Quercus_ilex_kz07.jpg",
+			"file": "File:Quercus ilex kz07.jpg"
+		}
+	},
+	"wild-service": {
+		"tree": {
+			"artist": "Jan-Herm Janßen",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sorbus_torminalis_Ripsdorf.jpg",
+			"file": "File:Sorbus torminalis Ripsdorf.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sorbus_torminalis_leaves_kz01.jpg",
+			"file": "File:Sorbus torminalis leaves kz01.jpg"
+		}
+	},
+	"hornbeam": {
+		"tree": {
+			"artist": "Willow",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Carpinus_betulus_-_Hunsr%C3%BCck_001.jpg",
+			"file": "File:Carpinus betulus - Hunsrück 001.jpg"
+		},
+		"leaf": {
+			"artist": "Robert Flogaus-Faust",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Carpinus_betulus_leaf_with_frost_RF.jpg",
+			"file": "File:Carpinus betulus leaf with frost RF.jpg"
+		}
+	},
+	"larch": {
+		"tree": {
+			"artist": "Dominicus Johannes Bergsma",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:L%27A_de_Bran,_(1798_m)_Val_d%27Anniviers._Europese_larix_(Larix_decidua)_01.JPG",
+			"file": "File:L'A de Bran, (1798 m) Val d'Anniviers. Europese larix (Larix decidua) 01.JPG"
+		},
+		"leaf": {
+			"artist": "Martin Fisch from Wiesbaden, Germany",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Larix_decidua_cone_Wiesbaden.jpg",
+			"file": "File:Larix decidua cone Wiesbaden.jpg"
+		}
+	},
+	"spruce": {
+		"tree": {
+			"artist": "Ivar Leidus",
+			"license": "CC BY-SA 3.0 ee",
+			"page": "https://commons.wikimedia.org/wiki/File:Kuusk_Keila-Paldiski_rdt_%C3%A4%C3%A4res.jpg",
+			"file": "File:Kuusk Keila-Paldiski rdt ääres.jpg"
+		},
+		"leaf": {
+			"artist": "kallerna",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Picea_abies_Ahlainen_2.jpg",
+			"file": "File:Picea abies Ahlainen 2.jpg"
+		}
+	},
+	"douglas-fir": {
+		"tree": {
+			"artist": "Walter Siegmund (talk)",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Pseudotsuga_menziesii_4584.JPG",
+			"file": "File:Pseudotsuga menziesii 4584.JPG"
+		},
+		"leaf": {
+			"artist": "Matt Lavin",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Pseudotsuga_menziesii_-_23940333592.jpg",
+			"file": "File:Pseudotsuga menziesii - 23940333592.jpg"
+		}
+	},
+	"juniper": {
+		"tree": {
+			"artist": "Rasbak at Dutch Wikipedia",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Jeneverbes.jpg",
+			"file": "File:Jeneverbes.jpg"
+		},
+		"leaf": {
+			"artist": "Opetustuubi",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Katajan_(Juniperus_communis)_marjoja.jpg",
+			"file": "File:Katajan (Juniperus communis) marjoja.jpg"
+		}
+	},
+	"blackthorn": {
+		"tree": {
+			"artist": "Unknown",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Closeup_of_blackthorn_aka_sloe_aka_prunus_spinosa_sweden_20050924.jpg",
+			"file": "File:Closeup of blackthorn aka sloe aka prunus spinosa sweden 20050924.jpg"
+		},
+		"leaf": {
+			"artist": "Rudolphous",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Prunus_spinosa_(Sleedoorn)_-_Noordwijk,_South_Holland,_NL_v2.jpg",
+			"file": "File:Prunus spinosa (Sleedoorn) - Noordwijk, South Holland, NL v2.jpg"
+		}
+	},
+	"wild-cherry": {
+		"tree": {
+			"artist": "MPF",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Prunus_avium_fruit.jpg",
+			"file": "File:Prunus avium fruit.jpg"
+		},
+		"leaf": {
+			"artist": "Uoaei1",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Prunus_avium_Herbstlaub_01.jpg",
+			"file": "File:Prunus avium Herbstlaub 01.jpg"
+		}
+	},
+	"bird-cherry": {
+		"tree": {
+			"artist": "Rasbak",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Vogelkers_bloesem.jpg",
+			"file": "File:Vogelkers bloesem.jpg"
+		},
+		"leaf": {
+			"artist": "Oleg Kosterin",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Prunus_padus_172258759.jpg",
+			"file": "File:Prunus padus 172258759.jpg"
+		}
+	},
+	"crab-apple": {
+		"tree": {
+			"artist": "H. Zell",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Malus_sylvestris_005.JPG",
+			"file": "File:Malus sylvestris 005.JPG"
+		},
+		"leaf": {
+			"artist": "AnemoneProjectors - Peter O'Connor (talk; Flickr)",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Crab_apple_(Malus_sylvestris)_fruit_and_foliage_(3830013351).jpg",
+			"file": "File:Crab apple (Malus sylvestris) fruit and foliage (3830013351).jpg"
+		}
+	},
+	"sweet-chestnut": {
+		"tree": {
+			"artist": "Fir0002",
+			"license": "GFDL 1.2",
+			"page": "https://commons.wikimedia.org/wiki/File:Chestnuts.jpg",
+			"file": "File:Chestnuts.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Golik",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Leaf_of_Castanea_sativa.jpg",
+			"file": "File:Leaf of Castanea sativa.jpg"
+		}
+	},
+	"norway-maple": {
+		"tree": {
+			"artist": "Martin Bobka (= Martin120)",
+			"license": "CC BY-SA 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Spitz-Ahorn(mbo).jpg",
+			"file": "File:Spitz-Ahorn(mbo).jpg"
+		},
+		"leaf": {
+			"artist": "Robert Flogaus-Faust",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Acer_platanoides_2_RF.jpg",
+			"file": "File:Acer platanoides 2 RF.jpg"
+		}
+	},
+	"london-plane": {
+		"tree": {
+			"artist": "Richard Croft",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Berkeley_Square_-_geograph.org.uk_-_911963.jpg",
+			"file": "File:Berkeley Square - geograph.org.uk - 911963.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Golik",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Fallen_leaf_of_Platanus_x_hispanica_(1).jpg",
+			"file": "File:Fallen leaf of Platanus x hispanica (1).jpg"
+		}
+	},
+	"lime": {
+		"tree": {
+			"artist": "Unknown",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Tilia-cordata2.JPG",
+			"file": "File:Tilia-cordata2.JPG"
+		},
+		"leaf": {
+			"artist": "Bartosz Cuber",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Tilia_cordata_-_leaves_02.jpg",
+			"file": "File:Tilia cordata - leaves 02.jpg"
+		}
+	},
+	"hazel": {
+		"tree": {
+			"artist": "Unknown",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Corylus_avellana.jpg",
+			"file": "File:Corylus avellana.jpg"
+		},
+		"leaf": {
+			"artist": "Willow",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Corylus_avellana_001.jpg",
+			"file": "File:Corylus avellana 001.jpg"
+		}
+	},
+	"alder": {
+		"tree": {
+			"artist": "AnRo0002",
+			"license": "CC0",
+			"page": "https://commons.wikimedia.org/wiki/File:20120904Alnus_glutinosa01.jpg",
+			"file": "File:20120904Alnus glutinosa01.jpg"
+		},
+		"leaf": {
+			"artist": "Hladac",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Alnus_glutinosa_2.jpg",
+			"file": "File:(ms) Alnus glutinosa 2.jpg"
+		}
+	},
+	"wych-elm": {
+		"tree": {
+			"artist": "Ronnie Nijboer",
+			"license": "CC0",
+			"page": "https://commons.wikimedia.org/wiki/File:RN_Ulmus_glabra_(alnarp_sweden).jpg",
+			"file": "File:RN Ulmus glabra (alnarp sweden).jpg"
+		},
+		"leaf": {
+			"artist": "Mike Pennington",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Wych_Elm_(Ulmus_glabra)_leaves_in_bud,_Halligarth_-_geograph.org.uk_-_3454149.jpg",
+			"file": "File:Wych Elm (Ulmus glabra) leaves in bud, Halligarth - geograph.org.uk - 3454149.jpg"
+		}
+	},
+	"goat-willow": {
+		"tree": {
+			"artist": "Trougnouf (Benoit Brummer)",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Waterwilg_(DSC_2539).jpg",
+			"file": "File:Waterwilg (DSC 2539).jpg"
+		},
+		"leaf": {
+			"artist": "T. Kebert",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_caprea_leaves_TK_2021-05-15_1.jpg",
+			"file": "File:Salix caprea leaves TK 2021-05-15 1.jpg"
+		}
+	},
+	"white-willow": {
+		"tree": {
+			"artist": "MPF",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_alba_leaves.jpg",
+			"file": "File:Salix alba leaves.jpg"
+		},
+		"leaf": {
+			"artist": "Crusier",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_alba_foliage.JPG",
+			"file": "File:Salix alba foliage.JPG"
+		}
+	},
+	"aspen": {
+		"tree": {
+			"artist": "Šarūnas Šimkus",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:PopulusTremula001.JPG",
+			"file": "File:PopulusTremula001.JPG"
+		},
+		"leaf": {
+			"artist": "Dmitry Makeev",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Summer._Leaves_-_populus_tremula._Adaxial_side.jpg",
+			"file": "File:Summer. Leaves - populus tremula. Adaxial side.jpg"
+		}
+	},
+	"black-poplar": {
+		"tree": {
+			"artist": "Kenraiz",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Populus_nigra_kz1.jpg",
+			"file": "File:Populus nigra kz1.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Populus_nigra_kz03.jpg",
+			"file": "File:Populus nigra kz03.jpg"
+		}
+	},
+	"walnut": {
+		"tree": {
+			"artist": "Thesupermat",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Noyer_centenaire_en_automne.JPG",
+			"file": "File:Noyer centenaire en automne.JPG"
+		},
+		"leaf": {
+			"artist": "Uoaei1",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Juglans_regia_Herbstlaub_01.jpg",
+			"file": "File:Juglans regia Herbstlaub 01.jpg"
+		}
+	},
+	"box": {
+		"tree": {
+			"artist": "No machine-readable author provided. MPF assumed (based on c",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Buxus_sempervirens.jpg",
+			"file": "File:Buxus sempervirens.jpg"
+		},
+		"leaf": {
+			"artist": "I.Sáček, senior",
+			"license": "CC0",
+			"page": "https://commons.wikimedia.org/wiki/File:Buxus_sempervirens_10860.JPG",
+			"file": "File:Buxus sempervirens 10860.JPG"
+		}
+	},
+	"downy-birch": {
+		"tree": {
+			"artist": "Willow",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Betula_pubescens_-_Burgwald_002.jpg",
+			"file": "File:Betula pubescens - Burgwald 002.jpg"
+		},
+		"leaf": {
+			"artist": "Sten Porse",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Betula-pubescens-downy-leaves.JPG",
+			"file": "File:Betula-pubescens-downy-leaves.JPG"
+		}
+	},
+	"whitebeam": {
+		"tree": {
+			"artist": "Michael Garlick",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Ropsley,_Whitebeam_%27Sorbus_aria%27,_a_small_part_of_a_very_large_tree_-_geograph.org.uk_-_8325288.jpg",
+			"file": "File:Ropsley, Whitebeam 'Sorbus aria', a small part of a very large tree - geograph.org.uk - 8325288.jpg"
+		},
+		"leaf": {
+			"artist": "Hladac",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:(ms)_Sorbus_aria_9.jpg",
+			"file": "File:(ms) Sorbus aria 9.jpg"
+		}
+	},
+	"field-maple": {
+		"tree": {
+			"artist": "Rosenzweig",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Acer_campestre_Weinsberg_20070419_1.jpg",
+			"file": "File:Acer campestre Weinsberg 20070419 1.jpg"
+		},
+		"leaf": {
+			"artist": "David Perez",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Acer_campestre_02_by-dpc.jpg",
+			"file": "File:Acer campestre 02 by-dpc.jpg"
+		}
+	},
+	"oak": {
+		"tree": {
+			"artist": "Brian Robert Marshall",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:The_Council_Oak_in_late_summer,_Coate_Water,_Swindon_-_geograph.org.uk_-_943049.jpg",
+			"file": "File:The Council Oak in late summer, Coate Water, Swindon - geograph.org.uk - 943049.jpg"
+		},
+		"leaf": {
+			"artist": "Manuel R Popp",
+			"license": "CC BY 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Quercus_robur_179727189.jpg",
+			"file": "File:Quercus robur 179727189.jpg"
 		}
 	}
 }

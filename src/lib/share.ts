@@ -1,3 +1,4 @@
+import { base } from '$app/paths';
 import type { Species } from './content/types';
 import { grove } from './grove.svelte';
 
@@ -33,7 +34,12 @@ function wrapText(
 	return y;
 }
 
-async function drawCard(head: string, sub: string, eyebrow: string): Promise<HTMLCanvasElement> {
+/** Absolute https URL for a path — what people can actually tap in a message. */
+function absolute(path: string): string {
+	return new URL(`${base}${path}`, location.origin).href;
+}
+
+async function drawCard(head: string, sub: string, eyebrow: string, link: string) {
 	await Promise.all([
 		document.fonts.load('84px "Libre Caslon Text"'),
 		document.fonts.load('italic 40px "Libre Caslon Text"'),
@@ -46,7 +52,6 @@ async function drawCard(head: string, sub: string, eyebrow: string): Promise<HTM
 	ctx.fillStyle = '#FBFAF7';
 	ctx.fillRect(0, 0, 1080, 1080);
 
-	// leaf, top right
 	const g = ctx.createLinearGradient(780, 0, 1080, 300);
 	g.addColorStop(0, '#4FA372');
 	g.addColorStop(1, '#167E3C');
@@ -82,58 +87,108 @@ async function drawCard(head: string, sub: string, eyebrow: string): Promise<HTM
 
 	ctx.fillStyle = '#1E1E1E';
 	ctx.font = '700 34px "Inter Tight", Arial';
-	ctx.fillText('Meet a Tree', 80, 950);
+	ctx.fillText('Meet a Tree', 80, 944);
 	ctx.fillStyle = '#5E684F';
-	ctx.font = '400 27px "Inter Tight", Arial';
-	ctx.fillText('in support of the International Tree Foundation', 80, 992);
-	ctx.fillText('registered charity no. 1106269', 80, 1028);
+	ctx.font = '400 26px "Inter Tight", Arial';
+	ctx.fillText('in support of the International Tree Foundation', 80, 984);
+	ctx.fillText('registered charity no. 1106269', 80, 1018);
 
+	// the real link, printed on the card so it survives being screenshotted
+	const label = link.replace(/^https?:\/\//, '');
+	ctx.font = '700 24px "Inter Tight", Arial';
+	const w = Math.min(420, ctx.measureText(label).width + 36);
 	ctx.fillStyle = '#E9F2EA';
-	roundRect(ctx, 756, 940, 244, 64, 16);
+	roundRect(ctx, 1000 - w, 932, w, 60, 16);
 	ctx.fill();
 	ctx.strokeStyle = '#CBE0D2';
 	ctx.lineWidth = 2;
-	roundRect(ctx, 756, 940, 244, 64, 16);
+	roundRect(ctx, 1000 - w, 932, w, 60, 16);
 	ctx.stroke();
 	ctx.fillStyle = '#0E5C2B';
-	ctx.font = '700 28px "Inter Tight", Arial';
-	ctx.fillText('meetatree.app', 776, 982);
+	ctx.fillText(label, 1000 - w + 18, 970);
 	return c;
 }
 
-function present(canvas: HTMLCanvasElement, title: string) {
+/** Native share sheet where possible; otherwise a modal with a real link,
+ *  a copy button and an image download. Never surfaces a blob: URL as "the
+ *  link" — a blob URL only exists inside this page and cannot be opened by
+ *  anyone else. */
+function present(canvas: HTMLCanvasElement, title: string, text: string, url: string) {
 	canvas.toBlob(async (blob) => {
 		if (!blob) return;
-		const file = new File([blob], 'grove-card.png', { type: 'image/png' });
-		if (navigator.share && navigator.canShare?.({ files: [file] })) {
+		const file = new File([blob], 'meet-a-tree.png', { type: 'image/png' });
+		if (navigator.share) {
 			try {
-				await navigator.share({ files: [file], title });
+				if (navigator.canShare?.({ files: [file] })) {
+					await navigator.share({ files: [file], title, text, url });
+				} else {
+					await navigator.share({ title, text, url });
+				}
 				return;
-			} catch {
-				/* user cancelled or unsupported — fall through to preview */
+			} catch (err) {
+				if ((err as DOMException)?.name === 'AbortError') return; // user cancelled
 			}
 		}
-		grove.sharePreview = { url: URL.createObjectURL(blob), filename: 'grove-card.png' };
+		grove.sharePreview = {
+			url: URL.createObjectURL(blob),
+			filename: 'meet-a-tree.png',
+			link: url,
+			text
+		};
 	}, 'image/png');
 }
 
 export async function shareSpecies(sp: Species) {
 	const n = grove.speciesCount;
 	const article = /^[AEIOU]/.test(sp.name) ? 'an' : 'a';
+	const link = absolute(`/species/${sp.id}/`);
 	const c = await drawCard(
 		`I just met ${article} ${sp.name.toLowerCase()}.`,
-		sp.latin + (n ? ` · one of ${n} species in my Grove` : ''),
-		'A find worth sharing'
+		sp.latin + (n ? ` · one of ${n} species in my grove` : ''),
+		'A find worth sharing',
+		link
 	);
-	present(c, `${sp.name} — shared from Meet a Tree`);
+	present(
+		c,
+		`${sp.name} · Meet a Tree`,
+		`I just met ${article} ${sp.name.toLowerCase()} (${sp.latin}). ${sp.tell}`,
+		link
+	);
+}
+
+/** Generic "tell someone about this app" share, used by the top-bar button. */
+export async function shareApp() {
+	const n = grove.speciesCount;
+	const link = absolute('/');
+	const c = await drawCard(
+		'Can you name the trees on your street?',
+		'A free pocket field guide to 40 British and Irish trees — folklore, science and how to spot them.',
+		'Meet a Tree',
+		link
+	);
+	present(
+		c,
+		'Meet a Tree',
+		n
+			? `I can name ${n} ${n === 1 ? 'tree' : 'trees'} now, thanks to this free field guide to British trees.`
+			: 'A free pocket field guide to British and Irish trees — how to spot them, their folklore and their science.',
+		link
+	);
 }
 
 export async function shareGrove() {
 	const n = grove.speciesCount;
+	const link = absolute('/');
 	const c = await drawCard(
-		`My Grove holds ${n} ${n === 1 ? 'species' : 'species'}.`,
+		`My grove holds ${n} ${n === 1 ? 'species' : 'species'}.`,
 		`Together they absorb ~${grove.co2} kg of CO₂ a year — how many trees can you name?`,
-		'My Grove so far'
+		'My grove so far',
+		link
 	);
-	present(c, 'My Grove — shared from Meet a Tree');
+	present(
+		c,
+		'My grove · Meet a Tree',
+		`I can name ${n} ${n === 1 ? 'tree' : 'trees'} now. How many can you? Meet a Tree is a free field guide to British trees.`,
+		link
+	);
 }

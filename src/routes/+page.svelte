@@ -2,24 +2,49 @@
 	import { base } from '$app/paths';
 	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
 	import { factForDate, SEASONS } from '$lib/content/facts';
+	import { SPECIES, speciesById } from '$lib/content/species';
 	import { grove } from '$lib/grove.svelte';
 
 	const now = new Date();
 	const dateLine = `${now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })} · ${SEASONS[now.getMonth()]}`;
-	const greeting = now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening';
+	const greeting =
+		now.getHours() < 12 ? 'Good morning' : now.getHours() < 18 ? 'Good afternoon' : 'Good evening';
 	const fact = factForDate(now);
+
+	/** Tree of the day — stable for the whole day, and never one you've met. */
+	const dayIndex = Math.floor(now.getTime() / 86400000);
+	const featured = $derived(
+		(() => {
+			const unmet = SPECIES.filter((s) => !grove.has(s.id));
+			const pool = unmet.length ? unmet : SPECIES;
+			return pool[dayIndex % pool.length];
+		})()
+	);
+
+	/** What's worth looking at this month, drawn from the species calendars. */
+	const seasonNow = $derived(
+		(() => {
+			const m = now.getMonth();
+			const label = m <= 1 || m === 11 ? 'Winter' : m <= 4 ? 'Spring' : m <= 7 ? 'Summer' : 'Autumn';
+			const picks = ['oak', 'hawthorn', 'rowan', 'beech']
+				.map((id) => speciesById(id))
+				.filter((s): s is NonNullable<typeof s> => Boolean(s))
+				.map((s) => ({ s, note: s.season.find(([k]) => k === label)?.[1] ?? '' }))
+				.filter((x) => x.note);
+			return { label, picks: picks.slice(0, 2) };
+		})()
+	);
 </script>
 
 <svelte:head>
 	<title>Meet a Tree — the trees near you, by name</title>
 	<meta
 		name="description"
-		content="A free pocket companion that turns noticing trees into a habit — in support of the International Tree Foundation."
+		content="A free pocket field guide to 40 British and Irish trees — how to spot them, their folklore and their science. In support of the International Tree Foundation."
 	/>
 </svelte:head>
 
 <main class="view">
-	<p class="wordmark"><span class="mark" aria-hidden="true"></span>Meet a Tree</p>
 	<div class="vhead">
 		<div>
 			<p class="vsub">{dateLine}</p>
@@ -35,26 +60,75 @@
 		<p class="serif">{fact}</p>
 	</div>
 
+	<a class="card featured" href="{base}/species/{featured.id}/">
+		<span class="fpic">
+			<img
+				src="{base}/images/species/{featured.id}-tree.webp"
+				srcset="{base}/images/species/{featured.id}-tree-480.webp 480w, {base}/images/species/{featured.id}-tree.webp 900w"
+				sizes="(min-width: 700px) 420px, 100vw"
+				alt="A {featured.name}"
+				width="900"
+				height="675"
+				loading="eager"
+				fetchpriority="high"
+				decoding="async"
+			/>
+		</span>
+		<span class="fbody">
+			<span class="label">Meet this tree</span>
+			<span class="fname">{featured.name}</span>
+			<span class="flatin">{featured.latin}</span>
+			<span class="fhint">{featured.hint}</span>
+			<span class="ftell">{featured.tell}</span>
+		</span>
+	</a>
+
+	<div class="row two">
+		<a class="card linkcard" href="{base}/identify/">
+			<p class="label">Identify</p>
+			<p class="serif small">Found a leaf? Three questions and the guide narrows it down. →</p>
+		</a>
+		<a class="card linkcard" href="{base}/learn/">
+			<p class="label">Field guide</p>
+			<p class="serif small">{SPECIES.length} British trees, with folklore and science. →</p>
+		</a>
+	</div>
+
+	<div class="card">
+		<p class="label forest">{seasonNow.label} · what to look for</p>
+		{#each seasonNow.picks as p (p.s.id)}
+			<p class="seasonline">
+				<a href="{base}/species/{p.s.id}/">{p.s.name}</a> — {p.note}
+			</p>
+		{/each}
+	</div>
+
 	<a class="card linkcard" href="{base}/near/">
-		<p class="label">Where to look this week</p>
-		<p class="serif" style="font-size:15px">
-			Streets, churchyards, hedgerows and chalk downs each hold a different handful of trees. Narrow
-			it down before you even look at a leaf. →
+		<p class="label">Where to look</p>
+		<p class="serif small">
+			Streets, churchyards, hedgerows and chalk downs each hold a different handful of trees. →
 		</p>
 	</a>
 
 	<div class="card">
-		<p class="label forest">September challenge</p>
-		<p class="serif" style="font-size:15px">
-			Autumn Colours Bingo opens soon. Bring a friend — boards are better in pairs.
+		<p class="label">Your grove</p>
+		<p class="serif small">
+			{#if grove.speciesCount === 0}
+				Nothing in it yet. The first tree is the hard one — after that you start noticing them
+				everywhere.
+			{:else}
+				{grove.speciesCount} of {SPECIES.length} species met, absorbing about {grove.co2} kg of CO₂ a
+				year between them.
+			{/if}
 		</p>
+		<a class="btn small ghost" style="margin-top:10px" href="{base}/grove/">Open my grove</a>
 	</div>
 
 	<div class="give">
 		<p class="gt">Enjoying Meet a Tree? Plant a real one.</p>
 		<p class="gb">
-			Meet a Tree is free forever. If it makes you love trees a little more, the International Tree
-			Foundation plants them for real — registered charity 1106269.
+			Meet a Tree is free forever, with no ads and no paywall. If it makes you love trees a little
+			more, the International Tree Foundation plants them for real — registered charity 1106269.
 		</p>
 		<a
 			class="btn small"
@@ -69,41 +143,20 @@
 		<div class="mark" aria-hidden="true"></div>
 		<p class="lt">
 			<b>Meet a Tree — in support of the International Tree Foundation</b>
-			Registered charity no. 1106269. Free forever · no ads · your data stays on your phone.
+			A field guide to the trees of Britain and Ireland. Registered charity no. 1106269. Free forever
+			· no ads · your grove stays on your phone.
 		</p>
 	</div>
-
 </main>
 
 <style>
-	.wordmark {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		margin: 0 0 2px;
-		font-family: var(--display);
-		font-size: 15px;
-		color: var(--forest);
-		letter-spacing: 0.01em;
-	}
-	.wordmark .mark {
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		background: var(--green);
-		position: relative;
-		flex: none;
-	}
-	.wordmark .mark::after {
-		content: '';
-		position: absolute;
-		inset: 5px;
-		border-radius: 0 55% 0 55%;
-		background: var(--paper);
-		transform: rotate(-8deg);
-	}
 	.nums {
 		font-variant-numeric: tabular-nums;
+	}
+	.vhead h1 {
+		font-size: 27px;
+		line-height: 1.15;
+		text-wrap: balance;
 	}
 	.linkcard {
 		text-decoration: none;
@@ -114,9 +167,95 @@
 	.linkcard:hover {
 		border-color: var(--green);
 	}
-	.vhead h1 {
-		font-size: 27px;
-		line-height: 1.15;
-		text-wrap: balance;
+	.serif.small {
+		font-size: 15px;
+	}
+	.row.two {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+		align-items: stretch;
+	}
+	.featured {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		padding: 0;
+		overflow: hidden;
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.12s ease;
+	}
+	.featured:hover {
+		border-color: var(--green);
+	}
+	.fpic {
+		display: block;
+		aspect-ratio: 16 / 9;
+		background: var(--stonewash);
+	}
+	.fpic img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.fbody {
+		display: block;
+		padding: 12px 15px 14px;
+	}
+	.fname {
+		display: block;
+		font-family: var(--display);
+		font-size: 20px;
+		line-height: 1.2;
+	}
+	.flatin {
+		display: block;
+		font-size: 12.5px;
+		font-style: italic;
+		color: var(--soft);
+	}
+	.fhint {
+		display: block;
+		font-size: 13px;
+		color: var(--soft);
+		margin-top: 6px;
+	}
+	.ftell {
+		display: block;
+		font-family: var(--display);
+		font-style: italic;
+		font-size: 13.5px;
+		color: var(--forest);
+		margin-top: 8px;
+	}
+	.seasonline {
+		margin: 0 0 8px;
+		font-size: 13.5px;
+		line-height: 1.55;
+		color: var(--soft);
+	}
+	.seasonline:last-child {
+		margin-bottom: 0;
+	}
+	.seasonline a {
+		color: var(--deep);
+		font-weight: 700;
+		text-decoration: none;
+	}
+	@media (min-width: 900px) {
+		.row.two {
+			grid-template-columns: 1fr 1fr 1fr;
+		}
+		.featured {
+			flex-direction: row;
+			align-items: stretch;
+		}
+		.fpic {
+			width: 300px;
+			flex: none;
+			aspect-ratio: auto;
+		}
 	}
 </style>

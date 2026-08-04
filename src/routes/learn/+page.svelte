@@ -8,7 +8,7 @@
 
 <svelte:head>
 	<title>Learn · Meet a Tree</title>
-	<meta name="description" content="Search the field guide: {SPECIES.length} trees, each with how to spot it, its folklore and its science." />
+	<meta name="description" content="Search the field guide: {SPECIES.length} trees of Britain and Ireland, each with how to spot it, its folklore and its science." />
 </svelte:head>
 
 <main class="view">
@@ -16,6 +16,7 @@
 		<h1>Learn</h1>
 		<span class="pill">{SPECIES.length} trees</span>
 	</div>
+	<p class="scope">The trees of <strong>Britain and Ireland</strong> — natives, long-established introductions, and the ones you actually meet on a street or a hillside.</p>
 
 	<search>
 		<label class="searchbox">
@@ -72,6 +73,14 @@
 </main>
 
 <style>
+	.scope {
+		margin: -4px 0 0;
+		font-size: 13px;
+		color: var(--soft);
+	}
+	.scope strong {
+		color: var(--ink);
+	}
 	.searchbox {
 		display: flex;
 		align-items: center;
