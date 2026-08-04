@@ -42,11 +42,10 @@
 				class="spcard"
 				class:locked={!has}
 				href={has ? `${base}/species/${sp.id}/` : `${base}/identify/`}
-				aria-label={has ? sp.name : 'Unidentified species — keep exploring'}
 			>
 				<span class="leafwrap"><LeafCard colors={has ? sp.colors : ['#DDD9CE', '#DDD9CE']} /></span>
-				<span class="sn">{has ? sp.name : '?'}</span><br />
-				<span class="sl">{has ? sp.latin : 'not yet met'}</span>
+				<span class="sn">{has ? sp.name : 'Not yet met'}</span><br />
+				<span class="sl">{has ? sp.latin : 'tap to identify'}</span>
 			</a>
 		{/each}
 	</div>
@@ -129,8 +128,9 @@
 		font-style: italic;
 		color: var(--soft);
 	}
-	.spcard.locked {
-		opacity: 0.55;
+	.spcard.locked .sn {
+		color: var(--soft);
+		font-weight: 600;
 	}
 	.badges {
 		display: flex;
