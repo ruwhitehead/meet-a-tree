@@ -7,7 +7,6 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import Overlays from '$lib/components/Overlays.svelte';
 	import { requestPersistence } from '$lib/photos';
-	import { base } from '$app/paths';
 	import { page } from '$app/state';
 	import { SPECIES } from '$lib/content/species';
 	import { SITE_URL } from '$lib/site';
@@ -46,7 +45,7 @@
 		property="og:description"
 		content="A free pocket field guide to {SPECIES.length} trees of Britain and Ireland — how to spot them, their folklore and their science. In support of the International Tree Foundation."
 	/>
-	<meta property="og:image" content="{SITE_URL}{base}/images/og-card.jpg" />
+	<meta property="og:image" content="{SITE_URL}/images/og-card.jpg" />
 	<meta property="og:image:type" content="image/jpeg" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
