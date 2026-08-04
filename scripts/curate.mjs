@@ -14,7 +14,12 @@ const LATIN = {
   'sweet-chestnut':'Castanea sativa','norway-maple':'Acer platanoides','field-maple':'Acer campestre',
   'london-plane':'Platanus x hispanica',lime:'Tilia cordata',hazel:'Corylus avellana',alder:'Alnus glutinosa',
   'wych-elm':'Ulmus glabra','goat-willow':'Salix caprea','white-willow':'Salix alba',aspen:'Populus tremula',
-  'black-poplar':'Populus nigra',walnut:'Juglans regia',box:'Buxus sempervirens'
+  'black-poplar':'Populus nigra',walnut:'Juglans regia',box:'Buxus sempervirens',
+  'sitka-spruce':'Picea sitchensis','common-lime':'Tilia europaea','crack-willow':'Salix fragilis',
+  leylandii:'Cupressocyparis leylandii','monkey-puzzle':'Araucaria araucana',
+  'giant-redwood':'Sequoiadendron giganteum','cedar-of-lebanon':'Cedrus libani',
+  'weeping-willow':'Salix sepulcralis','lombardy-poplar':'Populus italica',
+  'ornamental-cherry':'Prunus serrulata'
 };
 async function search(term, latin, kind) {
   const g = latin.split(' ')[0].toLowerCase(), e = latin.split(' ')[1].toLowerCase();

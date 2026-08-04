@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { base } from '$app/paths';
+	import Give from '$lib/components/Give.svelte';
 	import TreeMark from '$lib/components/TreeMark.svelte';
 	import { factForDate, SEASONS } from '$lib/content/facts';
 	import { SPECIES, speciesById } from '$lib/content/species';
@@ -51,7 +52,7 @@
 	<title>Meet a Tree — the trees near you, by name</title>
 	<meta
 		name="description"
-		content="A free pocket field guide to 40 British and Irish trees — how to spot them, their folklore and their science. In support of the International Tree Foundation."
+		content="A free pocket field guide to {SPECIES.length} British and Irish trees — how to spot them, their folklore and their science. In support of the International Tree Foundation."
 	/>
 </svelte:head>
 
@@ -159,20 +160,7 @@
 		<a class="btn small ghost" style="margin-top:10px" href="{base}/trees/">Open my grove</a>
 	</div>
 
-	<div class="give">
-		<p class="gt">Enjoying Meet a Tree? Plant a real one.</p>
-		<p class="gb">
-			Meet a Tree is free forever, with no ads and no paywall. If it makes you love trees a little
-			more, the International Tree Foundation plants them for real — registered charity 1106269.
-		</p>
-		<a
-			class="btn small"
-			style="margin-top:10px"
-			href="https://internationaltreefoundation.org/donate/"
-			target="_blank"
-			rel="noopener">Donate to ITF ↗</a
-		>
-	</div>
+	<Give />
 
 	<a
 		class="itf"

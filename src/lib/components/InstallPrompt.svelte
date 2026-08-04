@@ -3,6 +3,7 @@
 	import { install } from '$lib/install.svelte';
 	import { grove } from '$lib/grove.svelte';
 	import { trees } from '$lib/trees.svelte';
+	import { SPECIES } from '$lib/content/species';
 
 	/** Sits in the page flow directly under the top bar, on every screen — a
 	 *  floating bar would cover content and fail the touch-target audit. */
@@ -16,7 +17,7 @@
 			? `You're following ${trees.count === 1 ? 'a tree' : `${trees.count} trees`}. Keep ${trees.count === 1 ? 'it' : 'them'} one tap away.`
 			: grove.speciesCount > 0
 				? `Your grove holds ${grove.speciesCount} ${grove.speciesCount === 1 ? 'species' : 'species'}. Keep it in your pocket.`
-				: 'All 40 trees, pictures included, work with no signal once it’s on your home screen.'
+				: `All ${SPECIES.length} trees, pictures included, work with no signal once it’s on your home screen.`
 	);
 
 	async function act() {

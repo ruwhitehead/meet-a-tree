@@ -48,12 +48,27 @@ const SPECIES = [
 	{ id: 'aspen', latin: 'Populus tremula' },
 	{ id: 'black-poplar', latin: 'Populus nigra' },
 	{ id: 'walnut', latin: 'Juglans regia' },
-	{ id: 'box', latin: 'Buxus sempervirens' }
-].map((s) => ({
-	...s,
-	leaf: [`${s.latin} leaves`, `${s.latin} leaf`, `${s.latin} foliage`, `${s.latin} needles`],
-	tree: [`${s.latin} tree`, `${s.latin} habit`, `${s.latin}`]
-}));
+	{ id: 'box', latin: 'Buxus sempervirens' },
+	// batch G — the planted trees, taking the guide to fifty. `search` overrides
+	// the Latin name where the cultivar has no page of its own to lead from.
+	{ id: 'sitka-spruce', latin: 'Picea sitchensis' },
+	{ id: 'common-lime', latin: 'Tilia × europaea', search: 'Tilia europaea' },
+	{ id: 'crack-willow', latin: 'Salix fragilis' },
+	{ id: 'leylandii', latin: 'Cupressus × leylandii', search: 'Cupressocyparis leylandii' },
+	{ id: 'monkey-puzzle', latin: 'Araucaria araucana' },
+	{ id: 'giant-redwood', latin: 'Sequoiadendron giganteum' },
+	{ id: 'cedar-of-lebanon', latin: 'Cedrus libani' },
+	{ id: 'weeping-willow', latin: 'Salix babylonica', search: 'Salix sepulcralis' },
+	{ id: 'lombardy-poplar', latin: 'Populus nigra', search: 'Populus nigra Italica' },
+	{ id: 'ornamental-cherry', latin: 'Prunus serrulata', search: 'Prunus Kanzan' }
+].map((s) => {
+	const q = s.search ?? s.latin;
+	return {
+		...s,
+		leaf: [`${q} leaves`, `${q} leaf`, `${q} foliage`, `${q} needles`],
+		tree: [`${q} tree`, `${q} habit`, `${q}`]
+	};
+});
 
 async function wikipediaLead(latin) {
 	for (const lang of ['en', 'de']) {
@@ -91,6 +106,9 @@ async function commonsFile(title) {
 
 // Curated by eye from candidate contact sheets (scripts/candidates.mjs).
 const TREE_PINS = {
+ "crack-willow": "File:Crack willow, Edgbaston Reservoir - geograph.org.uk - 7139689.jpg",
+ "lombardy-poplar": "File:Ancient Lombardy Poplar Tree. - geograph.org.uk - 909435.jpg",
+ "ornamental-cherry": "File:Cerisier du Japon Prunus serrulata.jpg",
  "sessile-oak": "File:Sessile oak on Yr Oerfa - geograph.org.uk - 575846.jpg",
  "holm-oak": "File:Holm Oak Tree, Westbury Court Garden - geograph.org.uk - 5418343.jpg",
  "downy-birch": "File:Downy Birch at Marywell Farm - geograph.org.uk - 77565.jpg",
@@ -122,6 +140,10 @@ const TREE_PINS = {
  "elder": "File:Sambucus nigra.Inflorescence.jpg"
 };
 const LEAF_PINS = {
+ "sitka-spruce": "File:Sitka Spruce (Picea sitchensis) foliage, Sitka National Historical Park (bf83265e-1dd8-b71c-0715-310543ca4965).jpg",
+ "common-lime": "File:Tilia x europea-2.JPG",
+ "leylandii": "File:Cupressocyparis leylandii 'Castlewellan Gold' green leafs.jpg",
+ "ornamental-cherry": "File:Prunus serrulata 2005 spring 025.jpg",
  "sessile-oak": "File:Quercus petraea. Carbayu albar.jpg",
  "holm-oak": "File:Quercus ilex subsp. ilex. Ardina.jpg",
  "downy-birch": "File:Betula-pubescens-downy-leaves.JPG",
@@ -211,16 +233,16 @@ const credits = existsSync('src/lib/content/credits.json')
 for (const sp of SPECIES) {
 	try {
 		if (existsSync(`static/images/species/${sp.id}-tree.webp`) && credits[sp.id]) continue;
-		const treeHit = TREE_PINS[sp.id] ? await commonsFile(TREE_PINS[sp.id]) : await wikipediaLead(sp.latin);
+		const treeHit = TREE_PINS[sp.id] ? await commonsFile(TREE_PINS[sp.id]) : await wikipediaLead(sp.search ?? sp.latin);
 		const leafHit = LEAF_PINS[sp.id] ? await commonsFile(LEAF_PINS[sp.id]) : null;
 		const t = await grab(
 			treeHit,
 			sp.tree,
-			sp.latin,
+			sp.search ?? sp.latin,
 			`static/images/species/${sp.id}-tree.webp`,
 			`static/images/species/${sp.id}-thumb.webp`
 		);
-		const l = await grab(leafHit, sp.leaf, sp.latin, `static/images/species/${sp.id}-leaf.webp`);
+		const l = await grab(leafHit, sp.leaf, sp.search ?? sp.latin, `static/images/species/${sp.id}-leaf.webp`);
 		credits[sp.id] = {
 			tree: { artist: t.artist, license: t.license, page: t.page, file: t.file },
 			leaf: { artist: l.artist, license: l.license, page: l.page, file: l.file }

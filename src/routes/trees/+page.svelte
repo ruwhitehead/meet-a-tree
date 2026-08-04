@@ -5,9 +5,9 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import { SPECIES, searchSpecies, speciesById } from '$lib/content/species';
 	import { EVENTS, trees } from '$lib/trees.svelte';
-	import { BADGES } from '$lib/grove.svelte';
 	import { shareGrove } from '$lib/share';
 	import { grove } from '$lib/grove.svelte';
+	import Give from '$lib/components/Give.svelte';
 	import { detectSaveCapability } from '$lib/photos';
 
 	let adding = $state(false);
@@ -20,6 +20,15 @@
 	const prompts = $derived(trees.prompts());
 	const chosenSpecies = $derived(chosen ? speciesById(chosen) : undefined);
 	const savecap = detectSaveCapability();
+
+	/** A wall of 50 locked cards reads as "you have failed 50 times". Until
+	 *  someone has a few species, lead with the ones they can genuinely find on
+	 *  any street, and keep the full list below. */
+	const STARTERS = ['oak', 'sycamore', 'birch', 'holly', 'hawthorn', 'ash'];
+	const starters = $derived(
+		STARTERS.map((id) => speciesById(id)).filter((s): s is NonNullable<typeof s> => Boolean(s))
+	);
+	const showStarters = $derived(grove.speciesCount < 3);
 
 	/** Two halves of the same idea: the trees you follow, and the species you've
 	 *  met. They used to be separate tabs, which nobody could tell apart. */
@@ -93,14 +102,28 @@
 			<div class="stat"><div class="n">{SPECIES.length - grove.speciesCount}</div><div class="l">to find</div></div>
 		</div>
 
-		{#if grove.speciesCount === 0}
+		{#if showStarters}
 			<div class="card tint">
-				<p class="label">Nothing met yet</p>
-				<p class="serif" style="font-size:15.5px">
-					Every tree you work out gets added here. Start with whatever is outside your window.
+				<p class="label">Six to start with</p>
+				<p class="serif" style="font-size:15px">
+					These six are on almost every British street and in almost every hedge. Learn them and you
+					have most of what you will meet on an ordinary walk.
 				</p>
-				<a class="btn small" style="margin-top:10px" href="{base}/identify/">Identify a leaf</a>
 			</div>
+			<ul class="starters">
+				{#each starters as sp (sp.id)}
+					<li>
+						<a class="starter" class:met={grove.has(sp.id)} href="{base}/species/{sp.id}/">
+							<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" />
+							<span class="stext">
+								<span class="sname">{grove.has(sp.id) ? `✓ ${sp.name}` : sp.name}</span>
+								<span class="shint">{sp.hint}</span>
+							</span>
+						</a>
+					</li>
+				{/each}
+			</ul>
+			<p class="label" style="margin-top:6px">The rest of the guide</p>
 		{/if}
 
 		<div class="grid">
@@ -122,19 +145,7 @@
 			{/each}
 		</div>
 
-		<p class="label" style="margin-top:6px">Badges</p>
-		<div class="badges">
-			{#each BADGES as b (b.id)}
-				{@const won = b.test(grove.speciesCount)}
-				<span class="badge" class:won>{won ? '✓ ' : ''}{b.name}</span>
-			{/each}
-		</div>
-
-		<div class="give">
-			<p class="gt">🌱 Met some trees? Plant a real one.</p>
-			<p class="gb">Your gift goes to the International Tree Foundation — registered charity 1106269.</p>
-			<a class="btn small" style="margin-top:10px" href="https://internationaltreefoundation.org/donate/" target="_blank" rel="noopener">Donate to ITF ↗</a>
-		</div>
+		<Give />
 	{:else if trees.count === 0}
 
 		<div class="card tint">
@@ -376,24 +387,51 @@
 		color: var(--soft);
 		font-weight: 600;
 	}
-	.badges {
+	.starters {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 9px;
+	}
+	.starter {
 		display: flex;
-		gap: 8px;
-		flex-wrap: wrap;
-	}
-	.badge {
-		font-size: 11.5px;
-		font-weight: 700;
-		color: var(--forest);
-		background: var(--stonewash);
+		align-items: center;
+		gap: 12px;
+		background: var(--card);
 		border: 1px solid var(--line);
-		border-radius: 999px;
-		padding: 6px 12px;
+		border-radius: 14px;
+		padding: 9px 12px;
+		min-height: 62px;
+		text-decoration: none;
+		color: inherit;
 	}
-	.badge.won {
-		color: var(--deep);
+	.starter:hover {
+		border-color: var(--green);
+	}
+	.starter.met {
 		background: var(--wash);
 		border-color: var(--wash-line);
+	}
+	.starter img {
+		width: 44px;
+		height: 44px;
+		border-radius: 10px;
+		object-fit: cover;
+		flex: none;
+	}
+	.stext {
+		min-width: 0;
+	}
+	.sname {
+		display: block;
+		font-weight: 700;
+		font-size: 14px;
+	}
+	.shint {
+		display: block;
+		font-size: 12px;
+		color: var(--soft);
 	}
 	.list {
 		list-style: none;
@@ -561,7 +599,8 @@
 		color: var(--soft);
 	}
 	@media (min-width: 700px) {
-		.list {
+		.list,
+		.starters {
 			grid-template-columns: 1fr 1fr;
 		}
 		.grid {

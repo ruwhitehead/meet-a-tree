@@ -558,5 +558,145 @@
 			"page": "https://commons.wikimedia.org/wiki/File:Juniperus_communis_Ja%C5%82owiec_pospolity_2021-06-23_04.jpg",
 			"file": "File:Juniperus communis Jałowiec pospolity 2021-06-23 04.jpg"
 		}
+	},
+	"monkey-puzzle": {
+		"tree": {
+			"artist": "Vicente Fernández Rioja",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Araucaria_en_Parque_Nacional_Conguillio.jpg",
+			"file": "File:Araucaria en Parque Nacional Conguillio.jpg"
+		},
+		"leaf": {
+			"artist": "This photo was taken by Roman Bonnefoy (  Romanceor [parlons",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Araucaria_araucana-detail.jpg",
+			"file": "File:Araucaria araucana-detail.jpg"
+		}
+	},
+	"giant-redwood": {
+		"tree": {
+			"artist": "Mike Murphy (talk · contribs)",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Grizzly_Giant_Mariposa_Grove.jpg",
+			"file": "File:Grizzly Giant Mariposa Grove.jpg"
+		},
+		"leaf": {
+			"artist": "Aethonatic",
+			"license": "CC0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sequoiadendron_giganteum_leaves_-_22_March_2026.jpg",
+			"file": "File:Sequoiadendron giganteum leaves - 22 March 2026.jpg"
+		}
+	},
+	"cedar-of-lebanon": {
+		"tree": {
+			"artist": "Olivier BEZES",
+			"license": "CC BY 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:C%C3%A8dre_du_Liban_Barouk_2005.jpg",
+			"file": "File:Cèdre du Liban Barouk 2005.jpg"
+		},
+		"leaf": {
+			"artist": "Crusier",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cedrus_libani_foliage_PAN.JPG",
+			"file": "File:Cedrus libani foliage PAN.JPG"
+		}
+	},
+	"weeping-willow": {
+		"tree": {
+			"artist": "Weepingraf",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_Sepulcralis_Group_%27Sepulcralis%278.JPG",
+			"file": "File:Salix Sepulcralis Group 'Sepulcralis'8.JPG"
+		},
+		"leaf": {
+			"artist": "André Karwath aka Aka",
+			"license": "CC BY-SA 2.5",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_x_sepulcralis_-_leafs_(aka).jpg",
+			"file": "File:Salix x sepulcralis - leafs (aka).jpg"
+		}
+	},
+	"ornamental-cherry": {
+		"tree": {
+			"artist": "Myrabella",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cerisier_du_Japon_Prunus_serrulata.jpg",
+			"file": "File:Cerisier du Japon Prunus serrulata.jpg"
+		},
+		"leaf": {
+			"artist": "Kropsoq",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Prunus_serrulata_2005_spring_025.jpg",
+			"file": "File:Prunus serrulata 2005 spring 025.jpg"
+		}
+	},
+	"sitka-spruce": {
+		"tree": {
+			"artist": "Graaf van Vlaanderen",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Sitka_01.JPG",
+			"file": "File:Sitka 01.JPG"
+		},
+		"leaf": {
+			"artist": "NPS",
+			"license": "Public domain",
+			"page": "https://commons.wikimedia.org/wiki/File:Sitka_Spruce_(Picea_sitchensis)_foliage,_Sitka_National_Historical_Park_(bf83265e-1dd8-b71c-0715-310543ca4965).jpg",
+			"file": "File:Sitka Spruce (Picea sitchensis) foliage, Sitka National Historical Park (bf83265e-1dd8-b71c-0715-310543ca4965).jpg"
+		}
+	},
+	"common-lime": {
+		"tree": {
+			"artist": "Ptelea",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Common_limes,_avenue.jpg",
+			"file": "File:Common limes, avenue.jpg"
+		},
+		"leaf": {
+			"artist": "Alvesgaspar",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Tilia_x_europea-2.JPG",
+			"file": "File:Tilia x europea-2.JPG"
+		}
+	},
+	"crack-willow": {
+		"tree": {
+			"artist": "A J Paxton",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Crack_willow,_Edgbaston_Reservoir_-_geograph.org.uk_-_7139689.jpg",
+			"file": "File:Crack willow, Edgbaston Reservoir - geograph.org.uk - 7139689.jpg"
+		},
+		"leaf": {
+			"artist": "Krzysztof Ziarnek, Kenraiz",
+			"license": "CC BY-SA 4.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Salix_fragilis_kz05.jpg",
+			"file": "File:Salix fragilis kz05.jpg"
+		}
+	},
+	"leylandii": {
+		"tree": {
+			"artist": "Unknown",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Leyland_Cypress.jpg",
+			"file": "File:Leyland Cypress.jpg"
+		},
+		"leaf": {
+			"artist": "Crusier",
+			"license": "CC BY 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Cupressocyparis_leylandii_%27Castlewellan_Gold%27_green_leafs.jpg",
+			"file": "File:Cupressocyparis leylandii 'Castlewellan Gold' green leafs.jpg"
+		}
+	},
+	"lombardy-poplar": {
+		"tree": {
+			"artist": "Graham Newell",
+			"license": "CC BY-SA 2.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Ancient_Lombardy_Poplar_Tree._-_geograph.org.uk_-_909435.jpg",
+			"file": "File:Ancient Lombardy Poplar Tree. - geograph.org.uk - 909435.jpg"
+		},
+		"leaf": {
+			"artist": "Rasbak",
+			"license": "CC BY-SA 3.0",
+			"page": "https://commons.wikimedia.org/wiki/File:Italiaanse_populier_ruitvormigblad_Populus_nigra_%27Italica%27.jpg",
+			"file": "File:Italiaanse populier ruitvormigblad Populus nigra 'Italica'.jpg"
+		}
 	}
 }

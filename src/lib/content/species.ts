@@ -5,6 +5,7 @@ import { SPECIES_C } from './species-c';
 import { SPECIES_D } from './species-d';
 import { SPECIES_E } from './species-e';
 import { SPECIES_F } from './species-f';
+import { SPECIES_G } from './species-g';
 
 /** The guide covers trees you'll meet in Britain and Ireland. */
 export const SPECIES: Species[] = [
@@ -13,7 +14,8 @@ export const SPECIES: Species[] = [
 	...SPECIES_C,
 	...SPECIES_D,
 	...SPECIES_E,
-	...SPECIES_F
+	...SPECIES_F,
+	...SPECIES_G
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 export const speciesById = (id: string): Species | undefined => SPECIES.find((s) => s.id === id);

@@ -12,9 +12,11 @@ export const KEY2: Record<LeafKind, { id: string; title: string }[]> = {
 	needle: [
 		{ id: 'flat', title: 'Flat and soft, in two rows' },
 		{ id: 'paired', title: 'Long, in pairs' },
-		{ id: 'rosette', title: 'Soft, in tufts or rosettes' },
+		{ id: 'rosette', title: 'In tufts or rosettes on short spurs' },
 		{ id: 'spiky', title: 'Short and sharp, all round the twig' },
-		{ id: 'prickly-three', title: 'Prickly, in threes, with berries' }
+		{ id: 'prickly-three', title: 'Prickly, in threes, with berries' },
+		{ id: 'scale', title: 'Tiny scale leaves clothing the shoot' },
+		{ id: 'plates', title: 'Broad, sharp triangles overlapping like armour' }
 	],
 	simple: [
 		{ id: 'toothed', title: 'Edges clearly toothed' },

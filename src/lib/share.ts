@@ -2,6 +2,7 @@ import { base } from '$app/paths';
 import type { Species } from './content/types';
 import { EVENTS, type MyTree } from './trees.svelte';
 import { grove } from './grove.svelte';
+import { SPECIES } from './content/species';
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
 	ctx.beginPath();
@@ -163,7 +164,7 @@ export async function shareApp() {
 	const link = absolute('/');
 	const c = await drawCard(
 		'Can you name the trees on your street?',
-		'A free pocket field guide to 40 British and Irish trees — folklore, science and how to spot them.',
+		`A free pocket field guide to ${SPECIES.length} British and Irish trees — folklore, science and how to spot them.`,
 		'Meet a Tree',
 		link
 	);

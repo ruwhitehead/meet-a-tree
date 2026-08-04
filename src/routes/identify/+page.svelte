@@ -2,7 +2,7 @@
 	import { base } from '$app/paths';
 	import LeafShape from '$lib/components/LeafShape.svelte';
 	import { KEY1, KEY2, keyCandidates } from '$lib/content/key';
-	import { speciesById } from '$lib/content/species';
+	import { SPECIES, speciesById } from '$lib/content/species';
 	import { PLACES, placeSpecies } from '$lib/content/habitats';
 	import type { LeafKind } from '$lib/content/types';
 	import { grove } from '$lib/grove.svelte';
@@ -107,7 +107,7 @@
 	<div class="card stonebg">
 		<p class="how">
 			<strong>Two ways in.</strong> Photograph the leaf and we'll ask Pl@ntNet what it thinks — or
-			answer three questions and the guide narrows 40 British trees down to a shortlist. The
+			answer three questions and the guide narrows {SPECIES.length} British trees down to a shortlist. The
 			questions work with no signal at all.
 		</p>
 	</div>

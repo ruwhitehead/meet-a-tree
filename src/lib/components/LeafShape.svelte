@@ -37,6 +37,19 @@
 				<path d="M50 {y}L18 {y - 12}" /><path d="M50 {y}L82 {y - 12}" /><path d="M50 {y}L50 {y - 18}" />
 			{/each}
 			<circle cx="66" cy="66" r="8" />
+		{:else if shape === 'scale'}
+			<!-- flattened spray of scale leaves (cypress, redwood) -->
+			<path d="M50 94V16" />
+			<path d="M50 70L24 50M50 70L76 50" />
+			<path d="M50 52L28 34M50 52L72 34" />
+			<path d="M50 34L34 20M50 34L66 20" />
+		{:else if shape === 'plates'}
+			<!-- broad spine-tipped leaves overlapping down the shoot (monkey puzzle) -->
+			<path d="M50 94V22" />
+			{#each [76, 58, 40] as y (y)}
+				<path d="M50 {y}L24 {y - 8}L50 {y - 20}" />
+				<path d="M50 {y}L76 {y - 8}L50 {y - 20}" />
+			{/each}
 		{:else if shape === 'simple'}
 			<!-- step 1: one undivided blade, edge unbroken -->
 			<path d="M50 94V30" />

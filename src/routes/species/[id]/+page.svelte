@@ -8,7 +8,6 @@
 	let { data } = $props();
 	const sp = $derived(data.species);
 
-	let tab: 'spot' | 'folklore' | 'science' = $state('spot');
 	const inGrove = $derived(grove.has(sp.id));
 
 	async function add() {
@@ -75,13 +74,15 @@
 		{/each}
 	</dl>
 
-	<div class="tabs" role="tablist" aria-label="Species information">
-		<button class="tab" role="tab" aria-selected={tab === 'spot'} onclick={() => (tab = 'spot')}>Spotting it</button>
-		<button class="tab" role="tab" aria-selected={tab === 'folklore'} onclick={() => (tab = 'folklore')}>Folklore</button>
-		<button class="tab" role="tab" aria-selected={tab === 'science'} onclick={() => (tab = 'science')}>Science</button>
-	</div>
+	<nav class="contents" aria-label="On this page">
+		<a href="#spotting">Spotting it</a>
+		<a href="#year">Through the year</a>
+		<a href="#folklore">Folklore</a>
+		<a href="#science">Science</a>
+	</nav>
 
-	{#if tab === 'spot'}
+	<section id="spotting" class="section">
+		<h2 class="shead">Spotting it</h2>
 		<div class="prose">
 			{#each sp.spot as note, i (i)}
 				<p class="note">
@@ -89,25 +90,43 @@
 				</p>
 			{/each}
 		</div>
-		<h2 class="subhead">Through the year</h2>
+	</section>
+
+	<section id="year" class="section">
+		<h2 class="shead">Through the year</h2>
 		<div class="seasons">
 			{#each sp.season as [season, note] (season)}
-				<div class="seasoncard">
+				<div class="seasoncard {season.toLowerCase()}">
 					<p class="label">{season}</p>
 					<p class="sn">{note}</p>
 				</div>
 			{/each}
 		</div>
-	{:else}
+	</section>
+
+	<section id="folklore" class="section">
+		<h2 class="shead">Folklore</h2>
 		<div class="prose">
-			{#each sp[tab] as [title, body] (title)}
-				<article class="entry">
-					<h2>{title}</h2>
+			{#each sp.folklore as [title, body] (title)}
+				<article class="story">
+					<h3>{title}</h3>
 					<p>{body}</p>
 				</article>
 			{/each}
 		</div>
-	{/if}
+	</section>
+
+	<section id="science" class="section">
+		<h2 class="shead">Science</h2>
+		<div class="prose">
+			{#each sp.science as [title, body] (title)}
+				<article class="entry">
+					<h3>{title}</h3>
+					<p>{body}</p>
+				</article>
+			{/each}
+		</div>
+	</section>
 
 	<p class="tell">One to tell: {sp.tell}</p>
 </main>
@@ -172,52 +191,73 @@
 		margin: 0;
 		font-size: 13.5px;
 	}
-	.tabs {
+	.contents {
 		display: flex;
-		gap: 4px;
-		background: var(--stonewash);
-		border-radius: 12px;
-		padding: 4px;
+		flex-wrap: wrap;
+		gap: 7px;
 	}
-	.tab {
-		flex: 1;
-		text-align: center;
+	.contents a {
 		font-size: 12.5px;
 		font-weight: 700;
-		padding: 9px 0;
-		border-radius: 9px;
-		color: var(--soft);
-		min-height: 40px;
+		color: var(--deep);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 999px;
+		padding: 8px 13px;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		text-decoration: none;
 	}
-	.tab[aria-selected='true'] {
-		background: var(--card);
-		color: var(--ink);
-		box-shadow: 0 1px 3px rgba(30, 30, 30, 0.18);
+	.section {
+		scroll-margin-top: 12px;
+	}
+	.shead {
+		font-family: var(--display);
+		font-weight: 400;
+		font-size: 22px;
+		margin: 6px 0 10px;
+		padding-bottom: 7px;
+		border-bottom: 1px solid var(--line);
 	}
 	.prose {
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
 	}
+	/* spotting notes are instructions read standing under a tree: sans, larger,
+	   full-contrast ink rather than soft grey */
 	.note {
-		font-size: 14.5px;
+		font-size: 16px;
 		line-height: 1.6;
+		color: var(--ink);
 		border-left: 3px solid var(--wash-line);
-		padding-left: 13px;
-		max-width: 68ch;
+		padding-left: 14px;
+		max-width: 66ch;
 	}
-	.entry h2 {
+	.entry h3,
+	.story h3 {
 		font-family: var(--display);
 		font-weight: 700;
 		font-size: 17px;
-		margin: 0 0 5px;
+		margin: 0 0 6px;
 	}
 	.entry p {
-		font-size: 14.5px;
+		font-size: 15.5px;
 		line-height: 1.65;
-		color: var(--soft);
+		color: var(--ink);
 		margin: 0;
-		max-width: 68ch;
+		max-width: 66ch;
+	}
+	/* the folklore is the reason someone falls for a tree rather than merely
+	   naming it, so it reads as prose, not as a caption */
+	.story p {
+		font-family: var(--display);
+		font-size: 17px;
+		line-height: 1.62;
+		color: var(--ink);
+		margin: 0;
+		max-width: 60ch;
 	}
 	.subhead {
 		font-family: var(--display);
@@ -233,14 +273,27 @@
 	.seasoncard {
 		background: var(--card);
 		border: 1px solid var(--line);
+		border-left: 4px solid var(--line);
 		border-radius: 13px;
 		padding: 11px 13px;
 	}
+	.seasoncard.spring {
+		border-left-color: #8fbf5a;
+	}
+	.seasoncard.summer {
+		border-left-color: var(--green);
+	}
+	.seasoncard.autumn {
+		border-left-color: #c8862f;
+	}
+	.seasoncard.winter {
+		border-left-color: #6b7f8a;
+	}
 	.sn {
 		margin: 0;
-		font-size: 13.5px;
+		font-size: 14.5px;
 		line-height: 1.55;
-		color: var(--soft);
+		color: var(--ink);
 	}
 	.removebtn {
 		font-size: 13px;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Modal from './Modal.svelte';
 	import { grove } from '$lib/grove.svelte';
+	import Give from './Give.svelte';
 
 	let copied = $state(false);
 
@@ -28,18 +29,8 @@
 
 <Modal open={grove.pendingMilestone !== null} onclose={closeMilestone} labelledby="milestone-title">
 	<h2 id="milestone-title">You’ve met {grove.pendingMilestone} trees 🌳</h2>
-	<p>
-		That’s {grove.pendingMilestone} species you can now greet by name. Mark the milestone by planting
-		a real one?
-	</p>
-	<p class="itf">
-		Your gift goes to the <strong>International Tree Foundation</strong> — community tree-planting
-		since 1922. Registered charity no. 1106269.
-	</p>
+	<Give tone="earned" reason="That’s {grove.pendingMilestone} species you can name." />
 	<div class="actions">
-		<a class="btn" href="https://internationaltreefoundation.org/donate/" target="_blank" rel="noopener">
-			Plant a real tree ↗
-		</a>
 		<button class="btn ghost" onclick={closeMilestone}>Maybe later</button>
 	</div>
 </Modal>
