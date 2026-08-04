@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex" />
+		<title>Meet a Tree has moved</title>
+		<style>
+			:root { color-scheme: light dark; }
+			body {
+				margin: 0; min-height: 100dvh; display: grid; place-items: center;
+				padding: 24px; background: #fbfaf7; color: #1e1e1e;
+				font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif; line-height: 1.55;
+			}
+			@media (prefers-color-scheme: dark) { body { background: #121b14; color: #eaeee6; } }
+			main { max-width: 26rem; text-align: center; }
+			.mark {
+				width: 46px; height: 46px; border-radius: 50%; background: #167e3c;
+				position: relative; margin: 0 auto 18px;
+			}
+			.mark::after {
+				content: ''; position: absolute; inset: 11px; border-radius: 0 55% 0 55%;
+				background: #fbfaf7; transform: rotate(-8deg);
+			}
+			@media (prefers-color-scheme: dark) { .mark::after { background: #121b14; } }
+			h1 { font-family: Georgia, serif; font-weight: 400; font-size: 27px; margin: 0 0 10px; }
+			p { margin: 0 0 14px; font-size: 15px; color: #5e684f; }
+			@media (prefers-color-scheme: dark) { p { color: #b4c0af; } }
+			a.btn {
+				display: inline-block; background: #167e3c; color: #fff; font-weight: 600;
+				padding: 13px 22px; border-radius: 999px; text-decoration: none; min-height: 44px;
+			}
+			code { font-size: 13px; word-break: break-all; }
+		</style>
+	</head>
+	<body>
+		<main>
+			<div class="mark" aria-hidden="true"></div>
+			<h1>Meet a Tree has moved</h1>
+			<p>
+				This old address stopped being updated. The current app — 40 trees, photos, My Trees — lives
+				here:
+			</p>
+			<p><a class="btn" href="https://meet-a-tree.vercel.app/">Open Meet a Tree</a></p>
+			<p>
+				If you added the old version to your home screen, delete that icon and add this one instead.
+				<br /><code>meet-a-tree.vercel.app</code>
+			</p>
+		</main>
+		<script>
+			// The retired build installed a cache-first service worker, so without this
+			// it would keep serving the stale app offline forever. Tear it down before
+			// redirecting, and only redirect once the cleanup has actually run.
+			(async () => {
+				try {
+					if ('serviceWorker' in navigator) {
+						const regs = await navigator.serviceWorker.getRegistrations();
+						await Promise.all(regs.map((r) => r.unregister()));
+					}
+					if (window.caches) {
+						const keys = await caches.keys();
+						await Promise.all(keys.map((k) => caches.delete(k)));
+					}
+				} catch (e) {
+					/* redirect regardless — a manual tap still works */
+				}
+				setTimeout(() => location.replace('https://meet-a-tree.vercel.app/'), 1200);
+			})();
+		</script>
+	</body>
+</html>

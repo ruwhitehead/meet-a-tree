@@ -1,0 +1,35 @@
+name: Pages tombstone
+
+# The GitHub Pages site is retired; Vercel is the live host. This publishes a
+# single page that unregisters the old service worker, clears its caches and
+# forwards to the current app — otherwise anyone with the old URL on their home
+# screen keeps getting a stale offline copy. Deliberately publishes NO
+# service-worker.js, so the browser's update check 404s and drops the old
+# registration too.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['tombstone/**', '.github/workflows/pages-tombstone.yml']
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: touch tombstone/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: tombstone
+      - id: deployment
+        uses: actions/deploy-pages@v4

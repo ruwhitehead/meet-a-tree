@@ -6,7 +6,9 @@ A free, offline-capable PWA field companion — identify trees, collect the spec
 learn their folklore and science — in support of the
 [International Tree Foundation](https://internationaltreefoundation.org) (registered charity no. 1106269).
 
-**Live:** https://ruwhitehead.github.io/meet-a-tree/
+**Live:** https://meet-a-tree.vercel.app
+
+(The old `ruwhitehead.github.io/meet-a-tree` address is retired and now redirects — see issue #9.)
 
 ## What it does (v0.1)
 
@@ -35,7 +37,7 @@ npm install
 npm run dev        # dev server
 npm test           # unit tests (streak, field key, content integrity)
 npm run check      # svelte-check
-npm run build      # production build (BASE_PATH=/meet-a-tree for Pages)
+npm run build      # production build (Vercel adapter)
 npm run icons      # regenerate PWA icons from the SVG mark
 ```
 
