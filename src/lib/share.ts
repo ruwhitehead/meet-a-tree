@@ -36,6 +36,21 @@ function wrapText(
 	return y;
 }
 
+/** ITF's logo, loaded once and reused. Drawn onto every card because the
+ *  charity is the point of the app, and a wordmark in 26px type is not it. */
+let itfLogo: ImageBitmap | HTMLImageElement | null = null;
+async function loadItfLogo() {
+	if (itfLogo) return itfLogo;
+	try {
+		const res = await fetch(`${base}/images/itf-logo.png`);
+		if (!res.ok) return null;
+		itfLogo = await createImageBitmap(await res.blob());
+		return itfLogo;
+	} catch {
+		return null;
+	}
+}
+
 /** Absolute https URL for a path — what people can actually tap in a message. */
 function absolute(path: string): string {
 	return new URL(`${base}${path}`, location.origin).href;
@@ -89,25 +104,33 @@ async function drawCard(head: string, sub: string, eyebrow: string, link: string
 
 	ctx.fillStyle = '#1E1E1E';
 	ctx.font = '700 34px "Inter Tight", Arial';
-	ctx.fillText('Meet a Tree', 80, 944);
+	ctx.fillText('Meet a Tree', 80, 928);
 	ctx.fillStyle = '#5E684F';
-	ctx.font = '400 26px "Inter Tight", Arial';
-	ctx.fillText('in support of the International Tree Foundation', 80, 984);
-	ctx.fillText('registered charity no. 1106269', 80, 1018);
+	ctx.font = '400 25px "Inter Tight", Arial';
+	ctx.fillText('in support of', 80, 962);
+
+	const logo = await loadItfLogo();
+	if (logo) {
+		const h = 58;
+		const w = (logo.width / logo.height) * h;
+		ctx.drawImage(logo, 80, 976, w, h);
+	} else {
+		ctx.fillText('the International Tree Foundation · charity no. 1106269', 80, 998);
+	}
 
 	// the real link, printed on the card so it survives being screenshotted
 	const label = link.replace(/^https?:\/\//, '');
 	ctx.font = '700 24px "Inter Tight", Arial';
-	const w = Math.min(420, ctx.measureText(label).width + 36);
+	const chipW = Math.min(420, ctx.measureText(label).width + 36);
 	ctx.fillStyle = '#E9F2EA';
-	roundRect(ctx, 1000 - w, 932, w, 60, 16);
+	roundRect(ctx, 1000 - chipW, 892, chipW, 60, 16);
 	ctx.fill();
 	ctx.strokeStyle = '#CBE0D2';
 	ctx.lineWidth = 2;
-	roundRect(ctx, 1000 - w, 932, w, 60, 16);
+	roundRect(ctx, 1000 - chipW, 892, chipW, 60, 16);
 	ctx.stroke();
 	ctx.fillStyle = '#0E5C2B';
-	ctx.fillText(label, 1000 - w + 18, 970);
+	ctx.fillText(label, 1000 - chipW + 18, 930);
 	return c;
 }
 
@@ -274,10 +297,17 @@ async function drawList(head: string, sub: string, lines: string[], link: string
 
 	ctx.fillStyle = '#1E1E1E';
 	ctx.font = '700 30px "Inter Tight", Arial';
-	ctx.fillText('Meet a Tree', 80, 972);
+	ctx.fillText('Meet a Tree', 80, 950);
 	ctx.fillStyle = '#5E684F';
-	ctx.font = '400 24px "Inter Tight", Arial';
-	ctx.fillText('in support of the International Tree Foundation · ' + link.replace(/^https?:\/\//, ''), 80, 1006);
+	ctx.font = '400 23px "Inter Tight", Arial';
+	ctx.fillText(link.replace(/^https?:\/\//, ''), 80, 980);
+
+	const logo2 = await loadItfLogo();
+	if (logo2) {
+		const h = 48;
+		const w = (logo2.width / logo2.height) * h;
+		ctx.drawImage(logo2, 1000 - w, 946, w, h);
+	}
 	return c;
 }
 

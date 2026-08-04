@@ -7,6 +7,9 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import Overlays from '$lib/components/Overlays.svelte';
 	import { requestPersistence } from '$lib/photos';
+	import { base } from '$app/paths';
+	import { page } from '$app/state';
+	import { SPECIES } from '$lib/content/species';
 	import Onboarding from '$lib/components/Onboarding.svelte';
 
 	let { children } = $props();
@@ -30,6 +33,25 @@
 		});
 	});
 </script>
+
+<svelte:head>
+	<!-- Link previews had no Open Graph data at all, so a shared link unfurled
+	     with no picture and whatever text the platform guessed. Page-level tags
+	     override these where they say something more specific. -->
+	<meta property="og:site_name" content="Meet a Tree" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Meet a Tree" />
+	<meta
+		property="og:description"
+		content="A free pocket field guide to {SPECIES.length} trees of Britain and Ireland — how to spot them, their folklore and their science. In support of the International Tree Foundation."
+	/>
+	<meta property="og:image" content="{page.url.origin}{base}/images/og-card.jpg" />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:url" content={page.url.href} />
+	<meta name="twitter:card" content="summary_large_image" />
+</svelte:head>
 
 <div class="frame">
 	<TopBar />

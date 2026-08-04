@@ -33,6 +33,26 @@ sw.addEventListener('fetch', (event) => {
 	event.respondWith(
 		(async () => {
 			const cache = await caches.open(CACHE);
+
+			// Navigations go to the network first. Cache-first here meant an
+			// installed copy could serve an old build indefinitely — which is
+			// exactly how a share card ended up quoting a stale species count.
+			// Offline still works: we fall through to the cache below.
+			if (event.request.mode === 'navigate') {
+				try {
+					const fresh = await fetch(event.request);
+					if (fresh.ok) cache.put(event.request, fresh.clone());
+					return fresh;
+				} catch {
+					const cachedPage = await cache.match(event.request, { ignoreSearch: true });
+					if (cachedPage) return cachedPage;
+					const root = await cache.match(new URL(sw.registration.scope).pathname);
+					if (root) return root;
+					throw new Error('offline and nothing cached for this page');
+				}
+			}
+
+			// Hashed build assets and images are immutable, so cache-first is right.
 			const cached = await cache.match(event.request, { ignoreSearch: true });
 			if (cached) return cached;
 			try {
