@@ -109,7 +109,7 @@
 			<ul class="hunt">
 				{#each p.todo.slice(0, 6) as sp (sp.id)}
 					<li class="hrow">
-						<a class="hlink" href="{base}/species/{sp.id}/">
+						<a class="hlink" href="{base}/species/{sp.id}/#spotting">
 							<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" />
 							<span class="htext">
 								<span class="hn">{sp.name}</span>

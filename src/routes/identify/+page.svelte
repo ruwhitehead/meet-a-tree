@@ -157,7 +157,7 @@
 						{@const sp = m.id ? speciesById(m.id) : undefined}
 						<li>
 							{#if sp}
-								<a class="match" href="{base}/species/{sp.id}/">
+								<a class="match" href="{base}/species/{sp.id}/#spotting">
 									<span class="thumb">
 										<img src="{base}/images/species/{sp.id}-leaf.webp" alt="" width="120" height="120" loading="lazy" />
 									</span>
@@ -269,7 +269,7 @@
 			{candidates.length === 1 ? 'candidate' : 'candidates'} — compare with your leaf
 		</p>
 		{#each candidates as sp (sp.id)}
-			<a class="opt" href="{base}/species/{sp.id}/">
+			<a class="opt" href="{base}/species/{sp.id}/#spotting">
 				<span class="thumb">
 					<img src="{base}/images/species/{sp.id}-leaf.webp" alt="" width="120" height="120" loading="lazy" decoding="async" />
 				</span>
@@ -298,7 +298,7 @@
 				<ul class="chips">
 					{#each placeSpecies(p.ids) as sp (sp.id)}
 						<li>
-							<a class="chip" href="{base}/species/{sp.id}/">
+							<a class="chip" href="{base}/species/{sp.id}/#spotting">
 								<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" decoding="async" />
 								<span>{sp.name}</span>
 							</a>

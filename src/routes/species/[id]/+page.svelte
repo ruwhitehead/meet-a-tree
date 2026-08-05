@@ -74,35 +74,16 @@
 		{/each}
 	</dl>
 
+	<!-- Folklore leads. Most arrivals here are browsing for pleasure, not standing
+	     under a branch, and the stories are what make someone care about the tree
+	     before they can name it. The two reference sections follow, and anything
+	     that sends you here to identify something links straight to #spotting. -->
 	<nav class="contents" aria-label="On this page">
-		<a href="#spotting">Spotting it</a>
-		<a href="#year">Through the year</a>
 		<a href="#folklore">Folklore</a>
 		<a href="#science">Science</a>
+		<a href="#spotting">Spotting it</a>
+		<a href="#year">Through the year</a>
 	</nav>
-
-	<section id="spotting" class="section">
-		<h2 class="shead">Spotting it</h2>
-		<div class="prose">
-			{#each sp.spot as note, i (i)}
-				<p class="note">
-					{#each parts(note) as part, j (j)}{#if part.bold}<strong>{part.text}</strong>{:else}{part.text}{/if}{/each}
-				</p>
-			{/each}
-		</div>
-	</section>
-
-	<section id="year" class="section">
-		<h2 class="shead">Through the year</h2>
-		<div class="seasons">
-			{#each sp.season as [season, note] (season)}
-				<div class="seasoncard {season.toLowerCase()}">
-					<p class="label">{season}</p>
-					<p class="sn">{note}</p>
-				</div>
-			{/each}
-		</div>
-	</section>
 
 	<section id="folklore" class="section">
 		<h2 class="shead">Folklore</h2>
@@ -124,6 +105,29 @@
 					<h3>{title}</h3>
 					<p>{body}</p>
 				</article>
+			{/each}
+		</div>
+	</section>
+
+	<section id="spotting" class="section">
+		<h2 class="shead">Spotting it</h2>
+		<div class="prose">
+			{#each sp.spot as note, i (i)}
+				<p class="note">
+					{#each parts(note) as part, j (j)}{#if part.bold}<strong>{part.text}</strong>{:else}{part.text}{/if}{/each}
+				</p>
+			{/each}
+		</div>
+	</section>
+
+	<section id="year" class="section">
+		<h2 class="shead">Through the year</h2>
+		<div class="seasons">
+			{#each sp.season as [season, note] (season)}
+				<div class="seasoncard {season.toLowerCase()}">
+					<p class="label">{season}</p>
+					<p class="sn">{note}</p>
+				</div>
 			{/each}
 		</div>
 	</section>
