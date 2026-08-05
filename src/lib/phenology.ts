@@ -23,7 +23,7 @@ const EVENT_NAMES: Record<EventId, string | null> = {
 /**
  * Species Nature's Calendar records. Their recording list is deliberately
  * short — a handful of well-known trees observed consistently beats a long list
- * observed badly — so most of our 40 are not eligible, and we say so rather
+ * observed badly — so most of the guide is not eligible, and we say so rather
  * than encouraging junk records.
  */
 const RECORDED_SPECIES = new Set([
@@ -55,6 +55,29 @@ export const eventName = (e: EventId): string | null => EVENT_NAMES[e];
 
 export const isRecordable = (speciesId: string, event: EventId): boolean =>
 	RECORDED_SPECIES.has(speciesId) && EVENT_NAMES[event] !== null;
+
+/** Is this species on their recording list at all? Worth saying before someone
+ *  spends a year on a tree whose dates they cannot use. */
+export const isRecordedSpecies = (speciesId: string): boolean => RECORDED_SPECIES.has(speciesId);
+
+/** How many trees they collect — quoted in the UI, so it must not drift. */
+export const RECORDED_COUNT = RECORDED_SPECIES.size;
+
+/** Which of their events this species can be recorded for, in their words. */
+export function recordableEvents(speciesId: string): string[] {
+	if (!RECORDED_SPECIES.has(speciesId)) return [];
+	return Object.values(EVENT_NAMES).filter((n): n is string => n !== null);
+}
+
+/** Dates already noted that could go to Nature's Calendar but have not. The
+ *  count is the whole point: an unsent record is a record nobody else can use. */
+export function readyToSend(tree: {
+	speciesId: string;
+	observations: { event: EventId; submitted?: boolean }[];
+}): number {
+	return tree.observations.filter((o) => !o.submitted && isRecordable(tree.speciesId, o.event))
+		.length;
+}
 
 export interface SubmissionDraft {
 	lines: string[];

@@ -35,7 +35,9 @@ export function recordsFor(tree: MyTree): Record[] {
 		if (sorted.length === 1) {
 			out.push({
 				kind: 'first',
-				label: `First ${label.toLowerCase()} on record`,
+				// not `First ${label}`: the labels already begin with "First", which
+				// read as "First first leaves on record"
+				label: `${label} — your first record`,
 				detail: `${pretty(sorted[0])} ${sorted[0].slice(0, 4)} — next year has something to beat.`
 			});
 			continue;

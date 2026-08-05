@@ -9,6 +9,7 @@
 	import { grove } from '$lib/grove.svelte';
 	import Give from '$lib/components/Give.svelte';
 	import { detectSaveCapability } from '$lib/photos';
+	import { RECORDED_COUNT, isRecordedSpecies, readyToSend } from '$lib/phenology';
 
 	let adding = $state(false);
 	let q = $state('');
@@ -54,6 +55,14 @@
 		adding = false;
 		await goto(`${base}/trees/${t.id}/`);
 	}
+
+	/** Across every tree: dates that could go to Nature's Calendar and haven't,
+	 *  and how many of the trees they collect at all. The per-observation Send
+	 *  button was the only mention of any of this, which buried it. */
+	const science = $derived({
+		ready: trees.items.reduce((n, t) => n + readyToSend(t), 0),
+		eligible: trees.items.filter((t) => isRecordedSpecies(t.speciesId)).length
+	});
 
 	function label(id: string) {
 		return EVENTS.find((e) => e.id === id)?.label ?? id;
@@ -176,13 +185,48 @@
 						<img src="{base}/images/species/{p.species.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" />
 					</span>
 					<span class="ptext">
-						<span class="pt">{p.event.label} · {p.tree.name}</span>
-						<span class="pb">{driftLine(p.drift, p.lastYear)}</span>
+						<span class="pt">{p.first ? 'Add a note' : p.event.label} · {p.tree.name}</span>
+						<span class="pb">
+							{#if p.first}
+								{p.tree.observations.length === 0
+									? 'Nothing recorded yet — say what it is doing today and that is the baseline.'
+									: 'Notes only so far, so there are no first dates to compare yet.'}
+							{:else}
+								{driftLine(p.drift, p.lastYear)}
+							{/if}
+						</span>
 					</span>
 					<span class="chev" aria-hidden="true">›</span>
 				</a>
 			{/each}
 		{/if}
+
+		<div class="card sci">
+			<p class="label">Citizen science</p>
+			<p class="sub" style="margin:0">
+				First-leaf and first-flower dates are the oldest environmental record Britain keeps — kept by
+				hand since 1736, and the evidence that spring now arrives earlier than it did. The Woodland
+				Trust’s Nature’s Calendar collects them for {RECORDED_COUNT} common trees.
+				{#if science.eligible === 0}
+					None of your trees are on that list yet; following an oak, ash, beech, hawthorn or rowan
+					would put you on it.
+				{:else}
+					{science.eligible === trees.count
+						? trees.count === 1
+							? 'Yours is on that list'
+							: 'All of yours are on that list'
+						: `${science.eligible} of yours ${science.eligible === 1 ? 'is' : 'are'} on that list`}, so
+					the dates you note can be sent on.
+				{/if}
+			</p>
+			{#if science.ready}
+				<p class="ready">
+					{science.ready}
+					{science.ready === 1 ? 'date is' : 'dates are'} ready to send. Open the tree and use
+					<strong>Send to Nature’s Calendar</strong> on the entry.
+				</p>
+			{/if}
+		</div>
 
 		{#if savecap.ios}
 			<div class="card stonebg">
@@ -501,6 +545,17 @@
 	.prompt {
 		background: var(--wash);
 		border-color: var(--wash-line);
+	}
+	.ready {
+		margin: 9px 0 0;
+		font-size: 13px;
+		line-height: 1.5;
+		font-weight: 600;
+		color: var(--deep);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 10px;
+		padding: 8px 11px;
 	}
 	.pthumb {
 		width: 46px;

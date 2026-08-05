@@ -76,8 +76,15 @@
 			<p class="label">Your trees, this week</p>
 			{#each treePrompts.slice(0, 2) as p (p.tree.id + p.event.id)}
 				<p class="seasonline">
-					<a href="{base}/trees/{p.tree.id}/">{p.tree.name}</a> — {p.event.label.toLowerCase()}
-					{#if p.lastYear}(last year {new Date(p.lastYear + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}){/if}
+					<a href="{base}/trees/{p.tree.id}/">{p.tree.name}</a>
+					{#if p.first}
+						— {p.tree.observations.length === 0
+							? 'add a note. Anything you can see today becomes its baseline.'
+							: 'add a note on what it is doing now.'}
+					{:else}
+						— {p.event.label.toLowerCase()}
+						{#if p.lastYear}(last year {new Date(p.lastYear + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}){/if}
+					{/if}
 				</p>
 			{/each}
 			<a class="btn small ghost" style="margin-top:8px" href="{base}/trees/">Open My Trees</a>

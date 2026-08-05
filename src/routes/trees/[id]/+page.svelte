@@ -12,10 +12,14 @@
 	import { recordsFor } from '$lib/records';
 	import {
 		NATURES_CALENDAR_URL,
+		RECORDED_COUNT,
 		draftSubmission,
 		eventName,
-		isRecordable
+		isRecordable,
+		isRecordedSpecies,
+		readyToSend
 	} from '$lib/phenology';
+	import { seasonOfMonth } from '$lib/season';
 
 	const tree = $derived(trees.byId(page.params.id ?? ''));
 	const species = $derived(tree ? speciesById(tree.speciesId) : undefined);
@@ -93,8 +97,27 @@
 	}
 
 	const month = new Date().getMonth();
+	const seasonLabel = (() => {
+		const s = seasonOfMonth(month);
+		return s[0].toUpperCase() + s.slice(1);
+	})();
+	/** What this species is actually doing this month, in its own words. A note
+	 *  field is far easier to fill in with one specific thing to look for. */
+	const seasonNote = $derived(species?.season.find(([k]) => k === seasonLabel)?.[1] ?? '');
+	const ready = $derived(tree ? readyToSend(tree) : 0);
+	const onTheirList = $derived(species ? isRecordedSpecies(species.id) : false);
+
 	const inSeason = $derived(
-		EVENTS.filter((e) => e.id === 'note' || (e.months as readonly number[]).includes(month))
+		(() => {
+			const live = EVENTS.filter(
+				(e) => e.id === 'note' || (e.months as readonly number[]).includes(month)
+			);
+			// With no season dates yet, a named first-event is a claim the owner
+			// cannot check standing under the tree. Let the open note lead instead.
+			if (tree && !tree.observations.some((o) => o.event !== 'note'))
+				return [...live].sort((a, b) => Number(b.id === 'note') - Number(a.id === 'note'));
+			return live;
+		})()
 	);
 	const timeline = $derived(
 		tree ? [...tree.observations].sort((a, b) => b.date.localeCompare(a.date)) : []
@@ -242,6 +265,32 @@
 			{/each}
 		</div>
 
+		<div class="card sci">
+			<p class="label">Citizen science</p>
+			{#if onTheirList}
+				<p class="sub" style="margin:0">
+					{species.name} is one of {RECORDED_COUNT} trees on the Woodland Trust’s
+					<a href={NATURES_CALENDAR_URL} target="_blank" rel="noopener">Nature’s Calendar</a>
+					recording list. First leaves, flowering, ripe fruit and autumn tint from this tree can join a
+					national record that runs back to 1736 — which is how anyone knows spring is arriving
+					earlier. Each dated entry below carries a <strong>Send</strong> button. You submit it on
+					their site, and you will need a free account there the first time.
+				</p>
+				{#if ready}
+					<p class="ready">
+						{ready} {ready === 1 ? 'date is' : 'dates are'} ready to send.
+					</p>
+				{/if}
+			{:else}
+				<p class="sub" style="margin:0">
+					Nature’s Calendar collects just {RECORDED_COUNT} well-known trees — a short list observed
+					carefully beats a long one observed badly — and {species.name} is not among them. Your dates
+					are still a real record of your own patch, and the year-on-year comparisons here work just
+					the same. Follow an oak, ash, beech, hawthorn or rowan as well and those dates can be sent.
+				</p>
+			{/if}
+		</div>
+
 		{#if records.length}
 			<p class="label" style="margin-top:6px">What your records show</p>
 			<div class="records">
@@ -337,6 +386,12 @@
 <Modal open={recording !== null} onclose={() => { recording = null; clearPending(); }} labelledby="rec-title">
 	<h2 id="rec-title">{recording ? label(recording) : ''}</h2>
 	<p>{EVENTS.find((e) => e.id === recording)?.hint}</p>
+	{#if recording === 'note' && seasonNote && species}
+		<p class="eg">
+			<strong>{species.name} in {seasonLabel.toLowerCase()}:</strong>
+			{seasonNote}
+		</p>
+	{/if}
 	{#if pendingUrl}
 		<img class="pending" src={pendingUrl} alt="What you just captured" />
 		{#if savecap.offer}
@@ -716,6 +771,42 @@
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
+	}
+	/* the season note from the species' own calendar, shown when someone opens a
+	   plain note and has to decide what is worth writing down */
+	.eg {
+		margin: 10px 0 0;
+		font-family: var(--display);
+		font-size: 14.5px;
+		line-height: 1.55;
+		color: var(--ink);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 12px;
+		padding: 11px 13px;
+	}
+	.eg strong {
+		font-family: var(--body);
+		font-size: 12.5px;
+		font-weight: 700;
+		letter-spacing: 0.02em;
+		color: var(--deep);
+		display: block;
+		margin-bottom: 3px;
+	}
+	.sci .sub a {
+		color: var(--deep);
+		font-weight: 600;
+	}
+	.ready {
+		margin: 9px 0 0;
+		font-size: 13px;
+		font-weight: 700;
+		color: var(--deep);
+		background: var(--wash);
+		border: 1px solid var(--wash-line);
+		border-radius: 10px;
+		padding: 8px 11px;
 	}
 	.reality {
 		margin: 10px 0 0;

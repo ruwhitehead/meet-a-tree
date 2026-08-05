@@ -61,6 +61,65 @@ describe('seasonal missions', () => {
 	});
 });
 
+describe('what a tree is prompted for', () => {
+	const tree = (id: string, obs: { event: string; date: string }[]) =>
+		({
+			id,
+			speciesId: 'oak',
+			name: 'The oak',
+			planted: '2024-01-01',
+			observations: obs.map((o, i) => ({ id: `${id}-o${i}`, ...o }))
+		}) as never;
+
+	it('asks for a note, not a named event, when nothing is recorded yet', async () => {
+		const { trees } = await import('./trees.svelte');
+		trees.items = [tree('t1', [])];
+		// early August: "first ripe fruit" is the only event in window, and an oak
+		// that month has green acorns — so naming it would be wrong
+		const p = trees.prompts(new Date(2026, 7, 5));
+		expect(p).toHaveLength(1);
+		expect(p[0].first).toBe(true);
+		expect(p[0].event.id).toBe('note');
+	});
+
+	it('treats a plain note as no season date, since records ignore them', async () => {
+		const { trees } = await import('./trees.svelte');
+		trees.items = [tree('t3', [{ event: 'note', date: '2026-08-02' }])];
+		const p = trees.prompts(new Date(2026, 7, 5));
+		expect(p).toHaveLength(1);
+		expect(p[0].first).toBe(true);
+	});
+
+	it('names the event once there is a date to compare against', async () => {
+		const { trees } = await import('./trees.svelte');
+		trees.items = [tree('t2', [{ event: 'fruit', date: '2025-09-20' }])];
+		const p = trees.prompts(new Date(2026, 7, 5));
+		expect(p.some((x) => x.first)).toBe(false);
+		expect(p.find((x) => x.event.id === 'fruit')?.lastYear).toBe('2025-09-20');
+	});
+});
+
+describe('a hunt counts sightings, not species already met', () => {
+	it('ignores a grove entry dated before the window, and counts one inside it', async () => {
+		const { progressFor } = await import('./missions.svelte');
+		const { MISSIONS } = await import('./content/missions');
+		const { grove } = await import('./grove.svelte');
+		const { trees } = await import('./trees.svelte');
+		const summer = MISSIONS.find((m) => m.id === 'summer-shade')!;
+		const july = new Date(2026, 6, 1);
+		trees.items = [];
+
+		grove.finds = [{ id: 'oak', date: '2026-04-02' }];
+		expect(progressFor(summer, july).done).toHaveLength(0);
+		expect(progressFor(summer, july).todo.map((s) => s.id)).toContain('oak');
+
+		// this is what the "Seen it" button does: a second, dated sighting
+		grove.finds = [...grove.finds, { id: 'oak', date: '2026-07-01' }];
+		expect(progressFor(summer, july).done.map((s) => s.id)).toEqual(['oak']);
+		expect(grove.speciesCount, 'a re-sighting must not double-count').toBe(1);
+	});
+});
+
 describe("Nature's Calendar mapping", () => {
 	it('maps our events to their vocabulary, and refuses notes', async () => {
 		const { eventName, isRecordable } = await import('./phenology');
@@ -71,6 +130,23 @@ describe("Nature's Calendar mapping", () => {
 		expect(isRecordable('oak', 'note')).toBe(false);
 		// box is not on their recording list
 		expect(isRecordable('box', 'budburst')).toBe(false);
+	});
+
+	it('counts the dates a tree has ready to send, and stops counting sent ones', async () => {
+		const { readyToSend, isRecordedSpecies, RECORDED_COUNT } = await import('./phenology');
+		expect(isRecordedSpecies('oak')).toBe(true);
+		expect(isRecordedSpecies('box')).toBe(false);
+		expect(RECORDED_COUNT).toBeGreaterThan(0);
+		const oak = {
+			speciesId: 'oak',
+			observations: [
+				{ event: 'budburst' as const, date: '2026-04-14' },
+				{ event: 'flower' as const, date: '2026-04-20', submitted: true },
+				{ event: 'note' as const, date: '2026-08-01' }
+			]
+		};
+		expect(readyToSend(oak)).toBe(1);
+		expect(readyToSend({ ...oak, speciesId: 'box' })).toBe(0);
 	});
 
 	it('drafts a submission with species, event, date and location', async () => {

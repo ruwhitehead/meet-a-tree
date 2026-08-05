@@ -42,7 +42,7 @@ sync — a deliberate constraint that shapes the whole design (see DESIGN.md).
 
 | Key | Holds |
 |---|---|
-| `grove-v1` | species met (`{id, date}`), milestone flags, visit count |
+| `grove-v1` | sightings (`{id, date}` — **repeats allowed**, one per time you see it), milestone flags, visit count |
 | `mat-trees-v1` | individual trees: name, typed place label, optional postcode, observations |
 | `mat-install-v2` | install nudging: visits, last visit, snooze-until, snooze count |
 | `mat-seen-intro` | onboarding shown |
@@ -66,7 +66,13 @@ Svelte 5 runes classes, one per concern, each loading from and saving to its own
 - `install.svelte.ts` — install nudging; the decision is a pure `shouldPrompt()` so it can be tested
   without a phone
 - `missions.svelte.ts` — mission progress, **derived** from grove finds and tree observations rather than
-  stored, so a board can never disagree with your grove
+  stored, so a board can never disagree with your grove. It matches on the record's *date* falling inside
+  the window, which is why `grove.finds` keeps every sighting rather than one row per species, and why
+  `speciesCount` reads through a `Set`
+
+`phenology.ts` holds the Nature's Calendar mapping and the two questions the UI asks of it:
+`isRecordedSpecies()` (is this tree on their list at all) and `readyToSend()` (dates noted but not yet
+submitted). Both are pure, so the counts the UI quotes are tested.
 
 ## Content
 

@@ -29,7 +29,7 @@
 		{
 			eyebrow: 'Why it is free',
 			title: 'If you fall for trees, plant one',
-			body: 'Nothing is locked and nothing is sold. When it has earned it, the app points you at the International Tree Foundation, who plant real trees. Registered charity 1106269.'
+			body: 'Nothing is locked and nothing is sold. When it has earned it, the app points you at the International Tree Foundation, who plant real trees with the people who live among them.'
 		}
 	];
 </script>

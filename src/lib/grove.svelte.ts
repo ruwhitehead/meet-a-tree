@@ -104,6 +104,28 @@ class Grove {
 		install.celebrate();
 	}
 
+	/** Record seeing a species again, today. Species you met last spring were
+	 *  stranded on a summer hunt: the board only counts records dated inside its
+	 *  window, and the species page offers "remove" once something is in your
+	 *  grove, so there was no way to say "and again, now". Duplicates are safe —
+	 *  speciesCount is a Set — and the second date is what a hunt is asking for. */
+	logSighting(id: string) {
+		const sp = speciesById(id);
+		if (!sp) return;
+		const seen = this.has(id);
+		this.finds = [...this.finds, { id, date: dateStr(new Date()) }];
+		if (!seen) {
+			const count = this.speciesCount;
+			if (MILESTONES.includes(count) && !this.milestones.includes(count)) {
+				this.milestones = [...this.milestones, count];
+				this.pendingMilestone = count;
+			}
+		}
+		this.save();
+		this.toast(seen ? `${sp.name} — seen again today 🌿` : `${sp.name} added to your Grove 🌿`);
+		install.celebrate();
+	}
+
 	removeFind(id: string) {
 		const sp = speciesById(id);
 		this.finds = this.finds.filter((f) => f.id !== id);

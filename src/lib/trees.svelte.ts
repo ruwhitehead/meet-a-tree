@@ -151,7 +151,11 @@ export interface DuePrompt {
 	lastYear?: string;
 	/** days between last year's date and today (negative = still to come) */
 	drift?: number;
+	/** nothing recorded yet, so this is an invitation rather than a due date */
+	first?: boolean;
 }
+
+const NOTE_EVENT = EVENTS.find((e) => e.id === 'note')!;
 
 function daysBetween(a: Date, b: Date): number {
 	return Math.round((a.getTime() - b.getTime()) / 86400000);
@@ -276,6 +280,15 @@ class Trees {
 		for (const tree of this.items) {
 			const species = speciesById(tree.speciesId);
 			if (!species) continue;
+			// No season dates yet, so there is no drift to report and no honest way
+			// to name an event: "first ripe fruit" in early August is the calendar
+			// talking, not the tree, and an oak that month has green acorns. Ask for
+			// a note instead and let the tree tell us where it is. Plain notes carry
+			// no season meaning (records ignore them), so they do not count here.
+			if (!tree.observations.some((o) => o.event !== 'note')) {
+				out.push({ tree, species, event: NOTE_EVENT, first: true });
+				continue;
+			}
 			for (const event of EVENTS) {
 				if (event.id === 'note') continue;
 				if (!(event.months as readonly number[]).includes(month)) continue;

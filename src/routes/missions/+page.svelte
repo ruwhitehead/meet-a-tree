@@ -5,6 +5,7 @@
 	import { shareMission } from '$lib/share';
 	import { seasonOfMonth } from '$lib/season';
 	import { speciesById } from '$lib/content/species';
+	import { grove } from '$lib/grove.svelte';
 
 	const now = new Date();
 	const { current, next } = missionsFor(now);
@@ -57,6 +58,16 @@
 				<span class="fill" style="width:{Math.round(p.fraction * 100)}%"></span>
 			</div>
 
+			<!-- 0/5 with no visible way to move it was the whole problem: the board
+			     counts a sighting dated inside its window, which is not the same as
+			     having the species in your grove already. Say so, and put the action
+			     next to each tree. -->
+			<p class="how">
+				Two ways to move this on: identify a tree from a photo, or tap <strong>Seen it</strong> beside
+				one below. It has to be a fresh sighting between the dates above, so trees you met earlier in
+				the year still count as out there until you find one again.
+			</p>
+
 			{#if p.complete}
 				<div class="finished">
 					<p class="ft">Finished 🌿</p>
@@ -95,16 +106,36 @@
 			{/if}
 
 			<p class="label" style="margin-top:12px">Still out there</p>
-			<ul class="chips">
-				{#each p.todo.slice(0, 10) as sp (sp.id)}
-					<li>
-						<a class="chip" href="{base}/species/{sp.id}/">
+			<ul class="hunt">
+				{#each p.todo.slice(0, 6) as sp (sp.id)}
+					<li class="hrow">
+						<a class="hlink" href="{base}/species/{sp.id}/">
 							<img src="{base}/images/species/{sp.id}-thumb.webp" alt="" width="80" height="80" loading="lazy" />
-							<span>{sp.name}</span>
+							<span class="htext">
+								<span class="hn">{sp.name}</span>
+								<span class="hh">
+									{grove.has(sp.id)
+										? 'Already in your grove — find it again to count it here'
+										: sp.hint}
+								</span>
+							</span>
 						</a>
+						<button
+							class="seen"
+							aria-label="Seen it today — {sp.name}"
+							onclick={() => grove.logSighting(sp.id)}
+						>
+							Seen it
+						</button>
 					</li>
 				{/each}
 			</ul>
+			{#if p.todo.length > 6}
+				<p class="more">
+					and {p.todo.length - 6} more count towards it —
+					<a href="{base}/identify/">identify anything</a> and it lands here.
+				</p>
+			{/if}
 		</section>
 	{/each}
 
@@ -133,8 +164,8 @@
 	{/if}
 
 	<p class="samplenote">
-		Boards fill themselves from what you identify — nothing extra to tick. Miss one and nothing
-		happens; it just closes quietly and comes round again next year.
+		Anything you identify lands on the right board by itself. Miss a hunt and nothing happens — it
+		closes quietly and comes round again next year.
 	</p>
 </main>
 
@@ -309,10 +340,98 @@
 		object-fit: cover;
 		display: block;
 	}
+	.how {
+		margin: 10px 0 0;
+		font-size: 12.5px;
+		line-height: 1.55;
+		color: var(--ink);
+		background: var(--stonewash);
+		border: 1px solid var(--line);
+		border-radius: 11px;
+		padding: 9px 11px;
+	}
+	.more {
+		margin: 8px 0 0;
+		font-size: 12.5px;
+		color: var(--soft);
+	}
+	.more a {
+		color: var(--deep);
+		font-weight: 600;
+	}
+	/* rows rather than chips: a hunt needs the hint that tells you what to look
+	   for, and somewhere to put the action that actually moves the count */
+	.hunt {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 8px;
+	}
+	.hrow {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		background: var(--stonewash);
+		border: 1px solid var(--line);
+		border-radius: 13px;
+		padding: 7px 9px 7px 7px;
+	}
+	.hlink {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		flex: 1;
+		min-width: 0;
+		text-decoration: none;
+		color: inherit;
+		min-height: 44px;
+	}
+	.hlink img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		display: block;
+		flex: none;
+	}
+	.htext {
+		min-width: 0;
+	}
+	.hn {
+		display: block;
+		font-weight: 700;
+		font-size: 13.5px;
+	}
+	.hh {
+		display: block;
+		font-size: 12px;
+		line-height: 1.45;
+		color: var(--soft);
+	}
+	.seen {
+		flex: none;
+		min-height: 44px;
+		padding: 0 14px;
+		border-radius: 999px;
+		background: var(--card);
+		/* --deep, not --green: on the row's stone ground the brand green only
+		   reaches 2.75:1, under the 3:1 a control boundary needs */
+		border: 1.5px solid var(--deep);
+		color: var(--deep);
+		font-weight: 700;
+		font-size: 12.5px;
+	}
+	.seen:hover {
+		background: var(--wash);
+	}
 	@media (min-width: 900px) {
 		.mission,
 		.card {
 			max-width: 760px;
+		}
+		.hunt {
+			grid-template-columns: 1fr 1fr;
 		}
 	}
 </style>

@@ -102,6 +102,15 @@ dated records nobody else has."*
   offers "Save to Photos" via the share sheet — the only route in, and it cannot be automated.
 - **Empty states are designed, not described.** A new tree shows an outlined ghost timeline of what a year
   will look like; a new grove leads with six trees on every British street rather than 50 grey silhouettes.
+- **Never name an event the calendar only guessed.** A tree with no season dates recorded is asked for a
+  note, not for "first ripe fruit" — that phrase in early August is the month talking, and the guide's own
+  calendar says an oak then has *green* acorns swelling. Open the note and the species' seasonal paragraph
+  appears as the example of what is worth writing down. Plain notes carry no season meaning, so they do not
+  unlock event naming either.
+- **A hunt asks for a sighting, not a species you own.** Boards count records dated inside their window, so
+  a species met in April is genuinely still out there in July. That read as a broken 0/5 with no way to move
+  it, so each candidate now carries **Seen it** and says why it is still listed. Re-sightings append a
+  second dated find; the species tally is a set, so nothing double-counts.
 
 ## Voice
 
