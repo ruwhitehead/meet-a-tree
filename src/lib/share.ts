@@ -3,6 +3,7 @@ import type { Species } from './content/types';
 import { EVENTS, type MyTree } from './trees.svelte';
 import { grove } from './grove.svelte';
 import { SPECIES } from './content/species';
+import { isRecordedSpecies } from './phenology';
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
 	ctx.beginPath();
@@ -234,7 +235,12 @@ export async function shareTreeYear(tree: MyTree, sp: Species) {
 		byYear.get(y)!.push(`${when} — ${label}`);
 	}
 	const lines = [...byYear.entries()].flatMap(([y, rows]) => [`${y}`, ...rows.slice(0, 6)]);
-	const c = await drawList(tree.name, `${sp.name} · ${sp.latin}`, lines.slice(0, 12), link);
+	// a year of first dates from one tree is a phenology record, which is worth
+	// saying on the artefact someone actually shows to other people
+	const note = isRecordedSpecies(sp.id)
+		? "Dates like these go to Nature's Calendar, Britain's phenology record."
+		: undefined;
+	const c = await drawList(tree.name, `${sp.name} · ${sp.latin}`, lines.slice(0, 12), link, note);
 	present(
 		c,
 		`${tree.name} · Meet a Tree`,
@@ -244,7 +250,7 @@ export async function shareTreeYear(tree: MyTree, sp: Species) {
 }
 
 /** Card variant that lists dated events rather than one headline. */
-async function drawList(head: string, sub: string, lines: string[], link: string) {
+async function drawList(head: string, sub: string, lines: string[], link: string, note?: string) {
 	await Promise.all([
 		document.fonts.load('64px "Libre Caslon Text"'),
 		document.fonts.load('700 30px "Inter Tight"'),
@@ -292,7 +298,13 @@ async function drawList(head: string, sub: string, lines: string[], link: string
 		if (isYear) y += 14;
 		ctx.fillText(line, isYear ? 80 : 104, y);
 		y += 46;
-		if (y > 880) break;
+		if (y > (note ? 800 : 880)) break;
+	}
+
+	if (note) {
+		ctx.fillStyle = '#5E684F';
+		ctx.font = 'italic 26px "Libre Caslon Text", Georgia, serif';
+		wrapText(ctx, note, 80, 872, 900, 32);
 	}
 
 	ctx.fillStyle = '#1E1E1E';

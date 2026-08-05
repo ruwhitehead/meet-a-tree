@@ -132,6 +132,16 @@ describe("Nature's Calendar mapping", () => {
 		expect(isRecordable('box', 'budburst')).toBe(false);
 	});
 
+	it('counts what has been sent, which is the only contribution figure we show', async () => {
+		const { sentCount } = await import('./phenology');
+		expect(
+			sentCount({
+				observations: [{ submitted: true }, { submitted: false }, {}, { submitted: true }]
+			})
+		).toBe(2);
+		expect(sentCount({ observations: [] })).toBe(0);
+	});
+
 	it('counts the dates a tree has ready to send, and stops counting sent ones', async () => {
 		const { readyToSend, isRecordedSpecies, RECORDED_COUNT } = await import('./phenology');
 		expect(isRecordedSpecies('oak')).toBe(true);
@@ -163,6 +173,28 @@ describe("Nature's Calendar mapping", () => {
 		expect(d.text).toContain('First leaf');
 		expect(d.text).toContain('14 April 2026');
 		expect(d.text).toContain('OX1 2JD');
+	});
+});
+
+describe('citizen-science projects', () => {
+	it('every project says who runs it, what it needs and where it goes', async () => {
+		const { PROJECTS } = await import('./content/projects');
+		expect(PROJECTS.length).toBeGreaterThanOrEqual(3);
+		for (const p of PROJECTS) {
+			expect(p.run.length, p.id).toBeGreaterThan(10);
+			expect(p.wants.length, p.id).toBeGreaterThan(30);
+			expect(p.then.length, `${p.id} must say what happens to a record`).toBeGreaterThan(40);
+			expect(p.needs.length, p.id).toBeGreaterThanOrEqual(2);
+			expect(p.url, p.id).toMatch(/^https:\/\//);
+			// every factual claim must be traceable to the page it came from
+			expect(p.source.length, `${p.id} has no source`).toBeGreaterThan(10);
+		}
+	});
+
+	it('claims exactly one project as prepared for you, and it is the one we build', async () => {
+		const { PROJECTS } = await import('./content/projects');
+		const supported = PROJECTS.filter((p) => p.supported);
+		expect(supported.map((p) => p.id)).toEqual(['natures-calendar']);
 	});
 });
 

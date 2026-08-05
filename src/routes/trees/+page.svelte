@@ -9,13 +9,14 @@
 	import { grove } from '$lib/grove.svelte';
 	import Give from '$lib/components/Give.svelte';
 	import { detectSaveCapability } from '$lib/photos';
-	import { RECORDED_COUNT, isRecordedSpecies, readyToSend } from '$lib/phenology';
+	import { RECORDED_COUNT, isRecordable, isRecordedSpecies, readyToSend, sentCount } from '$lib/phenology';
 
 	let adding = $state(false);
 	let q = $state('');
 	let chosen: string | null = $state(null);
 	let treeName = $state('');
 	let placeName = $state('');
+	let postcode = $state('');
 
 	const results = $derived(q ? searchSpecies(q).slice(0, 6) : []);
 	const prompts = $derived(trees.prompts());
@@ -41,6 +42,7 @@
 		chosen = null;
 		treeName = '';
 		placeName = '';
+		postcode = '';
 	}
 	function pick(id: string) {
 		chosen = id;
@@ -49,7 +51,7 @@
 	}
 	async function save() {
 		if (!chosen) return;
-		const t = trees.add(chosen, treeName, placeName);
+		const t = trees.add(chosen, treeName, placeName, postcode);
 		// meeting a tree in person counts as meeting the species
 		if (!grove.has(chosen)) grove.addFind(chosen);
 		adding = false;
@@ -61,6 +63,7 @@
 	 *  button was the only mention of any of this, which buried it. */
 	const science = $derived({
 		ready: trees.items.reduce((n, t) => n + readyToSend(t), 0),
+		sent: trees.items.reduce((n, t) => n + sentCount(t), 0),
 		eligible: trees.items.filter((t) => isRecordedSpecies(t.speciesId)).length
 	});
 
@@ -171,7 +174,8 @@
 			<p class="sub" style="margin:0">
 				First-leaf and first-flower dates are real science — Britain has records going back to 1736,
 				and they are how we measure spring arriving earlier. Yours stay on your phone; nothing is
-				uploaded.
+				uploaded unless you choose to send it.
+				<a href="{base}/citizen-science/">What they are used for →</a>
 			</p>
 		</div>
 	{:else}
@@ -185,7 +189,12 @@
 						<img src="{base}/images/species/{p.species.id}-thumb.webp" alt="" width="120" height="120" loading="lazy" />
 					</span>
 					<span class="ptext">
-						<span class="pt">{p.first ? 'Add a note' : p.event.label} · {p.tree.name}</span>
+						<span class="pt">
+							{p.first ? 'Add a note' : p.event.label} · {p.tree.name}
+							{#if !p.first && isRecordable(p.species.id, p.event.id)}
+								<span class="natl">Recorded nationally</span>
+							{/if}
+						</span>
 						<span class="pb">
 							{#if p.first}
 								{p.tree.observations.length === 0
@@ -201,29 +210,41 @@
 			{/each}
 		{/if}
 
+		<!-- two lines, not a paragraph: the depth moved to /citizen-science/ so this
+		     card can be a status line someone reads in a second -->
 		<div class="card sci">
 			<p class="label">Citizen science</p>
-			<p class="sub" style="margin:0">
-				First-leaf and first-flower dates are the oldest environmental record Britain keeps — kept by
-				hand since 1736, and the evidence that spring now arrives earlier than it did. The Woodland
-				Trust’s Nature’s Calendar collects them for {RECORDED_COUNT} common trees.
-				{#if science.eligible === 0}
-					None of your trees are on that list yet; following an oak, ash, beech, hawthorn or rowan
-					would put you on it.
-				{:else}
-					{science.eligible === trees.count
-						? trees.count === 1
-							? 'Yours is on that list'
-							: 'All of yours are on that list'
-						: `${science.eligible} of yours ${science.eligible === 1 ? 'is' : 'are'} on that list`}, so
-					the dates you note can be sent on.
-				{/if}
-			</p>
-			{#if science.ready}
-				<p class="ready">
-					{science.ready}
-					{science.ready === 1 ? 'date is' : 'dates are'} ready to send. Open the tree and use
-					<strong>Send to Nature’s Calendar</strong> on the entry.
+			{#if science.sent || science.ready}
+				<p class="status">
+					{#if science.sent}
+						<strong class="nums">{science.sent}</strong>
+						{science.sent === 1 ? 'record sent' : 'records sent'}
+					{/if}
+					{#if science.sent && science.ready}<span class="sep">·</span>{/if}
+					{#if science.ready}
+						<strong class="nums">{science.ready}</strong> ready to send
+					{/if}
+				</p>
+				<p class="sub" style="margin:6px 0 0">
+					{science.ready
+						? 'Open a tree and use Send to Nature’s Calendar on the entry.'
+						: 'Nothing waiting.'}
+					<a href="{base}/citizen-science/">What your records are for →</a>
+				</p>
+			{:else if science.eligible}
+				<p class="sub" style="margin:0">
+					{science.eligible === trees.count && trees.count === 1
+						? 'Your tree is one'
+						: `${science.eligible} of your trees ${science.eligible === 1 ? 'is one' : 'are'}`}
+					of the {RECORDED_COUNT} in this guide whose dates Nature’s Calendar collects, so the first
+					leaves and first flowers you note here can be sent on.
+					<a href="{base}/citizen-science/">Why it is worth doing →</a>
+				</p>
+			{:else}
+				<p class="sub" style="margin:0">
+					Nature’s Calendar collects dates for {RECORDED_COUNT} of the trees in this guide, and none
+					of yours are among them yet — an oak, ash, beech, hawthorn or rowan would be.
+					<a href="{base}/citizen-science/">Where records can go →</a>
 				</p>
 			{/if}
 		</div>
@@ -309,10 +330,23 @@
 			<span class="flabel">Where is it? (optional)</span>
 			<input type="text" bind:value={placeName} placeholder="Park gates, or just “home”" />
 		</label>
-		<p class="itf">
-			Kept on your phone. Type whatever helps you find it again — we never ask for or store your
-			location.
-		</p>
+		{#if isRecordedSpecies(chosenSpecies.id)}
+			<!-- asked now rather than at submission time, where it appeared as a
+			     blocker after the record had already been written -->
+			<label class="field">
+				<span class="flabel">Postcode (optional)</span>
+				<input type="text" bind:value={postcode} placeholder="OX1 2JD" autocomplete="postal-code" />
+			</label>
+			<p class="itf">
+				{chosenSpecies.name} dates can go to Nature’s Calendar, and their form needs a location to use
+				one. Kept on this device, and only ever included in a record you choose to submit.
+			</p>
+		{:else}
+			<p class="itf">
+				Kept on your phone. Type whatever helps you find it again — we never ask for or store your
+				location.
+			</p>
+		{/if}
 		<div class="actions">
 			<button class="btn" onclick={save}>Add this tree</button>
 			<button class="btn ghost" onclick={() => (chosen = null)}>Back</button>
@@ -546,16 +580,35 @@
 		background: var(--wash);
 		border-color: var(--wash-line);
 	}
-	.ready {
-		margin: 9px 0 0;
-		font-size: 13px;
+	.nums {
+		font-variant-numeric: tabular-nums;
+	}
+	.status {
+		margin: 0;
+		font-size: 14px;
 		line-height: 1.5;
-		font-weight: 600;
+	}
+	.status strong {
+		font-size: 17px;
 		color: var(--deep);
-		background: var(--wash);
-		border: 1px solid var(--wash-line);
-		border-radius: 10px;
-		padding: 8px 11px;
+	}
+	.sep {
+		color: var(--line);
+		padding: 0 7px;
+	}
+	.sub a {
+		color: var(--deep);
+		font-weight: 600;
+	}
+	/* small caps, no colour-only signal — same rule as the season spine */
+	.natl {
+		display: block;
+		margin-top: 3px;
+		font-size: 10.5px;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--deep);
 	}
 	.pthumb {
 		width: 46px;

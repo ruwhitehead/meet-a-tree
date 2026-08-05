@@ -77,6 +77,25 @@ dated records nobody else has."*
 - **Prefer removing a concept to adding one.**
 - **Lighthouse accessibility 100 is a release gate**, not an aspiration.
 
+## Citizen science, and where it is allowed to speak
+
+The tie-in was first built as cards that explain, which meant a paragraph of unchanging text sitting above
+someone's own records forever. The rules now:
+
+- **Explain at the moment of intent.** A record button for an event Nature's Calendar collects carries
+  **Recorded nationally** — six words where the decision is made, worth more than sixty on a card above it.
+- **An explainer must be able to finish.** Full text until the first record is sent, then it collapses to
+  *"3 records sent · 1 ready"*. A contribution count is also the only number in the app that says what
+  someone has given rather than collected.
+- **Depth lives on `/citizen-science/`**, off the tab bar, so every card that links to it can be two lines.
+- **Ask for what a submission needs before the effort, not after.** The postcode their form requires is
+  asked when you follow an eligible species; it used to appear as a blocker in the submit dialog.
+- **One remarkable fact, said once.** "Records since 1736" was in five places and is now in three.
+- **Sourced or silent.** `projects.ts` carries a `source` for every claim, and a test fails without one.
+  Verified figures only: 2.9 million records, spring advancing 2.5 days per decade, 20,000 tree-health
+  reports of which about three quarters were healthy trees. An unverifiable claim is left out entirely.
+- **Not everywhere.** Seasons has no citizen-science framing, because the hunts are not records.
+
 ## Things deliberately removed
 
 | Removed | Why |

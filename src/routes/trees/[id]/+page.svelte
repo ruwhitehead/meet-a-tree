@@ -17,7 +17,8 @@
 		eventName,
 		isRecordable,
 		isRecordedSpecies,
-		readyToSend
+		readyToSend,
+		sentCount
 	} from '$lib/phenology';
 	import { seasonOfMonth } from '$lib/season';
 
@@ -105,6 +106,7 @@
 	 *  field is far easier to fill in with one specific thing to look for. */
 	const seasonNote = $derived(species?.season.find(([k]) => k === seasonLabel)?.[1] ?? '');
 	const ready = $derived(tree ? readyToSend(tree) : 0);
+	const sent = $derived(tree ? sentCount(tree) : 0);
 	const onTheirList = $derived(species ? isRecordedSpecies(species.id) : false);
 
 	const inSeason = $derived(
@@ -261,32 +263,54 @@
 				<button class="event" onclick={() => openRecord(e.id)}>
 					<span class="et">{e.label}</span>
 					<span class="eh">{e.hint}</span>
+					<!-- the tie to citizen science belongs at the moment of recording, not
+					     only on a card you read once -->
+					{#if isRecordable(species.id, e.id)}
+						<span class="natl">Recorded nationally</span>
+					{/if}
 				</button>
 			{/each}
 		</div>
 
 		<div class="card sci">
 			<p class="label">Citizen science</p>
-			{#if onTheirList}
+			{#if !onTheirList}
 				<p class="sub" style="margin:0">
-					{species.name} is one of {RECORDED_COUNT} trees on the Woodland Trust’s
-					<a href={NATURES_CALENDAR_URL} target="_blank" rel="noopener">Nature’s Calendar</a>
-					recording list. First leaves, flowering, ripe fruit and autumn tint from this tree can join a
-					national record that runs back to 1736 — which is how anyone knows spring is arriving
-					earlier. Each dated entry below carries a <strong>Send</strong> button. You submit it on
-					their site, and you will need a free account there the first time.
+					Nature’s Calendar takes a short list of trees observed carefully rather than a long one
+					observed badly, and {species.name} is not on it. Your dates are still a real record of your
+					own patch, and the comparisons here work just the same.
+					<a href="{base}/citizen-science/">Where records can go →</a>
+				</p>
+			{:else if sent}
+				<!-- once someone has sent one, the explanation is furniture: a status
+				     line and the count of what they have contributed does the work -->
+				<p class="status">
+					<strong class="nums">{sent}</strong>
+					{sent === 1 ? 'record sent' : 'records sent'} to
+					<a href={NATURES_CALENDAR_URL} target="_blank" rel="noopener">Nature’s Calendar</a>{#if ready}<span
+							class="sep">·</span><strong class="nums">{ready}</strong> ready{/if}
+				</p>
+				<p class="sub" style="margin:6px 0 0">
+					<a href="{base}/citizen-science/">What your records are for →</a>
+				</p>
+			{:else}
+				<p class="sub" style="margin:0">
+					{species.name} is one of the {RECORDED_COUNT} trees in this guide that Nature’s Calendar
+					collects records for. Every dated entry below carries a <strong>Send</strong> button: it
+					prepares the record, you submit it on their site, and you will need a free account there the
+					first time. <a href="{base}/citizen-science/">Why it is worth doing →</a>
 				</p>
 				{#if ready}
 					<p class="ready">
 						{ready} {ready === 1 ? 'date is' : 'dates are'} ready to send.
 					</p>
 				{/if}
-			{:else}
-				<p class="sub" style="margin:0">
-					Nature’s Calendar collects just {RECORDED_COUNT} well-known trees — a short list observed
-					carefully beats a long one observed badly — and {species.name} is not among them. Your dates
-					are still a real record of your own patch, and the year-on-year comparisons here work just
-					the same. Follow an oak, ash, beech, hawthorn or rowan as well and those dates can be sent.
+			{/if}
+			{#if onTheirList && ready && !tree.postcode}
+				<!-- discovered at the last step before, after the effort was spent -->
+				<p class="needpc">
+					Their form needs a location before it can use a record.
+					<button class="pcbtn" onclick={startEdit}>Add a postcode</button>
 				</p>
 			{/if}
 		</div>
@@ -314,8 +338,8 @@
 					</p>
 				{/each}
 				<p class="sub" style="margin-top:8px">
-					These are the dates phenology networks collect. Britain has kept them since 1736 — yours
-					are the same measurement, for your own patch.
+					This is the measurement phenology networks are built from — the same one, for your own
+					patch. <a href="{base}/citizen-science/">What it is used for →</a>
 				</p>
 			</div>
 		{/if}
@@ -794,9 +818,63 @@
 		display: block;
 		margin-bottom: 3px;
 	}
-	.sci .sub a {
+	.sci .sub a,
+	.sub a {
 		color: var(--deep);
 		font-weight: 600;
+	}
+	/* small caps rather than a colour or an icon: the season-spine rule says
+	   colour never carries information on its own */
+	.natl {
+		display: block;
+		margin-top: 5px;
+		font-size: 10.5px;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--deep);
+	}
+	.nums {
+		font-variant-numeric: tabular-nums;
+	}
+	.status {
+		margin: 0;
+		font-size: 14px;
+		line-height: 1.5;
+		color: var(--ink);
+	}
+	.status strong {
+		font-size: 17px;
+		color: var(--deep);
+	}
+	.status a {
+		color: var(--deep);
+		font-weight: 600;
+	}
+	.sep {
+		color: var(--line);
+		padding: 0 7px;
+	}
+	.needpc {
+		margin: 9px 0 0;
+		font-size: 12.5px;
+		line-height: 1.5;
+		color: var(--soft);
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+	.pcbtn {
+		font-size: 12.5px;
+		font-weight: 700;
+		color: var(--deep);
+		background: var(--card);
+		border: 1.5px solid var(--deep);
+		border-radius: 999px;
+		padding: 0 13px;
+		min-height: 44px;
+		flex: none;
 	}
 	.ready {
 		margin: 9px 0 0;

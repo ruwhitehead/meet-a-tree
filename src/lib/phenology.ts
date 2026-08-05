@@ -79,6 +79,12 @@ export function readyToSend(tree: {
 		.length;
 }
 
+/** Records the user has told us they submitted. The only number in the app that
+ *  says what someone has contributed, rather than what they have collected. */
+export function sentCount(tree: { observations: { submitted?: boolean }[] }): number {
+	return tree.observations.filter((o) => o.submitted).length;
+}
+
 export interface SubmissionDraft {
 	lines: string[];
 	text: string;

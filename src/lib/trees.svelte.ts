@@ -185,12 +185,15 @@ class Trees {
 		return this.items.find((t) => t.id === id);
 	}
 
-	add(speciesId: string, name: string, place?: string): MyTree {
+	add(speciesId: string, name: string, place?: string, postcode?: string): MyTree {
 		const tree: MyTree = {
 			id: newId('tree'),
 			speciesId,
 			name: name.trim() || (speciesById(speciesId)?.name ?? 'My tree'),
 			place: place?.trim() || undefined,
+			// asked here only for species whose dates a national scheme can use;
+			// discovering the requirement at submission time wasted the effort
+			postcode: postcode?.trim().toUpperCase() || undefined,
 			planted: dateStr(new Date()),
 			observations: []
 		};

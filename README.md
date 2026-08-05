@@ -22,6 +22,11 @@ Not public yet. The old `ruwhitehead.github.io/meet-a-tree` address is retired a
 | **Seasons** | Six time-boxed hunts covering the whole year — Blossom Watch, Conker Hunt, Autumn Colours, Midwinter Evergreens, Winter Twigs, Summer Shade. Boards fill themselves from what you identify. |
 | **Learn** | Search all 50 trees by common, Latin or folk name. Species a running hunt is looking for are marked "findable now". |
 
+A species page leads with **folklore**, because most people arrive browsing rather than identifying;
+everything that exists to identify something links straight to its "Spotting it" section instead.
+[`/citizen-science/`](https://meet-a-tree.vercel.app/citizen-science/) explains what the dates are worth and
+lists the four projects that want them — Nature's Calendar, the Ancient Tree Inventory, TreeAlert and iRecord.
+
 The thing that makes it worth keeping: record when one tree comes into leaf two years running and it tells
 you **"first leaves 10 days earlier — 8 Apr this year against 18 Apr in 2025"**. Those are the same
 first-event dates phenology networks have collected in Britain since 1736, and the app will prepare a
