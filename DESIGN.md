@@ -119,6 +119,12 @@ someone's own records forever. The rules now:
   shared species link.
 - **iOS honesty.** A photo taken in a browser never reaches the Photos library, so the app says so and
   offers "Save to Photos" via the share sheet — the only route in, and it cannot be automated.
+- **Point at the phone's own recogniser; never pretend to drive it.** Visual Look Up and Google Lens have no
+  web API, so Identify signposts them instead: on Android, long-press the photo for Lens; on iOS, save it and
+  use Look Up, with the Save button right there so the instruction is actionable. Shown only once a photo
+  exists, on a quieter ground than our own result, and only on the platform where it is true — a Mac gets
+  neither hint, and a test asserts that. `lens.google.com/uploadbyurl` would work but requires the photo to be
+  publicly hosted, so it is refused outright: nothing here leaves the device.
 - **Empty states are designed, not described.** A new tree shows an outlined ghost timeline of what a year
   will look like; a new grove leads with six trees on every British street rather than 50 grey silhouettes.
 - **Never name an event the calendar only guessed.** A tree with no season dates recorded is asked for a

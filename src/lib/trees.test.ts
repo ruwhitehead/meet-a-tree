@@ -312,7 +312,8 @@ describe('saving photos to the library', () => {
 			'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Version/17.5 Mobile/15E148 Safari/604.1';
 		expect(saveCapability({ ua: iphone, maxTouchPoints: 5, canShareFiles: true })).toEqual({
 			offer: true,
-			ios: true
+			ios: true,
+			android: false
 		});
 	});
 
@@ -328,6 +329,25 @@ describe('saving photos to the library', () => {
 		const { saveCapability } = await import('./photos');
 		const android = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
 		expect(saveCapability({ ua: android, maxTouchPoints: 5, canShareFiles: true }).offer).toBe(false);
+	});
+
+	it('names the platform, so the hand-off to its own recogniser is never wrong', async () => {
+		const { saveCapability } = await import('./photos');
+		const cap = (ua: string, maxTouchPoints = 5) =>
+			saveCapability({ ua, maxTouchPoints, canShareFiles: true });
+		const android = cap(
+			'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36'
+		);
+		expect([android.android, android.ios]).toEqual([true, false]);
+
+		const iphone = cap(
+			'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1'
+		);
+		expect([iphone.android, iphone.ios]).toEqual([false, true]);
+
+		// a real Mac gets neither hint: no Photos library route and no long-press Lens
+		const mac = cap('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Safari/605.1.15', 0);
+		expect([mac.android, mac.ios]).toEqual([false, false]);
 	});
 
 	it('hides the button when the browser cannot share files', async () => {

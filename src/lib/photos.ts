@@ -10,6 +10,13 @@
  *  - The only programmatic route into Photos is the share sheet's "Save Image".
  *    It cannot be automated: iOS deliberately walls the photo library off from
  *    the web, and a `download` link goes to Files, not Photos.
+ *
+ * The same walls apply to the recognisers already on the phone. Apple's Visual
+ * Look Up and Google Lens are OS features with no web API, so the app can only
+ * point at them: on Android a long press on an image offers Lens, and on iOS
+ * Look Up needs the photo in the library first, which is what "Save to Photos"
+ * is for. Sending the image to lens.google.com/uploadbyurl would work but needs
+ * it publicly hosted, and nothing here leaves the device.
  */
 
 export interface SaveCapability {
@@ -17,6 +24,8 @@ export interface SaveCapability {
 	offer: boolean;
 	/** iOS, so the copy really is missing from their library */
 	ios: boolean;
+	/** Android, where the OS recogniser is reachable by long-pressing an image */
+	android: boolean;
 }
 
 /** Pure so the decision can be tested without a phone. */
@@ -29,11 +38,11 @@ export function saveCapability(opts: {
 		/iphone|ipad|ipod/i.test(opts.ua) ||
 		(/Macintosh/.test(opts.ua) && opts.maxTouchPoints > 1);
 	// Android has usually saved a copy already, so the button would be noise
-	return { offer: ios && opts.canShareFiles, ios };
+	return { offer: ios && opts.canShareFiles, ios, android: !ios && /android/i.test(opts.ua) };
 }
 
 export function detectSaveCapability(): SaveCapability {
-	if (typeof navigator === 'undefined') return { offer: false, ios: false };
+	if (typeof navigator === 'undefined') return { offer: false, ios: false, android: false };
 	let canShareFiles = false;
 	try {
 		const probe = new File([new Uint8Array([0])], 'probe.jpg', { type: 'image/jpeg' });

@@ -7,13 +7,27 @@
 	import type { LeafKind } from '$lib/content/types';
 	import { grove } from '$lib/grove.svelte';
 	import { shrinkImage } from '$lib/trees.svelte';
+	import { detectSaveCapability, saveToPhotos } from '$lib/photos';
 
 	type Match = { latin: string; common: string; score: number; id: string | null };
 
 	let step1: LeafKind | null = $state(null);
 	let step2: string | null = $state(null);
 	let photo: string | null = $state(null);
+	/** kept so the phone's own recogniser can be handed the same file */
+	let photoFile: File | null = $state(null);
 	let camInput: HTMLInputElement | undefined = $state();
+	const phone = detectSaveCapability();
+
+	/** Straight from the click with the file already in hand — WebKit revokes the
+	 *  gesture if anything slow is awaited first. */
+	async function toPhotos() {
+		if (!photoFile) return;
+		const outcome = await saveToPhotos(photoFile, 'leaf.jpg');
+		if (outcome === 'shared') grove.toast('Choose “Save Image”, then look it up in Photos');
+		else if (outcome === 'unsupported')
+			grove.toast('Press and hold the photo, then “Add to Photos”');
+	}
 
 	/** Photo identification. Runs against /api/identify, which proxies Pl@ntNet
 	 *  with the key held server-side. On a static host the endpoint isn't there,
@@ -83,6 +97,7 @@
 		if (!f) return;
 		if (photo) URL.revokeObjectURL(photo);
 		photo = URL.createObjectURL(f);
+		photoFile = f;
 		step1 = null;
 		step2 = null;
 		input.value = '';
@@ -91,6 +106,7 @@
 	function removePhoto() {
 		if (photo) URL.revokeObjectURL(photo);
 		photo = null;
+		photoFile = null;
 		idState = 'idle';
 		matches = [];
 		remaining = null;
@@ -223,6 +239,33 @@
 		</div>
 	{/if}
 
+	<!-- The recogniser already on the phone. There is no web API for Visual Look Up
+	     or Lens, so this is a signpost rather than a button: on Android a long press
+	     on the image offers Lens, and on iOS Look Up needs the photo in the library
+	     first. Shown only once a photo exists and only where it is actually true. -->
+	{#if photo && idState !== 'working' && (phone.ios || phone.android)}
+		<div class="card handoff">
+			<p class="label">Ask your phone as well</p>
+			{#if phone.android}
+				<p class="how">
+					Press and hold the photo above and choose <strong>Search image with Google</strong>. Lens
+					will give its own answer, from a far bigger range of plants than this guide carries — then
+					come back and check it against the spotting notes.
+				</p>
+			{:else}
+				<p class="how">
+					iPhone can identify plants itself, but only from your library. Save the photo, then press and
+					hold the leaf in the Photos app and choose <strong>Look Up</strong>.
+				</p>
+				{#if phone.offer}
+					<button class="btn ghost small" style="margin-top:10px" onclick={toPhotos}>
+						Save to Photos
+					</button>
+				{/if}
+			{/if}
+		</div>
+	{/if}
+
 	<p class="orline"><span>or answer three questions</span></p>
 	<input
 		bind:this={camInput}
@@ -308,6 +351,16 @@
 			</section>
 		{/each}
 	</details>
+
+	<!-- Their access policy asks free users to acknowledge the service in these
+	     words, so they are theirs, not a paraphrase. The remaining requirement is
+	     their logo, which is not shipped yet. -->
+	<p class="credit">
+		The image-based plant species identification service used, is based on the Pl@ntNet recognition
+		API, regularly updated and accessible through the site
+		<a href="https://my.plantnet.org/" target="_blank" rel="noopener">my.plantnet.org</a>.
+		<a href="https://my.plantnet.org/terms_of_use" target="_blank" rel="noopener">Access policy ↗</a>
+	</p>
 </main>
 
 <style>
@@ -316,6 +369,24 @@
 		font-size: 13.5px;
 		line-height: 1.55;
 		color: var(--soft);
+	}
+	/* a quieter ground than the result cards: this is a suggestion, not our answer */
+	.handoff {
+		background: var(--stonewash);
+		border-color: var(--line);
+	}
+	/* required attribution, deliberately the quietest thing on the page — but still
+	   AA, because small print that cannot be read is not an acknowledgement */
+	.credit {
+		margin: 4px 0 0;
+		font-size: 11.5px;
+		line-height: 1.5;
+		color: var(--soft);
+		max-width: 62ch;
+	}
+	.credit a {
+		color: var(--deep);
+		font-weight: 600;
 	}
 	.how strong {
 		color: var(--ink);
