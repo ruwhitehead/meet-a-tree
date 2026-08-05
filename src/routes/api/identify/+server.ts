@@ -34,8 +34,11 @@ const NEAR_MISSES = ['PLANET_API_KEY', 'PLANTNET_KEY', 'PLANT_NET_API_KEY', 'PLA
 
 /** Proxies one photo to Pl@ntNet. The API key stays on the server — that is the
  *  entire reason this endpoint exists rather than calling Pl@ntNet from the page. */
-export const POST: RequestHandler = async ({ request, fetch, getClientAddress }) => {
-	const key = env.PLANTNET_API_KEY;
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+	// Trimmed: a value pasted at a CLI prompt or into a dashboard field arrives
+	// with a trailing newline often enough, and encodeURIComponent turns that into
+	// %0A, which Pl@ntNet rejects as an invalid key with no explanation.
+	const key = env.PLANTNET_API_KEY?.trim();
 	if (!key) {
 		const misnamed = NEAR_MISSES.filter((name) => env[name]);
 		if (misnamed.length) {
@@ -79,15 +82,30 @@ export const POST: RequestHandler = async ({ request, fetch, getClientAddress })
 
 	let res: Response;
 	try {
-		res = await fetch(url, { method: 'POST', body: upstream });
+		// The platform fetch deliberately, NOT the event's. SvelteKit's event.fetch
+		// inherits headers from the incoming request, so the browser's
+		// `Origin: https://meet-a-tree.vercel.app` was being forwarded to Pl@ntNet,
+		// whose keys carry an origin allowlist — it answered
+		// `403 {"message":"CORS error: Origin not allowed"}`, which looks exactly
+		// like a bad key. Server-to-server calls should send no origin at all.
+		res = await globalThis.fetch(url, { method: 'POST', body: upstream });
 	} catch {
 		return json({ ok: false, reason: 'upstream-unreachable' }, { status: 502 });
 	}
 
 	// 404 is Pl@ntNet's "nothing matched / not a plant" answer, not a failure
 	if (res.status === 404) return json({ ok: true, matches: [], remaining: null });
-	if (res.status === 401 || res.status === 403)
+	if (res.status === 401 || res.status === 403) {
+		// Pl@ntNet says why in the body, and without it "bad-key" could mean a
+		// wrong value, an unactivated key or a stray character. Logged, not
+		// returned, and never the request URL — that carries the key itself.
+		const said = await res.text().catch(() => '');
+		console.warn(
+			`[identify] Pl@ntNet rejected the key: HTTP ${res.status} ${said.slice(0, 300)} ` +
+				`(key length ${key.length}, raw length ${(env.PLANTNET_API_KEY ?? '').length})`
+		);
 		return json({ ok: false, reason: 'bad-key' }, { status: 502 });
+	}
 	if (res.status === 429) return json({ ok: false, reason: 'quota' }, { status: 429 });
 	if (!res.ok) return json({ ok: false, reason: 'upstream-error' }, { status: 502 });
 
