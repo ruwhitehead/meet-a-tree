@@ -70,7 +70,16 @@ Content and asset tooling, run directly with `node`:
 
 1. Get a free key from [my.plantnet.org](https://my.plantnet.org) (~500 identifications a day).
 2. Add `PLANTNET_API_KEY` to the Vercel project (Production, Preview, Development).
-3. Redeploy.
+   **Check the spelling** — `PLANET_API_KEY` is the easy slip and it has cost a day before now.
+   Adding an environment variable does nothing until the next deployment.
+3. Redeploy, then confirm the server can see it:
+
+```bash
+curl -s -X POST -H "Origin: https://meet-a-tree.vercel.app" -F "image=@leaf.jpg" -F "organ=leaf" https://meet-a-tree.vercel.app/api/identify
+```
+
+`not-configured` means no key at all; `misnamed-key` means one is set under a name close to the right one
+(the exact name is in the function log, not the response); `bad-key` means Pl@ntNet rejected it.
 
 The three-question field key stays as the unlimited, offline fallback either way.
 

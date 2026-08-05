@@ -123,8 +123,9 @@ photograph, so all 50 are now pinned.
   deprecated model
 - Maps the scientific names the guide carries onto our own species ids, with a genus-level fallback that
   only guesses when the genus is unambiguous
-- Distinguishes not-configured, bad key, quota exhausted, unreachable and no-match, so the UI can say
-  something true in each case
+- Distinguishes not-configured, misnamed-key, bad key, quota exhausted, unreachable and no-match, so the UI
+  can say something true in each case. `misnamed-key` exists because a key set as `PLANET_API_KEY` looks
+  exactly like no key at all; the offending name goes to the function log, never the HTTP response
 - Carries a per-instance rate brake: the route is public and the free tier is ~500 a day
 
 Parsing lives in `src/lib/plantnet.ts` as a pure function, so it is tested without a key or a network.

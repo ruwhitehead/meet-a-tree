@@ -24,11 +24,30 @@ function rateLimited(key: string): boolean {
 	return recent.length > RATE_MAX;
 }
 
+/** Names people reach for instead of PLANTNET_API_KEY. "Planet" is the obvious
+ *  slip and it has already happened once: a key set under the wrong name is
+ *  indistinguishable from no key at all, so the app reported itself as having no
+ *  identification server for a day while the key sat there misspelled. The names
+ *  are logged, never returned — an env var name is not something a public
+ *  endpoint should echo to whoever asks. */
+const NEAR_MISSES = ['PLANET_API_KEY', 'PLANTNET_KEY', 'PLANT_NET_API_KEY', 'PLANTNET_API'];
+
 /** Proxies one photo to Pl@ntNet. The API key stays on the server — that is the
  *  entire reason this endpoint exists rather than calling Pl@ntNet from the page. */
 export const POST: RequestHandler = async ({ request, fetch, getClientAddress }) => {
 	const key = env.PLANTNET_API_KEY;
-	if (!key) return json({ ok: false, reason: 'not-configured' }, { status: 503 });
+	if (!key) {
+		const misnamed = NEAR_MISSES.filter((name) => env[name]);
+		if (misnamed.length) {
+			console.warn(
+				`[identify] PLANTNET_API_KEY is not set, but ${misnamed.join(' and ')} ${
+					misnamed.length === 1 ? 'is' : 'are'
+				} present. Rename the variable and redeploy.`
+			);
+			return json({ ok: false, reason: 'misnamed-key' }, { status: 503 });
+		}
+		return json({ ok: false, reason: 'not-configured' }, { status: 503 });
+	}
 
 	try {
 		if (rateLimited(getClientAddress())) return json({ ok: false, reason: 'slow-down' }, { status: 429 });
