@@ -1,49 +1,83 @@
 # Meet a Tree 🌿
 
-**Fall in love with the trees you walk past every day.**
+**Learn the trees you already walk past.**
 
-A free, offline-capable PWA field companion — identify trees, collect the species around you,
-learn their folklore and science — in support of the
-[International Tree Foundation](https://internationaltreefoundation.org) (registered charity no. 1106269).
+A free, offline-capable progressive web app: a field guide to 50 trees of Britain and Ireland, a way of
+identifying one from its leaf, and a record of the individual trees you decide to follow through a year.
+Made in support of the [International Tree Foundation](https://internationaltreefoundation.org) —
+registered charity no. 1106269.
 
 **Live:** https://meet-a-tree.vercel.app
 
-(The old `ruwhitehead.github.io/meet-a-tree` address is retired and now redirects — see issue #9.)
+Not public yet. The old `ruwhitehead.github.io/meet-a-tree` address is retired and forwards here
+(see [issue #9](https://github.com/ruwhitehead/meet-a-tree/issues/9)).
 
-## What it does (v0.1)
+## The five surfaces
 
-- **Today** — one tree fact a day, seasonally aware, with a gentle streak
-- **Identify** — point-of-need camera (zero-permission `input capture`) + a three-step offline field key
-- **Species guide** — 12 UK species, each with spotting marks, folklore, science, and a "one to tell"
-- **My Grove** — a local-first collection with badges and a running CO₂ tally (localStorage, no account)
-- **Share cards** — canvas-rendered 1080×1080 posters via the Web Share API, carrying the Meet a Tree × ITF lockup
-- **Giving moments** — celebration modals at 5 and 10 species linking to ITF's donate page; never a paywall
-- **Installable PWA** — service worker precaches the entire guide; works with no signal
+| Surface | What it is |
+|---|---|
+| **Today** | One tree fact, one tree to meet, and anything your own trees are due to do this week. Deliberately five blocks, not ten. |
+| **Identify** | Photograph a leaf for automatic matching (needs a Pl@ntNet key — see below), or answer three questions in an offline field key. Habitat guidance sits underneath for when both fail. |
+| **My Trees** | Two views of one idea: **Following**, the individual trees you track through the year, and **Species met**, the guide with everything you have identified. |
+| **Seasons** | Six time-boxed hunts covering the whole year — Blossom Watch, Conker Hunt, Autumn Colours, Midwinter Evergreens, Winter Twigs, Summer Shade. Boards fill themselves from what you identify. |
+| **Learn** | Search all 50 trees by common, Latin or folk name. Species a running hunt is looking for are marked "findable now". |
+
+The thing that makes it worth keeping: record when one tree comes into leaf two years running and it tells
+you **"first leaves 10 days earlier — 8 Apr this year against 18 Apr in 2025"**. Those are the same
+first-event dates phenology networks have collected in Britain since 1736, and the app will prepare a
+record for you to submit to Nature's Calendar.
 
 ## Stack
 
-SvelteKit (Svelte 5) + `adapter-static`, TypeScript, hand-rolled service worker via `$service-worker`.
-No runtime dependencies. Deploys to GitHub Pages via Actions (`BASE_PATH=/meet-a-tree`); designed to move to
-Vercel with `adapter-vercel` when the Pl@ntNet camera-ID proxy and live GBIF data land (v1).
+- **SvelteKit** (Svelte 5 runes) + `adapter-vercel`, runtime pinned to `nodejs22.x`
+- **TypeScript**, no runtime dependencies
+- Hand-rolled service worker via `$service-worker` — network-first for pages, cache-first for immutable assets
+- Every page prerendered; one server route (`/api/identify`) so the Pl@ntNet API key stays server-side
+- **Local-first**: records in `localStorage`, photos as blobs in IndexedDB, no accounts, nothing uploaded
 
-Design tokens echo ITF's brand (green `#167E3C`, forest `#1C3B23`, stone `#E1DFD9`;
-Libre Caslon Text as an open stand-in for Adobe Caslon Pro, plus Inter Tight).
-Every text/background pair is WCAG AA or better; **Lighthouse accessibility 100 is a CI release gate**.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for how it fits together, and [DESIGN.md](DESIGN.md) for why it
+looks and behaves as it does — including the decisions to remove things.
 
 ## Develop
 
 ```bash
 npm install
-npm run dev        # dev server
-npm test           # unit tests (streak, field key, content integrity)
-npm run check      # svelte-check
-npm run build      # production build (Vercel adapter)
-npm run icons      # regenerate PWA icons from the SVG mark
+npm run dev      # dev server — it has served stale bundles more than once; trust production
+npm test         # 43 unit tests (field key, content depth, missions, records, install, Pl@ntNet, photos)
+npm run check    # svelte-check
+npm run build    # fails on Windows: adapter-vercel needs symlinks. Vercel builds on Linux, so deploy instead
+npm run icons    # regenerate PWA icons from the SVG mark
 ```
 
-## Notes
+Content and asset tooling, run directly with `node`:
 
-- "Near You" ships with sample data; the live GBIF/iNaturalist feed arrives with the Vercel phase.
-- Use of ITF's name, logo and impact figures in a public launch requires their written sign-off.
-- Content (species facts, folklore, science) lives in `src/lib/content/` — additions welcome as PRs.
-- "Grove" survives as the in-app collection noun; the brand is Meet a Tree.
+| Script | Purpose |
+|---|---|
+| `scripts/fetch-species-images.mjs` | Fetch, crop and credit every species photo from Wikimedia Commons |
+| `scripts/curate.mjs` | Pull four habit and four leaf candidates per species and build contact sheets to choose from |
+| `scripts/candidates.mjs` | Earlier variant of the same idea, kept for reference |
+| `scripts/og-card.mjs` | Regenerate the 1200×630 link-preview card |
+| `scripts/icons.mjs` | PWA icons from the inline SVG mark |
+
+## To switch on photo identification
+
+`/api/identify` is deployed and returns `{"ok":false,"reason":"not-configured"}` until a key exists:
+
+1. Get a free key from [my.plantnet.org](https://my.plantnet.org) (~500 identifications a day).
+2. Add `PLANTNET_API_KEY` to the Vercel project (Production, Preview, Development).
+3. Redeploy.
+
+The three-question field key stays as the unlimited, offline fallback either way.
+
+## Honest caveats
+
+- **ITF sign-off is outstanding.** Their name, logo and charity number are used on the strength of a family
+  connection, not written permission — see [issue #8](https://github.com/ruwhitehead/meet-a-tree/issues/8).
+- **No backup yet.** Trees and photos live in one browser on one device; clearing site data destroys them.
+  [Issue #1](https://github.com/ruwhitehead/meet-a-tree/issues/1) is the fix, and it matters more than it sounds.
+- **iOS keeps no copy of your photos.** A photo taken inside a browser never reaches the Photos library, so
+  each one offers a "Save to Photos" button. Android's camera app usually saves one already.
+- **The canonical URL is a constant.** `src/lib/site.ts` holds it, for absolute Open Graph URLs. Update it if
+  the app moves to a custom domain.
+- Content lives in `src/lib/content/` as typed data, so new species are reviewable pull requests.
+- "Grove" survives as the in-app noun for species you have met. The brand is Meet a Tree.
